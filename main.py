@@ -1,4 +1,9 @@
 import flet as ft
+from datetime import datetime
+from DB import session, Base, engine
+from veiculos import Veiculos
+
+Base.metadata.create_all(engine)
 
 def menu_principal(page: ft.Page):
     page.tittle = "Menu Principal"
@@ -29,7 +34,7 @@ def menu_principal(page: ft.Page):
         on_click = mostrar_consultas)
         
     conteudo = ft.Column(
-        [titulo, ft.Divider(), botao_cadastros, botao_consultas],
+        [titulo, botao_cadastros, botao_consultas],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER)
     
@@ -58,15 +63,82 @@ def cadastros(page: ft.Page):
     def voltar_menu(e):
         page.clean()
         menu_principal(page)
-    page.tittle = "Tela de Cadastros"
-    page.add(
-        ft.Column([
-            ft.Text("Cadastros", size = 50, weight=ft.FontWeight.BOLD, color = "white"),
-            ft.ElevatedButton(text = "Voltarao Menu", icon=ft.Icons.ARROW_BACK, on_click=voltar_menu),
-            ft.ElevatedButton(text="Cadastros", icon=ft.Icon(name = "assigment"), width=400)],
 
-            alignment = ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,))
+    fabricante = ft.TextField(label="Fabricante", width=400)
+    modelo = ft.TextField(label="Modelo", width=400)    
+    ano = ft.TextField(label="Ano", width=400)
+    motorizacao = ft.TextField(label="Motorização", width=400)
+    cambio = ft.TextField(label="Câmbio", width=400)
+    km = ft.TextField(label="KM", width=400)
+    data_venda = ft.TextField(label="Data de Venda", width=400)
+        
+    def cadastrar_veiculo(e):
+        if not (fabricante.value and modelo.value and ano.value and motorizacao.value and cambio.value and km.value and data_venda.value):
+            page.add(ft.Text("Todos os campos devem ser preenchidos!", color="red", size=20))
+            page.update()
+            return
+        novo_veiculo  = Veiculos(
+            fabricante=fabricante.value,
+            modelo=modelo.value,
+            ano=int(ano.value),
+            motorizacao=motorizacao.value,
+            cambio=cambio.value,
+            km=float(km.value),
+            data_venda=datetime.strptime(data_venda.value, "%Y-%m-%d").date())
+        
+        session.add(novo_veiculo)
+        session.commit()
+            
+        page.open(ft.Text("Veículo cadastrado com sucesso!", color="green", size=20))
+        page.update()
+        page.clean()
+        menu_principal(page)
+    
+    botao_cadastrar = ft.ElevatedButton(
+            text="Cadastrar Veículo",
+            icon=ft.Icon(name="add"),
+            width=400,
+            on_click=cadastrar_veiculo)
+
+    page.title = "Tela de Cadastros"
+    page.clean()
+    page.add(
+    ft.Column([
+        ft.Text("Cadastros", size = 50, weight=ft.FontWeight.BOLD, color = "white"),
+        fabricante,
+        modelo,
+        ano,
+        motorizacao,
+        cambio,
+        km,
+        data_venda,
+        botao_cadastrar,
+            
+        ft.ElevatedButton(text = "Voltarao Menu", icon=ft.Icons.ARROW_BACK, on_click=voltar_menu)],
+
+        alignment = ft.MainAxisAlignment.CENTER,
+        horizontal_alignment= ft.CrossAxisAlignment.CENTER,))
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 def consultas(page: ft.Page):
     def voltar_menu(e):
