@@ -71,6 +71,10 @@ def cadastros(page: ft.Page):
     cambio = ft.TextField(label="Câmbio", width=400)
     km = ft.TextField(label="KM", width=400)
     data_venda = ft.TextField(label="Data de Venda", width=400)
+    sucesso = ft.Text("", size=20, color="green")
+    def sucesso_mensagem():
+        page.add = "Veículo cadastrado com sucesso!"
+        page.update()
         
     def cadastrar_veiculo(e):
         if not (fabricante.value and modelo.value and ano.value and motorizacao.value and cambio.value and km.value and data_venda.value):
@@ -88,12 +92,8 @@ def cadastros(page: ft.Page):
         
         session.add(novo_veiculo)
         session.commit()
+        sucesso_mensagem()
             
-        page.open(ft.Text("Veículo cadastrado com sucesso!", color="green", size=20))
-        page.update()
-        page.clean()
-        menu_principal(page)
-    
     botao_cadastrar = ft.ElevatedButton(
             text="Cadastrar Veículo",
             icon=ft.Icon(name="add"),
@@ -113,28 +113,13 @@ def cadastros(page: ft.Page):
         km,
         data_venda,
         botao_cadastrar,
+        sucesso,
             
         ft.ElevatedButton(text = "Voltarao Menu", icon=ft.Icons.ARROW_BACK, on_click=voltar_menu)],
 
         alignment = ft.MainAxisAlignment.CENTER,
         horizontal_alignment= ft.CrossAxisAlignment.CENTER,))
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
