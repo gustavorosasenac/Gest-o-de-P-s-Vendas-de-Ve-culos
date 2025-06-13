@@ -1,5 +1,4 @@
 import flet as ft
-from datetime import datetime
 from DB import session, Base, engine
 from veiculos import Veiculos
 
@@ -10,9 +9,9 @@ def menu_principal(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
 
     def fechar_app(e):
-        page.window_destroy()
-        
-        
+        page.clean()
+        page.add(ft.Text("Aplicação fechada."))
+        page.update()
 
     def mostrar_cadastros(e):
         page.clean()
