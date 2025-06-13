@@ -15,11 +15,11 @@ def menu_principal(page: ft.Page):
 
     def mostrar_cadastros(e):
         page.clean()
-        cadastros(page)
+        menu_cadastros(page)
 
     def mostrar_consultas(e):
         page.clean()
-        consultas(page)
+        menu_consultas(page)
 
     titulo = ft.Text("🚘 Sistema de Veículos", size = 40, weight=ft.FontWeight.BOLD, color = "black")
 
@@ -66,7 +66,7 @@ def menu_principal(page: ft.Page):
         )
     )
 
-def cadastros(page: ft.Page):
+def menu_cadastros(page: ft.Page):
     page.tittle = "Menu de Cadastros"
     page.theme_mode = ft.ThemeMode.DARK
     def voltar_menu(e):
@@ -77,13 +77,13 @@ def cadastros(page: ft.Page):
         cadastros_de_veiculo(page)
     def veiculos_cadastrados(e):
         page.clean()
-        consultas(page)
+        menu_consultas(page)
     def alterar_cadastro_veiculo(e):
         page.clean()
-        consultas(page)
+        menu_consultas(page)
     def excluir_cadastro_veiculo(e):
         page.clean()
-        consultas(page)
+        menu_consultas(page)
 
     titulo = ft.Text("Cadastros", size = 40, weight=ft.FontWeight.BOLD, color = "black")
 
@@ -140,7 +140,7 @@ def cadastros(page: ft.Page):
         )
     )
   
-def consultas(page: ft.Page):
+def menu_consultas(page: ft.Page):
     page.tittle = "Menu de Consultas"
     page.theme_mode = ft.ThemeMode.DARK
     def voltar_menu(e):
@@ -188,24 +188,6 @@ def consultas(page: ft.Page):
             expand=True
         )
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 def cadastros_de_veiculo(page: ft.Page):
     def voltar_menu(e):
@@ -290,5 +272,4 @@ def cadastros_de_veiculo(page: ft.Page):
         horizontal_alignment= ft.CrossAxisAlignment.CENTER,))
 
 
-    
 ft.app(target=menu_principal, view=ft.AppView.FLET_APP)
