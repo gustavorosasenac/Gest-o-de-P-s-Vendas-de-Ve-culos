@@ -6,8 +6,13 @@ from veiculos import Veiculos
 Base.metadata.create_all(engine)
 
 def menu_principal(page: ft.Page):
-    page.tittle = "Menu Principal"
+    page.title = "Menu Principal"
     page.theme_mode = ft.ThemeMode.DARK
+
+    def fechar_app(e):
+        page.window_destroy()
+        
+        
 
     def mostrar_cadastros(e):
         page.clean()
@@ -30,9 +35,14 @@ def menu_principal(page: ft.Page):
         icon=ft.Icon(name = "search"),
         width=400,
         on_click = mostrar_consultas)
+    botao_fechar_app = ft.ElevatedButton(
+        text="Fechar Aplicação",
+        icon=ft.Icon(name = "close"),
+        width=400,
+        on_click = fechar_app)
         
     conteudo = ft.Column(
-        [titulo, botao_cadastros, botao_consultas],
+        [titulo, botao_cadastros, botao_consultas, botao_fechar_app],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER)
     
@@ -58,6 +68,101 @@ def menu_principal(page: ft.Page):
     )
 
 def cadastros(page: ft.Page):
+    page.tittle = "Menu de Cadastros"
+    page.theme_mode = ft.ThemeMode.DARK
+    def voltar_menu(e):
+        page.clean()
+        menu_principal(page)
+    def cadastrar_veiculo(e):
+        page.clean()
+        cadastros_de_veiculo(page)
+    def veiculos_cadastrados(e):
+        page.clean()
+        consultas(page)
+    def alterar_cadastro_veiculo(e):
+        page.clean()
+        consultas(page)
+    def excluir_cadastro_veiculo(e):
+        page.clean()
+        consultas(page)
+
+    titulo = ft.Text("Cadastros", size = 40, weight=ft.FontWeight.BOLD, color = "black")
+
+    botao_cadastrar_veiculo = ft.ElevatedButton(
+        text="Cadastrar Veículo",
+        icon=ft.Icon(name = "assigment"),
+        width=400,
+        on_click = cadastrar_veiculo)
+    
+    botao_veiculos_cadastrados = ft.ElevatedButton(
+        text="Mostrar Veículos Cadastrados",
+        icon=ft.Icon(name = "search"),
+        width=400,
+        on_click = veiculos_cadastrados)
+    botao_alterar_cadastro_veiculo = ft.ElevatedButton(
+        text="Alterar Cadastro de Veículo",
+        icon=ft.Icon(name = "edit"),
+        width=400,
+        on_click = alterar_cadastro_veiculo)
+    botao_excluir_cadastro_veiculo = ft.ElevatedButton(
+        text="Excluir Cadastro de Veículo",
+        icon=ft.Icon(name = "delete"),
+        width=400,
+        on_click = excluir_cadastro_veiculo)
+    botao_voltar_menu = ft.ElevatedButton(
+        text="Voltar ao Menu Principal",
+        icon=ft.Icon(name = "arrow_back"),
+        width=400,
+        on_click = voltar_menu)
+        
+    conteudo = ft.Column(
+        [titulo, botao_cadastrar_veiculo, botao_veiculos_cadastrados, botao_alterar_cadastro_veiculo, botao_excluir_cadastro_veiculo, botao_voltar_menu],
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+    
+    page.add(
+        ft.Stack(
+            controls=[
+                ft.Image(
+                    src="https://img.odcdn.com.br/wp-content/uploads/2024/03/shutterstock_1082263868-1.jpg",
+                    fit=ft.ImageFit.COVER,
+                    width=page.width,
+                    height=page.height
+                ),
+                ft.Container(
+                    content=conteudo,
+                    alignment=ft.alignment.center,
+                    padding=40,
+                    bgcolor="#00000088",
+                    border_radius=10
+                )
+            ],
+            expand=True
+        )
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def cadastros_de_veiculo(page: ft.Page):
     def voltar_menu(e):
         page.clean()
         menu_principal(page)
@@ -68,7 +173,6 @@ def cadastros(page: ft.Page):
     motorizacao = ft.TextField(label="Motorização", width=400)
     cambio = ft.TextField(label="Câmbio", width=400)
     km = ft.TextField(label="KM", width=400)
-    data_venda = ft.TextField(label="Data de Venda", width=400)
     dlg_erro = ft.AlertDialog(
         title=ft.Text("Erro!", color="red"),
         content=ft.Text("Preencha todos os campos!", color="red", size=20),
@@ -79,30 +183,41 @@ def cadastros(page: ft.Page):
         content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
         alignment=ft.alignment.center,
         title_padding=ft.padding.all(25),)
+    dlg_ja_cadastrado = ft.AlertDialog(
+        title=ft.Text("Erro!", color="red"),
+        content=ft.Text("Veiculo ja cadastrado", color="red", size=20),
+        alignment=ft.alignment.center,
+        title_padding=ft.padding.all(25),)
+    
 
     def cadastrar_veiculo(e):
-        if not (fabricante.value and modelo.value and ano.value and motorizacao.value and cambio.value and km.value and data_venda.value):
+        
+        if not (fabricante.value and modelo.value and ano.value and motorizacao.value and cambio.value and km.value):
             dlg_erro.open = True
             page.update()
         elif not ano.value.isdigit() or not km.value.replace('.', '', 1).isdigit():
             dlg_erro.content = ft.Text("Ano deve ser um número inteiro e KM deve ser um número válido!", color="red", size=20)
             dlg_erro.open = True
             page.update()
-            return
-
-        novo_veiculo  = Veiculos(
-            fabricante=fabricante.value,
-            modelo=modelo.value,
-            ano=int(ano.value),
-            motorizacao=motorizacao.value,
-            cambio=cambio.value,
-            km=float(km.value),
-            data_venda=datetime.strptime(data_venda.value, "%Y-%m-%d").date())
+            
+        else: 
+            verificar_cadastro = session.query(Veiculos).filter(Veiculos.fabricante == fabricante.value).first()
+            if verificar_cadastro:
+                dlg_ja_cadastrado.open = True
+                page.update()
+            else:
+                novo_veiculo  = Veiculos(
+                    fabricante=fabricante.value,
+                    modelo=modelo.value,
+                    ano=int(ano.value),
+                    motorizacao=motorizacao.value,
+                    cambio=cambio.value,
+                    km=float(km.value))
         
-        session.add(novo_veiculo)
-        session.commit()
-        dlg_sucesso.open = True
-        page.update()
+                session.add(novo_veiculo)
+                session.commit()
+                dlg_sucesso.open = True
+                page.update()
 
     botao_cadastrar = ft.ElevatedButton(
             text="Cadastrar Veículo",
@@ -121,7 +236,6 @@ def cadastros(page: ft.Page):
         motorizacao,
         cambio,
         km,
-        data_venda,
         botao_cadastrar,
         dlg_erro,
         dlg_sucesso,
@@ -129,7 +243,8 @@ def cadastros(page: ft.Page):
         ft.ElevatedButton(text = "Voltar ao Menu", icon=ft.Icons.ARROW_BACK, on_click=voltar_menu)],
         alignment = ft.MainAxisAlignment.CENTER,
         horizontal_alignment= ft.CrossAxisAlignment.CENTER,))
-    
+
+   
 def consultas(page: ft.Page):
     def voltar_menu(e):
         page.clean()
@@ -143,4 +258,4 @@ def consultas(page: ft.Page):
             alignment = ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,))
     
-ft.app(target = menu_principal)
+ft.app(target=menu_principal, view=ft.AppView.FLET_APP)

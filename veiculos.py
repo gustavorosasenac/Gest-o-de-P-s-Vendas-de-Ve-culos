@@ -10,4 +10,3 @@ class Veiculos(Base):
     motorizacao = Column(String(100), nullable=False)
     cambio = Column(String(100), nullable=False)
     km = Column(Float, nullable=False)
-    data_venda = Column(Date, nullable=False)
