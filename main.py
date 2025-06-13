@@ -69,19 +69,31 @@ def cadastros(page: ft.Page):
     cambio = ft.TextField(label="Câmbio", width=400)
     km = ft.TextField(label="KM", width=400)
     data_venda = ft.TextField(label="Data de Venda", width=400)
-    sucesso_red = ft.Text("", size=20, color="red")
-    sucesso_green = ft.Text("", size=20, color="green")
+    dlg_erro = ft.AlertDialog(
+        title=ft.Text("Erro!", color="red"),
+        content=ft.Text("Preencha todos os campos!", color="red", size=20),
+        alignment=ft.alignment.center,
+        title_padding=ft.padding.all(25),)
+    dlg_sucesso = ft.AlertDialog(
+        title=ft.Text("Sucesso!", color="green"),
+        content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
+        alignment=ft.alignment.center,
+        title_padding=ft.padding.all(25),)
 
     def cadastrar_veiculo(e):
         if not (fabricante.value and modelo.value and ano.value and motorizacao.value and cambio.value and km.value and data_venda.value):
-            sucesso_red.value = "Todos os campos são obrigatórios!"
+            dlg_erro.open = True
+            page.update()
+        elif not ano.value.isdigit() or not km.value.replace('.', '', 1).isdigit():
+            dlg_erro.content = ft.Text("Ano deve ser um número inteiro e KM deve ser um número válido!", color="red", size=20)
+            dlg_erro.open = True
             page.update()
             return
 
         novo_veiculo  = Veiculos(
             fabricante=fabricante.value,
             modelo=modelo.value,
-            ano=ano.value,
+            ano=int(ano.value),
             motorizacao=motorizacao.value,
             cambio=cambio.value,
             km=float(km.value),
@@ -89,7 +101,7 @@ def cadastros(page: ft.Page):
         
         session.add(novo_veiculo)
         session.commit()
-        sucesso_green.value = "Veículo cadastrado com sucesso!"
+        dlg_sucesso.open = True
         page.update()
 
     botao_cadastrar = ft.ElevatedButton(
@@ -111,10 +123,10 @@ def cadastros(page: ft.Page):
         km,
         data_venda,
         botao_cadastrar,
-        sucesso_red,
-        sucesso_green,
-            
-        ft.ElevatedButton(text = "Voltarao Menu", icon=ft.Icons.ARROW_BACK, on_click=voltar_menu)],
+        dlg_erro,
+        dlg_sucesso,
+
+        ft.ElevatedButton(text = "Voltar ao Menu", icon=ft.Icons.ARROW_BACK, on_click=voltar_menu)],
         alignment = ft.MainAxisAlignment.CENTER,
         horizontal_alignment= ft.CrossAxisAlignment.CENTER,))
     
