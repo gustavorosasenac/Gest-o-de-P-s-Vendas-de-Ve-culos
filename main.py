@@ -91,11 +91,11 @@ def menu_cadastros(page: ft.Page):
         
     def alterar_cadastro_veiculo(e):
         page.clean()
-        pass
+        alterar_cadastro(page)
         
     def excluir_cadastro_veiculo(e):
         page.clean()
-        pass
+        excluir_veiculo(page)
 
     titulo = ft.Text("Cadastros", size=40, weight=ft.FontWeight.BOLD, color="white")
 
@@ -300,7 +300,12 @@ def listar_veiculos(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    
+    botao_voltar = ft.ElevatedButton(
+        text="Voltar ao Menu",
+        icon=ft.Icons.ARROW_BACK,
+        on_click=lambda e: voltar_menu(e),
+        width=400
+    )
     def voltar_menu(e):
         page.clean()
         menu_cadastros(page)
@@ -308,7 +313,15 @@ def listar_veiculos(page: ft.Page):
     veiculos = session.query(Veiculos).all()
     
     if not veiculos:
-        page.add(ft.Text("Nenhum veículo cadastrado.", size=20, color="red"))
+        page.add(ft.Text("Nenhum veículo cadastrado.", size=20, color="red"),
+        ft.Column([
+            ft.ElevatedButton(
+                text="Voltar",
+                icon=ft.Icons.ARROW_BACK,
+                on_click=voltar_menu)
+        ],
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER))
         return
     
     lista_veiculos = ft.ListView(
@@ -322,14 +335,77 @@ def listar_veiculos(page: ft.Page):
         padding=10,
         spacing=10,
         auto_scroll=True,
-        expand=True
-    )
+        expand=True,)
     
-    page.clean()
     page.add(
         ft.Column([
             ft.Text("Veículos Cadastrados", size=24, weight=ft.FontWeight.BOLD),
-            lista_veiculos,
+        botao_voltar, lista_veiculos ],
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER))
+
+def alterar_cadastro(page: ft.Page):
+    page.title = "Alterar Cadastro de Veículo"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    
+    
+    def voltar_menu(e):
+        page.clean()
+        menu_cadastros(page)
+    def voltar_cadastro(e):
+        page.clean()
+        alterar_cadastro(page)
+
+    def alterar_veiculo(e):
+        page.clean()
+        buscar_veiculo(page)
+    id_veiculo = ft.TextField(label="ID do Veículo", width=400)
+    fabricante = ft.TextField(label="Fabricante", width=400)
+    modelo = ft.TextField(label="Modelo", width=400)
+    ano = ft.TextField(label="Ano", width=400)
+    motorizacao = ft.TextField(label="Motorização", width=400)
+    cambio = ft.TextField(label="Câmbio", width=400)
+    def buscar_veiculo(e):
+        if not id_veiculo.value.isdigit():
+            page.add(ft.Text("ID deve ser um número inteiro", color="red"),
+            ft.ElevatedButton(
+            text="Voltar ao Menu",
+            icon=ft.Icons.ARROW_BACK,
+            on_click=lambda e: voltar_cadastro(e),
+            width=400))
+            return
+        
+        veiculo = session.query(Veiculos).filter(Veiculos.id == int(id_veiculo.value)).first()
+        
+        if veiculo:
+            fabricante.value = veiculo.fabricante
+            modelo.value = veiculo.modelo
+            ano.value = str(veiculo.ano)
+            motorizacao.value = veiculo.motorizacao
+            cambio.value = veiculo.cambio
+            page.add(ft.Text("Veiculo alterado com sucesso", color="green"),
+                    ft.ElevatedButton(
+                    text = "Voltar",
+                    icon=ft.Icons.ARROW_BACK,
+                    on_click=voltar_menu)
+                    )
+        else:
+            page.add(ft.Text("Veículo não encontrado.", color="red"),
+            ft.ElevatedButton(
+                text="Voltar", 
+                icon=ft.Icons.ARROW_BACK,
+                on_click=voltar_menu))
+
+    page.add(
+        ft.Column([
+            ft.Text("Alterar Veiculo", size=24, weight=ft.FontWeight.BOLD),
+            id_veiculo, fabricante, modelo, ano, motorizacao, cambio,
+            ft.ElevatedButton(
+                text="Alterar Veículo",
+                icon=ft.Icons.DELETE,
+                on_click=alterar_veiculo),
             ft.ElevatedButton(
                 text="Voltar",
                 icon=ft.Icons.ARROW_BACK,
@@ -339,7 +415,53 @@ def listar_veiculos(page: ft.Page):
         horizontal_alignment=ft.CrossAxisAlignment.CENTER)
     )
 
+ 
+def excluir_veiculo(page: ft.Page):
+    page.title = "Excluir Veículo"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     
+    def voltar_menu(e):
+        page.clean()
+        menu_cadastros(page)
+    
+    id_veiculo = ft.TextField(label="ID do Veículo", width=400)
+    
+    def excluir_veiculo(e):
+        if not id_veiculo.value.isdigit():
+            page.add(ft.Text("ID deve ser um número inteiro", color="red"))
+            return
+        
+        veiculo = session.query(Veiculos).filter(Veiculos.id == int(id_veiculo.value)).first()
+        
+        if veiculo:
+            session.delete(veiculo)
+            session.commit()
+            page.add(ft.Text("Veículo excluído com sucesso!", color="green"))
+        else:
+            page.add(ft.Text("Veículo não encontrado.", color="red"))
+        
+        id_veiculo.value = ""
+        page.update()
+    
+    page.clean()
+    page.add(
+        ft.Column([
+            ft.Text("Excluir Veículo", size=24, weight=ft.FontWeight.BOLD),
+            id_veiculo,
+            ft.ElevatedButton(
+                text="Excluir Veículo",
+                icon=ft.Icons.DELETE,
+                on_click=excluir_veiculo),
+            ft.ElevatedButton(
+                text="Voltar",
+                icon=ft.Icons.ARROW_BACK,
+                on_click=voltar_menu)
+        ],
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+    )
 
 if __name__ == "__main__":
     ft.app(target=main)
