@@ -9,4 +9,3 @@ class Veiculos(Base):
     ano = Column(Integer, nullable=False)
     motorizacao = Column(String(100), nullable=False)
     cambio = Column(String(100), nullable=False)
-    km = Column(Float, nullable=False)
