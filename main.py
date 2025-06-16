@@ -208,52 +208,65 @@ def cadastros_de_veiculo(page: ft.Page):
     motorizacao = ft.TextField(label="Motorização", width=400)
     cambio = ft.TextField(label="Câmbio", width=400)
     
-    dlg_erro_campos = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red"),
-        content=ft.Text("Preencha todos os campos!", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de erro fechado"))
+    dlg_erros = ft.AlertDialog(
+        title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
+        content=ft.Text("", color="red", size=20),
+        on_dismiss=lambda e: print("Dialogo de erro fechado"),
+        alignment=ft.alignment.center,
+        title_padding = ft.padding.all(25))
     
     dlg_sucesso = ft.AlertDialog(
-        title=ft.Text("Sucesso!", color="green"),
+        title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
         content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
-        on_dismiss=lambda e: voltar_menu(e))
+        on_dismiss=lambda e: voltar_menu(e),
+        alignment=ft.alignment.center,
+        title_padding = ft.padding.all(25))
     
     dlg_ja_cadastrado = ft.AlertDialog(
         title=ft.Text("Erro!", color="red"),
         content=ft.Text("Veículo já cadastrado", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de veículo existente fechado"))
+        on_dismiss=lambda e: print("Dialogo de veículo existente fechado"),
+        alignment=ft.alignment.center,
+        title_padding = ft.padding.all(25))
 
     def cadastrar_veiculo(e):
         if not all([fabricante.value, modelo.value, ano.value, motorizacao.value, cambio.value]):
-            dlg_erro_campos.content = ft.Text("Preencha todos os campos!", color="red", size=20)
-            page.dialog = dlg_erro_campos
-            dlg_erro_campos.open = True
-        elif not ano.value.isdigit():
-            dlg_erro_campos.content = ft.Text("Ano deve ser um número inteiro", color="red", size=20)
-            page.dialog = dlg_erro_campos
-            dlg_erro_campos.open = True
-        else: 
-            verificar_cadastro = session.query(Veiculos).filter(
-                Veiculos.fabricante == fabricante.value,
-                Veiculos.modelo == modelo.value,
-                Veiculos.ano == int(ano.value)
+            print("Algum campo está vazio")
+            dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        if not ano.value.isdigit():
+            dlg_erros.content = ft.Text("Ano deve ser um número inteiro", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+         
+        verificar_cadastro = session.query(Veiculos).filter(
+            Veiculos.fabricante == fabricante.value,
+            Veiculos.modelo == modelo.value,
+            Veiculos.ano == int(ano.value),
+            Veiculos.motorizacao == motorizacao.value,
             ).first()
             
-            if verificar_cadastro:
-                page.dialog = dlg_ja_cadastrado
-                dlg_ja_cadastrado.open = True
-            else:
-                novo_veiculo = Veiculos(
-                    fabricante=fabricante.value,
-                    modelo=modelo.value,
-                    ano=int(ano.value),
-                    motorizacao=motorizacao.value,
-                    cambio=cambio.value)
+        if verificar_cadastro:
+            dlg_ja_cadastrado.content = ft.Text("Veículo já cadastrado", color="red", size=20)
+            page.open(dlg_ja_cadastrado)
+            dlg_ja_cadastrado.open = True
+        else:
+            novo_veiculo = Veiculos(
+                fabricante=fabricante.value,
+                modelo=modelo.value,
+                ano=int(ano.value),
+                motorizacao=motorizacao.value,
+                cambio=cambio.value)
                 
-                session.add(novo_veiculo)
-                session.commit()
-                page.dialog = dlg_sucesso
-                dlg_sucesso.open = True
+            session.add(novo_veiculo)
+            session.commit()
+
+            dlg_sucesso.content = ft.Text("Veículo cadastrado com sucesso!", color="green", size=20)
+            page.open(dlg_sucesso)
+            dlg_sucesso.open = True
         
         page.update()
 
@@ -301,12 +314,15 @@ def listar_veiculos(page: ft.Page):
     lista_veiculos = ft.ListView(
         controls=[
             ft.ListTile(
-                title=ft.Text(f"{v.fabricante} {v.modelo} ({v.ano}) - {v.motorizacao} - {v.cambio}")
+                title=ft.Text(f"ID: {v.id} Fabricante: {v.fabricante} Modelo: {v.modelo} Ano: {v.ano} Motor: {v.motorizacao} Cambio: {v.cambio}")
             ) for v in veiculos
         ],
-        width=600,
-        height=400,
-        padding=10
+        width=1200,
+        height=800,
+        padding=10,
+        spacing=10,
+        auto_scroll=True,
+        expand=True
     )
     
     page.clean()
