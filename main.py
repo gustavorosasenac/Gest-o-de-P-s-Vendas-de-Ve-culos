@@ -198,6 +198,11 @@ def menu_consultas(page: ft.Page):
     )
 
 def cadastros_de_veiculo(page: ft.Page):
+    page.title = "Tela de cadastros"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
     def voltar_menu(e):
         page.clean()
         menu_cadastros(page)
@@ -270,7 +275,6 @@ def cadastros_de_veiculo(page: ft.Page):
         
         page.update()
 
-    page.title = "Tela de Cadastros"
     page.clean()
     page.add(
         ft.Column([
@@ -349,14 +353,10 @@ def alterar_cadastro(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    
+
     def voltar_menu(e):
         page.clean()
         menu_cadastros(page)
-
-    def voltar_cadastro(e):
-        page.clean()
-        alterar_cadastro(page)
 
     def alterar_veiculo(e):
         page.clean()
@@ -368,6 +368,7 @@ def alterar_cadastro(page: ft.Page):
     ano = ft.TextField(label="Ano", width=400)
     motorizacao = ft.TextField(label="Motorização", width=400)
     cambio = ft.TextField(label="Câmbio", width=400)
+
     dlg_erros = ft.AlertDialog(
         title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
         content=ft.Text("", color="red", size=20),
@@ -433,7 +434,8 @@ def alterar_cadastro(page: ft.Page):
                     icon=ft.Icons.ARROW_BACK,
                     on_click=voltar_menu)
                     )
-            
+            page.update()
+    page.clean()        
     page.add(
         ft.Column([
             ft.Text("Alterar Veiculo", size=24, weight=ft.FontWeight.BOLD),
