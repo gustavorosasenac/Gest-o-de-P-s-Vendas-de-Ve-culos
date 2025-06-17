@@ -447,7 +447,6 @@ def alterar_cadastro(page: ft.Page):
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER)
     )
-
  
 def excluir_veiculo(page: ft.Page):
     page.title = "Excluir Veículo"
@@ -458,12 +457,35 @@ def excluir_veiculo(page: ft.Page):
     def voltar_menu(e):
         page.clean()
         menu_cadastros(page)
+
+    dlg_erros = ft.AlertDialog(
+        title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
+        content=ft.Text("", color="red", size=20),
+        on_dismiss=lambda e: print("Dialogo de erro fechado"),
+        alignment=ft.alignment.center,
+        title_padding = ft.padding.all(25))
+    
+    dlg_sucesso = ft.AlertDialog(
+        title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
+        content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
+        on_dismiss=lambda e: voltar_menu(e),
+        alignment=ft.alignment.center,
+        title_padding = ft.padding.all(25))
+    
+    dlg_ja_cadastrado = ft.AlertDialog(
+        title=ft.Text("Erro!", color="red"),
+        content=ft.Text("Veículo já cadastrado", color="red", size=20),
+        on_dismiss=lambda e: print("Dialogo de veículo existente fechado"),
+        alignment=ft.alignment.center,
+        title_padding = ft.padding.all(25))
     
     id_veiculo = ft.TextField(label="ID do Veículo", width=400)
     
     def excluir_veiculo(e):
         if not id_veiculo.value.isdigit():
-            page.add(ft.Text("ID deve ser um número inteiro", color="red"))
+            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
             return
         
         veiculo = session.query(Veiculos).filter(Veiculos.id == int(id_veiculo.value)).first()
@@ -471,10 +493,14 @@ def excluir_veiculo(page: ft.Page):
         if veiculo:
             session.delete(veiculo)
             session.commit()
-            page.add(ft.Text("Veículo excluído com sucesso!", color="green"))
+            dlg_sucesso.content = ft.Text("Veículo excluído com sucesso!", color="green", size=20)
+            page.open(dlg_sucesso)
+            dlg_sucesso.open = True
         else:
-            page.add(ft.Text("Veículo não encontrado.", color="red"))
-        
+            dlg_erros.content = ft.Text("Veículo não encontrado.", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+
         id_veiculo.value = ""
         page.update()
     
