@@ -1,6 +1,7 @@
 import flet as ft
 from DB import session, Base, engine
 from veiculos import Veiculos
+from vendas import Vendas
 
 Base.metadata.create_all(engine)
 
@@ -12,20 +13,20 @@ def menu_principal(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
 
     def fechar_app(e):
-        session.close()
         page.clean()
+        page.update()
         page.vertical_alignment = ft.MainAxisAlignment.CENTER
         page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
         page.add(ft.Text("Aplicação fechada."))
-        page.update()
+        session.close()
         
     def mostrar_cadastros(e):
         page.clean()
         menu_cadastros(page)
 
-    def mostrar_consultas(e):
+    def mostrar_vendas(e):
         page.clean()
-        menu_consultas(page)
+        menu_vendas(page)
 
     titulo = ft.Text("🚘 Sistema de Veículos", size=40, weight=ft.FontWeight.BOLD, color="white")
 
@@ -34,13 +35,13 @@ def menu_principal(page: ft.Page):
         icon=ft.Icons.ASSIGNMENT,
         width=400,
         on_click=mostrar_cadastros)
-    
-    botao_consultas = ft.ElevatedButton(
-        text="Consultas",
-        icon=ft.Icons.SEARCH,
+
+    botao_vendas = ft.ElevatedButton(
+        text="Vendas",
+        icon=ft.Icons.SHOP,
         width=400,
-        on_click=mostrar_consultas)
-    
+        on_click=mostrar_vendas)
+
     botao_fechar_app = ft.ElevatedButton(
         text="Fechar Aplicação",
         icon=ft.Icons.CLOSE,
@@ -48,7 +49,7 @@ def menu_principal(page: ft.Page):
         on_click=fechar_app)
         
     conteudo = ft.Column(
-        [titulo, botao_cadastros, botao_consultas, botao_fechar_app],
+        [titulo, botao_cadastros, botao_vendas, botao_fechar_app],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER)
     
@@ -153,17 +154,53 @@ def menu_cadastros(page: ft.Page):
         )
     )
 
-def menu_consultas(page: ft.Page):
-    page.title = "Menu de Consultas"
+def menu_vendas(page: ft.Page):
+    page.title = "Menu de Vendas"
     page.theme_mode = ft.ThemeMode.DARK
     
     def voltar_menu(e):
         page.clean()
         menu_principal(page)
-        
-    titulo = ft.Text("Cadastros", size=40, weight=ft.FontWeight.BOLD, color="white")
+
+    def cadastrar(e):
+        page.clean()
+        cadastrar_venda(page)
+
+    def listar(e):
+        page.clean()
+        listar_vendas(page)
+
+    def alterar(e):
+        page.clean()
+        alterar_venda(page)
+
+    def excluir(e):
+        page.clean()
+        excluir_venda(page)
+
+    titulo = ft.Text("Vendas", size=40, weight=ft.FontWeight.BOLD, color="white")
 
     botoes = [
+        ft.ElevatedButton(
+            text="Cadastrar Venda",
+            icon=ft.Icons.ADD,
+            width=400,
+            on_click=cadastrar),
+        ft.ElevatedButton(
+            text="Mostrar Vendas",
+            icon=ft.Icons.LIST,
+            width=400,
+            on_click=listar),
+        ft.ElevatedButton(
+            text="Alterar Venda",
+            icon=ft.Icons.EDIT,
+            width=400,
+            on_click=alterar),
+        ft.ElevatedButton(
+            text="Excluir Venda",
+            icon=ft.Icons.DELETE,
+            width=400,
+            on_click=excluir),
         ft.ElevatedButton(
             text="Voltar ao Menu Principal",
             icon=ft.Icons.ARROW_BACK,
@@ -521,6 +558,98 @@ def excluir_veiculo(page: ft.Page):
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER)
     )
+
+def cadastrar_venda(page: ft.Page):
+    page.title = "Cadastrar Venda"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    
+    def voltar_menu(e):
+        page.clean()
+        menu_vendas(page)
+        page.update()
+
+    page.clean()
+    page.add(
+        ft.Column([
+            ft.Text("Cadastrar Venda", size=50, weight=ft.FontWeight.BOLD, color="white"),
+            ft.ElevatedButton(
+                text="Voltar ao Menu",
+                icon=ft.Icons.ARROW_BACK,
+                width=400,
+                on_click=voltar_menu)
+        ],
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+    )
+    
+def listar_vendas(page: ft.Page):
+    page.title = "Listar Vendas"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    
+    def voltar_menu(e):
+        page.clean()
+        menu_vendas(page)
+    
+    page.add(
+        ft.Column([
+            ft.Text("Listar Vendas", size=24, weight=ft.FontWeight.BOLD),
+            ft.ElevatedButton(
+                text="Voltar",
+                icon=ft.Icons.ARROW_BACK,
+                on_click=voltar_menu)
+        ],
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+    )
+
+def alterar_venda(page: ft.Page):
+    page.title = "Alterar Venda"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    
+    def voltar_menu(e):
+        page.clean()
+        menu_vendas(page)
+    
+    page.add(
+        ft.Column([
+            ft.Text("Alterar Venda", size=24, weight=ft.FontWeight.BOLD),
+            ft.ElevatedButton(
+                text="Voltar",
+                icon=ft.Icons.ARROW_BACK,
+                on_click=voltar_menu)
+        ],
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+    )
+
+def excluir_venda(page: ft.Page):
+    page.title = "Excluir Venda"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    
+    def voltar_menu(e):
+        page.clean()
+        menu_vendas(page)
+    
+    page.add(
+        ft.Column([
+            ft.Text("Excluir Venda", size=24, weight=ft.FontWeight.BOLD),
+            ft.ElevatedButton(
+                text="Voltar",
+                icon=ft.Icons.ARROW_BACK,
+                on_click=voltar_menu)
+        ],
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+    )
+
 
 if __name__ == "__main__":
     ft.app(target=main)
