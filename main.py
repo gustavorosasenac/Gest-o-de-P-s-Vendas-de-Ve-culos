@@ -357,10 +357,6 @@ def alterar_cadastro(page: ft.Page):
     def voltar_menu(e):
         page.clean()
         menu_cadastros(page)
-
-    def alterar_veiculo(e):
-        page.clean()
-        buscar_veiculo(page)
         
     id_veiculo = ft.TextField(label="ID do Veículo", width=400)
     fabricante = ft.TextField(label="Fabricante", width=400)
@@ -406,7 +402,7 @@ def alterar_cadastro(page: ft.Page):
             return
         
         if not id_veiculo.value.isdigit():
-            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red"),
+            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
@@ -427,14 +423,13 @@ def alterar_cadastro(page: ft.Page):
             veiculo.motorizacao = motorizacao.value
             veiculo.cambio = cambio.value
             session.commit()
-            
-            page.add(ft.Text("Veiculo alterado com sucesso", color="green"),
-                    ft.ElevatedButton(
-                    text = "Voltar",
-                    icon=ft.Icons.ARROW_BACK,
-                    on_click=voltar_menu)
-                    )
-            page.update()
+
+            dlg_sucesso.content = ft.Text("Veiculo cadastrado com sucesso!", color="green", size=20)
+            page.open(dlg_sucesso)
+            dlg_erros.open = True
+            return
+        page.update()
+
     page.clean()        
     page.add(
         ft.Column([
@@ -443,7 +438,7 @@ def alterar_cadastro(page: ft.Page):
             ft.ElevatedButton(
                 text="Alterar Veículo",
                 icon=ft.Icons.ADD,
-                on_click=alterar_veiculo),
+                on_click=buscar_veiculo),
             ft.ElevatedButton(
                 text="Voltar",
                 icon=ft.Icons.ARROW_BACK,
@@ -506,7 +501,7 @@ if __name__ == "__main__":
 
 
 
-def procurar_veiculo(page: ft.Page):
+'''def procurar_veiculo(page: ft.Page):
     page.title = "Catálogo de Veículos"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -607,7 +602,7 @@ def procurar_veiculo(page: ft.Page):
         alignment=ft.MainAxisAlignment.CENTER)
     )
     
-    carregar_marcas()
+    carregar_marcas()'''
 
 
 
