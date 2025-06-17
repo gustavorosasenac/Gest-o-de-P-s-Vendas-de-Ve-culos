@@ -350,10 +350,10 @@ def alterar_cadastro(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     
-    
     def voltar_menu(e):
         page.clean()
         menu_cadastros(page)
+
     def voltar_cadastro(e):
         page.clean()
         alterar_cadastro(page)
@@ -361,50 +361,86 @@ def alterar_cadastro(page: ft.Page):
     def alterar_veiculo(e):
         page.clean()
         buscar_veiculo(page)
+        
     id_veiculo = ft.TextField(label="ID do Veículo", width=400)
     fabricante = ft.TextField(label="Fabricante", width=400)
     modelo = ft.TextField(label="Modelo", width=400)
     ano = ft.TextField(label="Ano", width=400)
     motorizacao = ft.TextField(label="Motorização", width=400)
     cambio = ft.TextField(label="Câmbio", width=400)
+    dlg_erros = ft.AlertDialog(
+        title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
+        content=ft.Text("", color="red", size=20),
+        on_dismiss=lambda e: print("Dialogo de erro fechado"),
+        alignment=ft.alignment.center,
+        title_padding = ft.padding.all(25))
+    
+    dlg_sucesso = ft.AlertDialog(
+        title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
+        content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
+        on_dismiss=lambda e: voltar_menu(e),
+        alignment=ft.alignment.center,
+        title_padding = ft.padding.all(25))
+    
+    dlg_ja_cadastrado = ft.AlertDialog(
+        title=ft.Text("Erro!", color="red"),
+        content=ft.Text("Veículo já cadastrado", color="red", size=20),
+        on_dismiss=lambda e: print("Dialogo de veículo existente fechado"),
+        alignment=ft.alignment.center,
+        title_padding = ft.padding.all(25))
+
     def buscar_veiculo(e):
+
+        if not all([id_veiculo, fabricante.value, modelo.value, ano.value, motorizacao.value, cambio.value]):
+            print("Algum campo está vazio")
+            dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
+        if not ano.value.isdigit():
+            dlg_erros.content = ft.Text("Ano deve ser um número inteiro", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
         if not id_veiculo.value.isdigit():
-            page.add(ft.Text("ID deve ser um número inteiro", color="red"),
-            ft.ElevatedButton(
-            text="Voltar ao Menu",
-            icon=ft.Icons.ARROW_BACK,
-            on_click=lambda e: voltar_cadastro(e),
-            width=400))
+            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red"),
+            page.open(dlg_erros)
+            dlg_erros.open = True
             return
         
         veiculo = session.query(Veiculos).filter(Veiculos.id == int(id_veiculo.value)).first()
         
-        if veiculo:
-            fabricante.value = veiculo.fabricante
-            modelo.value = veiculo.modelo
-            ano.value = str(veiculo.ano)
-            motorizacao.value = veiculo.motorizacao
-            cambio.value = veiculo.cambio
+        if not veiculo:
+            page.add(ft.Text("Veículo não encontrado.", color="red"),
+            ft.ElevatedButton(
+                text="Voltar", 
+                icon=ft.Icons.ARROW_BACK,
+                on_click=voltar_menu))
+            
+        else:
+            veiculo.fabricante = fabricante.value
+            veiculo.modelo = modelo.value
+            veiculo.ano = ano.value
+            veiculo.motorizacao = motorizacao.value
+            veiculo.cambio = cambio.value
+            session.commit()
+            
             page.add(ft.Text("Veiculo alterado com sucesso", color="green"),
                     ft.ElevatedButton(
                     text = "Voltar",
                     icon=ft.Icons.ARROW_BACK,
                     on_click=voltar_menu)
                     )
-        else:
-            page.add(ft.Text("Veículo não encontrado.", color="red"),
-            ft.ElevatedButton(
-                text="Voltar", 
-                icon=ft.Icons.ARROW_BACK,
-                on_click=voltar_menu))
-
+            
     page.add(
         ft.Column([
             ft.Text("Alterar Veiculo", size=24, weight=ft.FontWeight.BOLD),
             id_veiculo, fabricante, modelo, ano, motorizacao, cambio,
             ft.ElevatedButton(
                 text="Alterar Veículo",
-                icon=ft.Icons.DELETE,
+                icon=ft.Icons.ADD,
                 on_click=alterar_veiculo),
             ft.ElevatedButton(
                 text="Voltar",
