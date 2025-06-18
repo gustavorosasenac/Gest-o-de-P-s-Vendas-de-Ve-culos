@@ -2,6 +2,10 @@
 Inteligência de manutenção corretiva e preventiva
 
 
-Interface grafico sera usada "flet" (pip install flet)
+Interface grafico sera usada "flet"
+
+Bibliotecas necessarias: pip install flet, mysql, pymysql, sqlachemy, crytography
+
+
 
 
