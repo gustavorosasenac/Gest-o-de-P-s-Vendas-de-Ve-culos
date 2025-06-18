@@ -820,7 +820,7 @@ def excluir_venda(page: ft.Page):
             dlg_erros.content = ft.Text("Venda não encontrada.", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
-            
+
     page.clean()
     page.add(
         ft.Column([
@@ -836,8 +836,6 @@ def excluir_venda(page: ft.Page):
                 on_click=voltar_menu)],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER))
-
-
 
 
 
