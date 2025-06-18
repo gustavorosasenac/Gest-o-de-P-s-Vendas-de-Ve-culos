@@ -1,4 +1,4 @@
-from DB import Base
+from DB.DB import Base
 from sqlalchemy import Column, Integer, String, Date
 
 class Vendas(Base):
