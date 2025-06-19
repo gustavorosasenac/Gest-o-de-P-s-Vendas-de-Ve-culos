@@ -1,7 +1,7 @@
 import flet as ft
 from DB.DB import session, Base, engine
-from Models.veiculos import Veiculos
-from Models.vendas import Vendas
+from Models.table_veiculos import Veiculos
+from Models.table_vendas import Vendas
 
 Base.metadata.create_all(engine)
 
