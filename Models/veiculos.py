@@ -2,9 +2,6 @@ import flet as ft
 from DB.DB import session
 from Models.table_veiculos import Veiculos
 
-
-
-
 def cadastros_de_veiculo(page: ft.Page):
     page.title = "Tela de cadastros"
     page.theme_mode = ft.ThemeMode.DARK
