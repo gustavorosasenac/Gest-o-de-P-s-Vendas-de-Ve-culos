@@ -1,5 +1,6 @@
 import flet as ft
 from Models.veiculos import cadastros_de_veiculo, listar_veiculos, alterar_cadastro, excluir_veiculo
+from Models.vendas import cadastrar, listar_vendas, alterar_venda, excluir_venda
 
 def menu_cadastros(page: ft.Page):
     page.title = "Menu de Cadastros"

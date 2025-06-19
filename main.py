@@ -115,9 +115,3 @@ if __name__ == "__main__":
     )
     
     carregar_marcas()'''
-
-
-
-
-
-
