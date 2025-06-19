@@ -1,5 +1,6 @@
 import flet as ft
 from DB.DB import session
+from Models.table_vendas import Vendas
 
 def cadastrar_venda(page: ft.Page):
     page.title = "Cadastrar Venda"
@@ -9,8 +10,8 @@ def cadastrar_venda(page: ft.Page):
     
     def voltar_menu(e):
         page.clean()
-        menu_vendas(page)
-        page.update()
+        from Models.visual import MenuVendas
+        MenuVendas.menu_vendas(page)
 
     dlg_erros = ft.AlertDialog(
         title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
@@ -97,7 +98,9 @@ def listar_vendas(page: ft.Page):
     
     def voltar_menu(e):
         page.clean()
-        menu_vendas(page)
+        from Models.visual import MenuVendas
+        MenuVendas.menu_vendas(page)
+
     vendas = session.query(Vendas).all()
     if not vendas:
         page.add(ft.Text("Nenhuma venda cadastrada.", size=20, color="red"),
@@ -138,7 +141,8 @@ def alterar_venda(page: ft.Page):
     
     def voltar_menu(e):
         page.clean()
-        menu_vendas(page)
+        from Models.visual import MenuVendas
+        MenuVendas.menu_vendas(page)
 
     id_venda = ft.TextField(label="ID da Venda", width=400)
     data_venda = ft.TextField(label="Data da Venda (YYYY-MM-DD)", width=400)
@@ -228,7 +232,9 @@ def excluir_venda(page: ft.Page):
     
     def voltar_menu(e):
         page.clean()
-        menu_vendas(page)
+        from Models.visual import MenuVendas
+        MenuVendas.menu_vendas(page)
+
     dlg_erros = ft.AlertDialog(
         title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
         content=ft.Text("", color="red", size=20),

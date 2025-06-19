@@ -9,9 +9,10 @@ def cadastros_de_veiculo(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     def voltar_menu(e):
+        from Models.visual import MenuCarros
         page.clean()
-        menu_cadastros(page)
-    
+        MenuCarros.menu_cadastros(page)
+
     fabricante = ft.TextField(label="Fabricante", width=400)
     modelo = ft.TextField(label="Modelo", width=400)    
     ano = ft.TextField(label="Ano  (YYYY-MM-DD)", width=400)
@@ -115,8 +116,9 @@ def listar_veiculos(page: ft.Page):
         width=400
     )
     def voltar_menu(e):
+        from Models.visual import MenuCarros
         page.clean()
-        menu_cadastros(page)
+        MenuCarros.menu_cadastros(page)
     
     veiculos = session.query(Veiculos).all()
     
@@ -159,8 +161,9 @@ def alterar_cadastro(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     def voltar_menu(e):
+        from Models.visual import MenuCarros
         page.clean()
-        menu_cadastros(page)
+        MenuCarros.menu_cadastros(page)
         
     id_veiculo = ft.TextField(label="ID do Veículo", width=400)
     fabricante = ft.TextField(label="Fabricante", width=400)
@@ -259,8 +262,9 @@ def excluir_veiculo(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     
     def voltar_menu(e):
+        from Models.visual import MenuCarros
         page.clean()
-        menu_cadastros(page)
+        MenuCarros.menu_cadastros(page)
 
     dlg_erros = ft.AlertDialog(
         title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
