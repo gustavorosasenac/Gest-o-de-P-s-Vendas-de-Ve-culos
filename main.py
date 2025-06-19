@@ -1,18 +1,18 @@
 import flet as ft
 from DB.DB import Base, engine
 from Models.visual import Menu_principal
-
+#cria o BD
 Base.metadata.create_all(engine)
-
+#Chama o menu principal
 def main(page: ft.Page):
     Menu_principal(page)
-
+#Inicia a aplicação chamando o main
 if __name__ == "__main__":
     ft.app(target=main)
 
 
 
-
+#função pronta mas sem uso até o momento
 '''def procurar_veiculo(page: ft.Page):
     page.title = "Catálogo de Veículos"
     page.theme_mode = ft.ThemeMode.LIGHT
@@ -115,4 +115,3 @@ if __name__ == "__main__":
     )
     
     carregar_marcas()'''
-    
