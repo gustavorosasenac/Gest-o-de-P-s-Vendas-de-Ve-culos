@@ -1,6 +1,7 @@
 import flet as ft
 from DB.DB import session
 from Models.table_vendas import Vendas
+from datetime import datetime
 
 def cadastrar_venda(page: ft.Page):
     page.title = "Cadastrar Venda"
@@ -16,37 +17,35 @@ def cadastrar_venda(page: ft.Page):
     dlg_erros = ft.AlertDialog(
         title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
         content=ft.Text("", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de erro fechado"),
         alignment=ft.alignment.center,
         title_padding = ft.padding.all(25))
     
     dlg_sucesso = ft.AlertDialog(
         title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
         content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
-        on_dismiss=lambda e: voltar_menu(e),
         alignment=ft.alignment.center,
         title_padding = ft.padding.all(25))
     
     dlg_ja_cadastrado = ft.AlertDialog(
         title=ft.Text("Erro!", color="red"),
         content=ft.Text("Veículo já cadastrado", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de veículo existente fechado"),
         alignment=ft.alignment.center,
         title_padding = ft.padding.all(25))
     
-    data_venda = ft.TextField(label="Data da Venda (YYYY-MM-DD)", width=400)
+    data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
     comprador = ft.TextField(label="Comprador", width=400)
     valor = ft.TextField(label="Valor da Venda", width=400)
 
     def cadastrar_venda(e):
         if not all([data_venda.value, comprador.value, valor.value]):
-            print("Algum campo está vazio")
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
+        data_str = data_venda.value
+        data_formatada = datetime.strptime(data_str, "%d-%m-%Y").date()
         verificar_cadastro = session.query(Vendas).filter(
-            Vendas.data_venda == data_venda.value,
+            Vendas.data_venda == data_formatada,
             Vendas.comprador == comprador.value,
             Vendas.valor == valor.value).first()
         if verificar_cadastro:
@@ -56,7 +55,7 @@ def cadastrar_venda(page: ft.Page):
             return
         else:
             nova_venda = Vendas(
-                data_venda=data_venda.value,
+                data_venda=data_formatada,
                 comprador=comprador.value,
                 valor=valor.value)
 
@@ -145,7 +144,7 @@ def alterar_venda(page: ft.Page):
         MenuVendas.menu_vendas(page)
 
     id_venda = ft.TextField(label="ID da Venda", width=400)
-    data_venda = ft.TextField(label="Data da Venda (YYYY-MM-DD)", width=400)
+    data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
     comprador = ft.TextField(label="Comprador", width=400)
     valor = ft.TextField(label="Valor da Venda", width=400)
 
@@ -181,20 +180,16 @@ def alterar_venda(page: ft.Page):
             page.open(dlg_erros)
             dlg_erros.open = True
             return
-        if not data_venda.value or len(data_venda.value) != 10 or data_venda.value[4] != '-' or data_venda.value[7] != '-':
-            dlg_erros.content = ft.Text("A data precisa ser (YYYY-MM-DD)", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
         
         venda = session.query(Vendas).filter(Vendas.id == int(id_venda.value)).first()
-        
+        data_str = data_venda.value
+        data_formatada = datetime.strptime(data_str, "%d-%m-%Y").date()
         if not venda:
             dlg_erros.content = ft.Text("Venda não encontrada.", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
         else:
-            venda.data_venda = data_venda.value
+            venda.data_venda = data_formatada
             venda.comprador = comprador.value
             venda.valor = valor.value
             session.commit()

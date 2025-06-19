@@ -15,7 +15,7 @@ def cadastros_de_veiculo(page: ft.Page):
 
     fabricante = ft.TextField(label="Fabricante", width=400)
     modelo = ft.TextField(label="Modelo", width=400)    
-    ano = ft.TextField(label="Ano  (YYYY-MM-DD)", width=400)
+    ano = ft.TextField(label="Ano", width=400)
     motorizacao = ft.TextField(label="Motorização", width=400)
     cambio = ft.TextField(label="Câmbio", width=400)
     
@@ -51,7 +51,7 @@ def cadastros_de_veiculo(page: ft.Page):
             page.open(dlg_erros)
             dlg_erros.open = True
             return
-         
+        
         verificar_cadastro = session.query(Veiculos).filter(
             Veiculos.fabricante == fabricante.value,
             Veiculos.modelo == modelo.value,
