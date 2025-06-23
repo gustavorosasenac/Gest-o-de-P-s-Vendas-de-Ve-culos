@@ -1,6 +1,6 @@
 import flet as ft
-from DB.DB import session
-from Models.table_vendas import Vendas
+from DB.Database import session
+from DB.Tables.table_vendas import Vendas
 from datetime import datetime
 
 def cadastrar_venda(page: ft.Page):

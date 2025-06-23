@@ -1,6 +1,6 @@
 import flet as ft
-from DB.DB import session
-from Models.table_veiculos import Veiculos
+from DB.Database import session
+from DB.Tables.table_veiculos import Veiculos
 #Inicia o cadastro de veiculos
 def cadastros_de_veiculo(page: ft.Page):
     page.title = "Tela de cadastros"

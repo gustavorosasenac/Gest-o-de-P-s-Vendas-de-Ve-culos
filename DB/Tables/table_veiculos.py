@@ -1,4 +1,4 @@
-from DB.DB import Base
+from DB.Database import Base
 from sqlalchemy import Column, Integer, String, Date, Float
 
 class Veiculos(Base):
