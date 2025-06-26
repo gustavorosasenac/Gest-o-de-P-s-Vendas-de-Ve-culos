@@ -1,18 +1,25 @@
 
 import flet as ft
 from DB.Database import session
+from DB.Tables.table_veiculos import Veiculos
 
-#inicializa o sistema de ocorrências
-def ocorrencia(page: ft.Page):
-    page.title = "Ocorrência de problemas"
+
+#inicializa o sistema de registro de ocorrências
+def registrar_ocorrencia(page: ft.Page):
+    page.title = "Registrar Ocorrência"
     page.theme_mode = ft.ThemeMode.DARK
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-        #Função do botão de voltar ao menu
+
+    titulo = ft.Text("Registrar Ocorrência", size=24, weight=ft.FontWeight.BOLD)
+
+#Função do botão de voltar ao menu
     def voltar_menu(e):
         from Models.visual import MenuPosvenda
         page.clean()
         MenuPosvenda.menu_pos(page)
+
+    veiculo
 
 
 
@@ -26,10 +33,9 @@ def ocorrencia(page: ft.Page):
 
 
     #função pronta mas sem uso até o momento
-'''def procurar_veiculo(page: ft.Page):
+def procurar_veiculo(page: ft.Page):
     page.title = "Catálogo de Veículos"
-    page.theme_mode = ft.ThemeMode.LIGHT
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.theme_mode = ft.ThemeMode.DARK
     
     titulo = ft.Text("Catálogo de Veículos", size=24, weight=ft.FontWeight.BOLD)
     
@@ -41,6 +47,7 @@ def ocorrencia(page: ft.Page):
     def carregar_marcas():
         dropdown_marca.options = []
         marcas = session.query(Veiculos.fabricante).distinct().all()
+
         for marca in marcas:
             dropdown_marca.options.append(ft.dropdown.Option(marca[0]))
         page.update()
@@ -107,8 +114,9 @@ def ocorrencia(page: ft.Page):
     dropdown_ano.on_change = atualizar_motores
     
     def voltar_menu(e):
+        from Models.visual import MenuPosvenda
         page.clean()
-        menu_cadastros(page)
+        MenuPosvenda.menu_pos(page)
     
     page.clean()
     page.add(
@@ -124,7 +132,8 @@ def ocorrencia(page: ft.Page):
                 on_click=voltar_menu)
         ],
         spacing=20,
-        alignment=ft.MainAxisAlignment.CENTER)
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER)
     )
     
-    carregar_marcas()'''
+    carregar_marcas()

@@ -2,7 +2,7 @@ import flet as ft
 from DB.Database import session
 from Models.veiculos import cadastros_de_veiculo, listar_veiculos, alterar_cadastro, excluir_veiculo
 from Models.vendas import cadastrar_venda, listar_vendas, alterar_venda, excluir_venda
-from Models.pos_venda import ocorrencia
+from Models.pos_venda import registrar_ocorrencia, procurar_veiculo
 
 
 
@@ -259,20 +259,21 @@ class MenuPosvenda:
             Menu_principal(page)
             
         def cadastrar_ocorrencia(e):
+            from Models.pos_venda import registrar_ocorrencia
             page.clean()
-            ocorrencia(page)
+            registrar_ocorrencia(page)
+
             
-        def veiculos_cadastrados(e):
+        def historico_problema_veiculo(e):
+            from Models.pos_venda import procurar_veiculo
             page.clean()
-            listar_veiculos(page)
+            procurar_veiculo(page)
             
         def alterar_cadastro_veiculo(e):
-            page.clean()
-            alterar_cadastro(page)
+            pass
             
         def excluir_cadastro_veiculo(e):
-            page.clean()
-            excluir_veiculo(page)
+            pass
 
         titulo = ft.Text("Cadastros", size=40, weight=ft.FontWeight.BOLD, color="white")
 
@@ -286,7 +287,7 @@ class MenuPosvenda:
                 text="Histórico de problemas por Veículo",
                 icon=ft.Icons.LIST,
                 width=400,
-                on_click=veiculos_cadastrados),
+                on_click=historico_problema_veiculo),
             ft.ElevatedButton(
                 text="Pesquisa de satisfação.",
                 icon=ft.Icons.EDIT,
