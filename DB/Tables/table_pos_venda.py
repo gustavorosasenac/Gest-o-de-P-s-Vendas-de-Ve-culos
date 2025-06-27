@@ -5,7 +5,7 @@ class Chamado(Base):
     __tablename__ = 'chamado'
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_venda_veiculo = Column(Integer, ForeignKey('vendas_veiculos.id'))
-    descricao = Column(String)
+    descricao = Column(String(500))
 
 class Diagnostico(Base):
     __tablename__ = 'diagnostico'

@@ -1,5 +1,6 @@
 from DB.Database import Base
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Boolean, Float
+
 
 class Vendas(Base):
     __tablename__ = "vendas"
@@ -18,4 +19,5 @@ class Feedback(Base):
     __tablename__ = 'feedback'
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_venda_veiculo = Column(Integer, ForeignKey('vendas_veiculos.id'))
-    comentario = Column(String, nullable=True)
+    comentario = Column(String(500), nullable=True)
+
