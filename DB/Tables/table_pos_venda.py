@@ -1,5 +1,5 @@
 from DB.Database import Base
-from sqlalchemy import Column, Integer, String, Date, Float, Boolean
+from sqlalchemy import Column, Integer, String, Date, Float, Boolean,ForeignKey
 
 class Chamado(Base):
     __tablename__ = 'chamado'
