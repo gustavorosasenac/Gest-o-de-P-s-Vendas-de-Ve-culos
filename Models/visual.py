@@ -1,9 +1,6 @@
 import flet as ft
 from DB.Database import session
 from Models.veiculos import cadastros_de_veiculo, listar_veiculos, alterar_cadastro, excluir_veiculo
-from Models.vendas import cadastrar_venda, listar_vendas, alterar_venda, excluir_venda
-from Models.pos_venda import registrar_ocorrencia, procurar_veiculo
-
 
 
 class Menu_principal:
@@ -11,6 +8,7 @@ class Menu_principal:
     def __init__(self, page: ft.Page):
         page.title = "Menu Principal"
         page.theme_mode = ft.ThemeMode.DARK
+        titulo = ft.Text("🚘 Sistema de Veículos", size=40, weight=ft.FontWeight.BOLD, color="white")
 
         def fechar_app(e):
             page.clean()
@@ -32,8 +30,6 @@ class Menu_principal:
             page.clean()
             MenuPosvenda.menu_pos(page)
 
-        titulo = ft.Text("🚘 Sistema de Veículos", size=40, weight=ft.FontWeight.BOLD, color="white")
-
         botao_cadastros = ft.ElevatedButton(
             text="Cadastros",
             icon=ft.Icons.ASSIGNMENT,
@@ -50,8 +46,7 @@ class Menu_principal:
             text = 'Pós-Vendas',
             icon = ft.Icons.SHOP,
             width = 400,
-            on_click =mostrar_pos_venda
-        )
+            on_click =mostrar_pos_venda)
 
         botao_fechar_app = ft.ElevatedButton(
             text="Fechar Aplicação",
@@ -89,6 +84,7 @@ class MenuCarros:
     def menu_cadastros(page: ft.Page):
         page.title = "Menu de Cadastros"
         page.theme_mode = ft.ThemeMode.DARK
+        titulo = ft.Text("Cadastros", size=40, weight=ft.FontWeight.BOLD, color="white")
         
         def voltar_menu(e):
             page.clean()
@@ -109,8 +105,6 @@ class MenuCarros:
         def excluir_cadastro_veiculo(e):
             page.clean()
             excluir_veiculo(page)
-
-        titulo = ft.Text("Cadastros", size=40, weight=ft.FontWeight.BOLD, color="white")
 
         botoes = [
             ft.ElevatedButton(
@@ -137,8 +131,7 @@ class MenuCarros:
                 text="Voltar ao Menu Principal",
                 icon=ft.Icons.ARROW_BACK,
                 width=400,
-                on_click=voltar_menu)
-        ]
+                on_click=voltar_menu)]
             
         conteudo = ft.Column(
             [titulo, *botoes],
@@ -163,10 +156,12 @@ class MenuCarros:
                     )
                 ],
                 expand=True))
+        
 class MenuVendas:
     def menu_vendas(page: ft.Page):
         page.title = "Menu de Vendas"
         page.theme_mode = ft.ThemeMode.DARK
+        titulo = ft.Text("Vendas", size=40, weight=ft.FontWeight.BOLD, color="white")
         
         def voltar_menu(e):
             page.clean()
@@ -189,10 +184,6 @@ class MenuVendas:
             page.clean()
             from Models.vendas import excluir_venda
             excluir_venda(page)
-
-
-
-        titulo = ft.Text("Vendas", size=40, weight=ft.FontWeight.BOLD, color="white")
 
         botoes = [
             ft.ElevatedButton(
@@ -253,6 +244,7 @@ class MenuPosvenda:
     def menu_pos(page: ft.Page):
         page.title = "Menu Pós Venda"
         page.theme_mode = ft.ThemeMode.DARK
+        titulo = ft.Text("Cadastros", size=40, weight=ft.FontWeight.BOLD, color="white")
         
         def voltar_menu(e):
             page.clean()
@@ -263,7 +255,6 @@ class MenuPosvenda:
             page.clean()
             registrar_ocorrencia(page)
 
-            
         def historico_problema_veiculo(e):
             from Models.pos_venda import procurar_veiculo
             page.clean()
@@ -274,8 +265,6 @@ class MenuPosvenda:
             
         def excluir_cadastro_veiculo(e):
             pass
-
-        titulo = ft.Text("Cadastros", size=40, weight=ft.FontWeight.BOLD, color="white")
 
         botoes = [
             ft.ElevatedButton(
