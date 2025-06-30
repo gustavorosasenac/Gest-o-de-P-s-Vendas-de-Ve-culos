@@ -151,7 +151,6 @@ def alterar_venda(page: ft.Page):
     dlg_erros = ft.AlertDialog(
         title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
         content=ft.Text("", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de erro fechado"),
         alignment=ft.alignment.center,
         title_padding = ft.padding.all(25))
     dlg_sucesso = ft.AlertDialog(
@@ -163,13 +162,11 @@ def alterar_venda(page: ft.Page):
     dlg_ja_cadastrado = ft.AlertDialog(
         title=ft.Text("Erro!", color="red"),
         content=ft.Text("Venda já cadastrada", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de venda existente fechado"),
         alignment=ft.alignment.center,
         title_padding = ft.padding.all(25)) 
 
     def buscar_venda(e):
         if not all([id_venda.value, data_venda.value, comprador.value, valor.value]):
-            print("Algum campo está vazio")
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
@@ -233,7 +230,6 @@ def excluir_venda(page: ft.Page):
     dlg_erros = ft.AlertDialog(
         title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
         content=ft.Text("", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de erro fechado"),
         alignment=ft.alignment.center,
         title_padding = ft.padding.all(25))
     dlg_sucesso = ft.AlertDialog(

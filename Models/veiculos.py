@@ -1,41 +1,46 @@
 import flet as ft
 from DB.Database import session
 from DB.Tables.table_veiculos import Veiculos
+
+#dlg é só o nome da variavel, ft.AlertDialog cria a caixa de aviso de erro ou sucesso.
+dlg_erros = ft.AlertDialog(
+    title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
+    content=ft.Text("", color="red", size=20),
+    alignment=ft.alignment.center,
+    title_padding = ft.padding.all(25))
+
+dlg_sucesso = ft.AlertDialog(
+    title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
+    content=ft.Text("", color="green", size=20),
+    alignment=ft.alignment.center,
+    title_padding = ft.padding.all(25))
+
+dlg_ja_cadastrado = ft.AlertDialog(
+    title=ft.Text("Erro!", color="red"),
+    content=ft.Text("", color="red", size=20),
+    alignment=ft.alignment.center,
+    title_padding = ft.padding.all(25))
+
 #Inicia o cadastro de veiculos
 def cadastros_de_veiculo(page: ft.Page):
     page.title = "Tela de cadastros"
     page.theme_mode = ft.ThemeMode.DARK
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    #Função do botão de voltar ao menu
-    def voltar_menu(e):
-        from Models.visual import MenuCarros
-        page.clean()
-        MenuCarros.menu_cadastros(page)
+
     #ft.TextField cria uma caixa de texto que é possivel digitar nela(Um input)
     fabricante = ft.TextField(label="Fabricante", width=400)
     modelo = ft.TextField(label="Modelo", width=400)    
     ano = ft.TextField(label="Ano", width=400)
     motorizacao = ft.TextField(label="Motorização", width=400)
     cambio = ft.TextField(label="Câmbio", width=400)
-    #dlg é só o nome da variavel, ft.AlertDialog cria a caixa de aviso de erro ou sucesso.
-    dlg_erros = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("", color="red", size=20),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    
-    dlg_sucesso = ft.AlertDialog(
-        title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    
-    dlg_ja_cadastrado = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red"),
-        content=ft.Text("Veículo já cadastrado", color="red", size=20),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
+
+    #Função do botão de voltar ao menu
+    def voltar_menu(e):
+        from Models.visual import MenuCarros
+        page.clean()
+        MenuCarros.menu_cadastros(page)
+        
     #função que sera executada quando clicar no botão Cadastrar, verificar erros do usuario, verificar se ja não existe cadastro e se não, cadastrar no banco
     def cadastrar_veiculo(e):
         if not all([fabricante.value, modelo.value, ano.value, motorizacao.value, cambio.value]):
@@ -76,8 +81,10 @@ def cadastros_de_veiculo(page: ft.Page):
             dlg_sucesso.open = True
         #Atualiza a pagina
         page.update()
+    
     #Limpa informações e avisos da pagina
     page.clean()
+    
     #Inicia a exibição da pagina, com titulo, o quais variaveis devem aparecer na tela, tamanho, cor, etc e cria os botões
     page.add(
         ft.Column([
@@ -111,8 +118,8 @@ def listar_veiculos(page: ft.Page):
         text="Voltar ao Menu",
         icon=ft.Icons.ARROW_BACK,
         on_click=lambda e: voltar_menu(e),
-        width=400
-    )
+        width=400)
+    
     def voltar_menu(e):
         from Models.visual import MenuCarros
         page.clean()
@@ -158,11 +165,6 @@ def alterar_cadastro(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    def voltar_menu(e):
-        from Models.visual import MenuCarros
-        page.clean()
-        MenuCarros.menu_cadastros(page)
-        
     id_veiculo = ft.TextField(label="ID do Veículo", width=400)
     fabricante = ft.TextField(label="Fabricante", width=400)
     modelo = ft.TextField(label="Modelo", width=400)
@@ -170,38 +172,14 @@ def alterar_cadastro(page: ft.Page):
     motorizacao = ft.TextField(label="Motorização", width=400)
     cambio = ft.TextField(label="Câmbio", width=400)
 
-    dlg_erros = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de erro fechado"),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    
-    dlg_sucesso = ft.AlertDialog(
-        title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
-        on_dismiss=lambda e: voltar_menu(e),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    
-    dlg_ja_cadastrado = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red"),
-        content=ft.Text("Veículo já cadastrado", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de veículo existente fechado"),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
+    def voltar_menu(e):
+        from Models.visual import MenuCarros
+        page.clean()
+        MenuCarros.menu_cadastros(page)
 
     def buscar_veiculo(e):
-
         if not all([id_veiculo, fabricante.value, modelo.value, ano.value, motorizacao.value, cambio.value]):
-            print("Algum campo está vazio")
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        if not ano.value.isdigit():
-            dlg_erros.content = ft.Text("Ano deve ser um número inteiro", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
@@ -258,34 +236,13 @@ def excluir_veiculo(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
+    id_veiculo = ft.TextField(label="ID do Veículo", width=400)
     
     def voltar_menu(e):
         from Models.visual import MenuCarros
         page.clean()
         MenuCarros.menu_cadastros(page)
-
-    dlg_erros = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de erro fechado"),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    
-    dlg_sucesso = ft.AlertDialog(
-        title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
-        on_dismiss=lambda e: voltar_menu(e),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    
-    dlg_ja_cadastrado = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red"),
-        content=ft.Text("Veículo já cadastrado", color="red", size=20),
-        on_dismiss=lambda e: print("Dialogo de veículo existente fechado"),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    
-    id_veiculo = ft.TextField(label="ID do Veículo", width=400)
     
     def excluir_veiculo(e):
         if not id_veiculo.value.isdigit():
