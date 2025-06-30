@@ -3,51 +3,54 @@ from DB.Database import session
 from DB.Tables.table_vendas import Vendas
 from datetime import datetime
 
+dlg_erros = ft.AlertDialog(
+    title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
+    content=ft.Text("", color="red", size=20),
+    alignment=ft.alignment.center,
+    title_padding = ft.padding.all(25))
+
+dlg_sucesso = ft.AlertDialog(
+    title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
+    content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
+    alignment=ft.alignment.center,
+    title_padding = ft.padding.all(25))
+
+dlg_ja_cadastrado = ft.AlertDialog(
+    title=ft.Text("Erro!", color="red"),
+    content=ft.Text("Veículo já cadastrado", color="red", size=20),
+    alignment=ft.alignment.center,
+    title_padding = ft.padding.all(25))
+
 def cadastrar_venda(page: ft.Page):
     page.title = "Cadastrar Venda"
     page.theme_mode = ft.ThemeMode.DARK
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
+    data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
+    comprador = ft.TextField(label="Comprador", width=400)
+    valor = ft.TextField(label="Valor da Venda", width=400)
     
     def voltar_menu(e):
         page.clean()
         from Models.visual import MenuVendas
         MenuVendas.menu_vendas(page)
-
-    dlg_erros = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("", color="red", size=20),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
     
-    dlg_sucesso = ft.AlertDialog(
-        title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("Veículo cadastrado com sucesso!", color="green", size=20),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    
-    dlg_ja_cadastrado = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red"),
-        content=ft.Text("Veículo já cadastrado", color="red", size=20),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    
-    data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
-    comprador = ft.TextField(label="Comprador", width=400)
-    valor = ft.TextField(label="Valor da Venda", width=400)
-
     def cadastrar_venda(e):
         if not all([data_venda.value, comprador.value, valor.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
+        
         data_str = data_venda.value
         data_formatada = datetime.strptime(data_str, "%d-%m-%Y").date()
+
         verificar_cadastro = session.query(Vendas).filter(
             Vendas.data_venda == data_formatada,
             Vendas.comprador == comprador.value,
             Vendas.valor == valor.value).first()
+        
         if verificar_cadastro:
             dlg_ja_cadastrado.content = ft.Text("Venda já cadastrada", color="red", size=20)
             page.open(dlg_ja_cadastrado)
@@ -101,6 +104,7 @@ def listar_vendas(page: ft.Page):
         MenuVendas.menu_vendas(page)
 
     vendas = session.query(Vendas).all()
+
     if not vendas:
         page.add(ft.Text("Nenhuma venda cadastrada.", size=20, color="red"),
         ft.ElevatedButton(
@@ -138,32 +142,15 @@ def alterar_venda(page: ft.Page):
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     
-    def voltar_menu(e):
-        page.clean()
-        from Models.visual import MenuVendas
-        MenuVendas.menu_vendas(page)
-
     id_venda = ft.TextField(label="ID da Venda", width=400)
     data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
     comprador = ft.TextField(label="Comprador", width=400)
     valor = ft.TextField(label="Valor da Venda", width=400)
 
-    dlg_erros = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("", color="red", size=20),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    dlg_sucesso = ft.AlertDialog(
-        title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("Venda alterada com sucesso!", color="green", size=20),
-        on_dismiss=lambda e: voltar_menu(e),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    dlg_ja_cadastrado = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red"),
-        content=ft.Text("Venda já cadastrada", color="red", size=20),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25)) 
+    def voltar_menu(e):
+        page.clean()
+        from Models.visual import MenuVendas
+        MenuVendas.menu_vendas(page)
 
     def buscar_venda(e):
         if not all([id_venda.value, data_venda.value, comprador.value, valor.value]):
@@ -181,6 +168,7 @@ def alterar_venda(page: ft.Page):
         venda = session.query(Vendas).filter(Vendas.id == int(id_venda.value)).first()
         data_str = data_venda.value
         data_formatada = datetime.strptime(data_str, "%d-%m-%Y").date()
+
         if not venda:
             dlg_erros.content = ft.Text("Venda não encontrada.", color="red", size=20)
             page.open(dlg_erros)
@@ -221,24 +209,13 @@ def excluir_venda(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
+    id_venda = ft.TextField(label="ID da Venda", width=400)
     
     def voltar_menu(e):
         page.clean()
         from Models.visual import MenuVendas
         MenuVendas.menu_vendas(page)
-
-    dlg_erros = ft.AlertDialog(
-        title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("", color="red", size=20),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    dlg_sucesso = ft.AlertDialog(
-        title=ft.Text("Sucesso!", color="green", text_align=ft.TextAlign.CENTER),
-        content=ft.Text("Venda excluída com sucesso!", color="green", size=20),
-        on_dismiss=lambda e: voltar_menu(e),
-        alignment=ft.alignment.center,
-        title_padding = ft.padding.all(25))
-    id_venda = ft.TextField(label="ID da Venda", width=400)
 
     def excluir_venda(e):
         if not id_venda.value.isdigit():
