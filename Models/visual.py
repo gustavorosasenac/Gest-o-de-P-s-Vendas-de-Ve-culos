@@ -386,19 +386,20 @@ class MenuPosvenda:
         titulo = ft.Text("Pós Vendas",size=36,weight=ft.FontWeight.BOLD,color=ft.Colors.WHITE,text_align=ft.TextAlign.CENTER)
         subtitulo = ft.Text("Gerenciamento de Pós Vendas",size=16,color=ft.Colors.WHITE70,text_align=ft.TextAlign.CENTER)
         
+        # Espaço para o conteúdo dinâmico
+        content_column = ft.Column([], expand=True)
+
         def voltar_menu(e):
             page.clean()
             Menu_principal(page)
             
         def cadastrar_ocorrencia(e):
             from Models.pos_venda import registrar_ocorrencia
-            page.clean()
-            registrar_ocorrencia(page)
+            content_column.controls = [registrar_ocorrencia(page)]
 
         def historico_problema_veiculo(e):
             from Models.pos_venda import procurar_veiculo
-            page.clean()
-            procurar_veiculo(page)
+            content_column.controls = [procurar_veiculo(page)]
             
         def alterar_ocorrencia(e):
             pass
@@ -422,15 +423,15 @@ class MenuPosvenda:
                 height=60
                 ),
                 margin=ft.margin.only(bottom=15),
-
                 animate=ft.Animation(300, "easeInOut"))
+        
         botao_cadastrar = criar_botao("Cadastrar Veículo", ft.Icons.ADD, cadastrar_ocorrencia, ft.Colors.TEAL_700)
         botao_historico = criar_botao("Listar Veículos", ft.Icons.LIST, historico_problema_veiculo, ft.Colors.INDIGO_700)
         botao_alterar = criar_botao("Alterar Veículo", ft.Icons.EDIT, alterar_ocorrencia, ft.Colors.PURPLE_700)
         botao_excluir = criar_botao("Excluir Veículo", ft.Icons.DELETE, excluir_ocorrencia, ft.Colors.RED_700)
         botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
 
-        conteudo = ft.Column(
+        menu_column = ft.Column(
             [
                 ft.Container(
                     content=ft.Column(
@@ -458,6 +459,25 @@ class MenuPosvenda:
             horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
         
+        # Layout principal (menu à esquerda e conteúdo à direita)
+        main_row = ft.Row(
+    [
+        menu_column,  # Menu à esquerda (fixo)
+        ft.Container(  # Área central expandível
+            content=ft.Row(
+                [
+                    content_column  # Conteúdo será centralizado dentro desta linha
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,  # Centraliza horizontalmente
+                vertical_alignment=ft.CrossAxisAlignment.CENTER  # Centraliza verticalmente
+            ),
+            expand=True
+        )
+    ],
+    expand=True,
+    spacing=300  # Espaçamento entre o menu e o conteúdo
+)
+        
         page.add(
             ft.Stack(
                 [
@@ -469,17 +489,10 @@ class MenuPosvenda:
                         opacity=0.7
                     ),
                     ft.Container(
-                        gradient=ft.LinearGradient(
-                            begin=ft.alignment.top_center,
-                            end=ft.alignment.bottom_center,
-                            colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
-                        ),
-                        content=ft.Column(
-                            [conteudo],
-                            alignment=ft.MainAxisAlignment.CENTER,
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-                        ),
+                        content=main_row,
                         expand=True
                     )
                 ],
-                expand=True))
+                expand=True
+            )
+        )
