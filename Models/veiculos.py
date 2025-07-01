@@ -107,7 +107,7 @@ def cadastros_de_veiculo(page: ft.Page):
         border_radius=20,
         width=500,
         height=600,
-        margin=ft.margin.only(left=300),  # Empurra o conteúdo 300px para a direita
+        margin=ft.margin.only(left=300, top=150),  # Empurra o conteúdo 300px para a direita
     )
 
 def listar_veiculos(page: ft.Page):
