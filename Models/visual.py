@@ -109,11 +109,6 @@ class Menu_principal:
                         opacity=0.7
                     ),
                     ft.Container(
-                        gradient=ft.LinearGradient(
-                            begin=ft.alignment.top_center,
-                            end=ft.alignment.bottom_center,
-                            colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
-                        ),
                         content=ft.Column(
                             [conteudo],
                             alignment=ft.MainAxisAlignment.CENTER,
