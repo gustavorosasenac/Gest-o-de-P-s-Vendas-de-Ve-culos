@@ -23,35 +23,32 @@ dlg_ja_cadastrado = ft.AlertDialog(
 
 #Inicia o cadastro de veiculos
 def cadastros_de_veiculo(page: ft.Page):
-    page.title = "Tela de cadastros"
-    page.theme_mode = ft.ThemeMode.DARK
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-
-    #ft.TextField cria uma caixa de texto que é possivel digitar nela(Um input)
+    # Campos do formulário
     fabricante = ft.TextField(label="Fabricante", width=400)
     modelo = ft.TextField(label="Modelo", width=400)    
     ano = ft.TextField(label="Ano", width=400)
     motorizacao = ft.TextField(label="Motorização", width=400)
     cambio = ft.TextField(label="Câmbio", width=400)
 
-    #Função do botão de voltar ao menu
+    # Função do botão de voltar ao menu
     def voltar_menu(e):
         from Models.visual import MenuCarros
         page.clean()
         MenuCarros.menu_cadastros(page)
-        
-    #função que sera executada quando clicar no botão Cadastrar, verificar erros do usuario, verificar se ja não existe cadastro e se não, cadastrar no banco
+
+    # Função para cadastrar veículo
     def cadastrar_veiculo(e):
         if not all([fabricante.value, modelo.value, ano.value, motorizacao.value, cambio.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
-            page.open(dlg_erros)
+            page.dialog = dlg_erros
             dlg_erros.open = True
+            page.update()
             return
         if not ano.value.isdigit():
             dlg_erros.content = ft.Text("Ano deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
+            page.dialog = dlg_erros
             dlg_erros.open = True
+            page.update()
             return
         
         verificar_cadastro = session.query(Veiculos).filter(
@@ -59,11 +56,11 @@ def cadastros_de_veiculo(page: ft.Page):
             Veiculos.modelo == modelo.value,
             Veiculos.ano == int(ano.value),
             Veiculos.motorizacao == motorizacao.value,
-            ).first()
+        ).first()
             
         if verificar_cadastro:
             dlg_ja_cadastrado.content = ft.Text("Veículo já cadastrado", color="red", size=20)
-            page.open(dlg_ja_cadastrado)
+            page.dialog = dlg_ja_cadastrado
             dlg_ja_cadastrado.open = True
         else:
             novo_veiculo = Veiculos(
@@ -77,36 +74,40 @@ def cadastros_de_veiculo(page: ft.Page):
             session.commit()
 
             dlg_sucesso.content = ft.Text("Veículo cadastrado com sucesso!", color="green", size=20)
-            page.open(dlg_sucesso)
+            page.dialog = dlg_sucesso
             dlg_sucesso.open = True
-        #Atualiza a pagina
+        
         page.update()
-    
-    #Limpa informações e avisos da pagina
-    page.clean()
-    
-    #Inicia a exibição da pagina, com titulo, o quais variaveis devem aparecer na tela, tamanho, cor, etc e cria os botões
-    page.add(
-        ft.Column([
-            ft.Text("Cadastros", size=50, weight=ft.FontWeight.BOLD, color="white"),
-            fabricante,
-            modelo,
-            ano,
-            motorizacao,
-            cambio,
-            ft.ElevatedButton(
-                text="Cadastrar Veículo",
-                icon=ft.Icons.ADD,
-                width=400,
-                on_click=cadastrar_veiculo),
-            ft.ElevatedButton(
-                text="Voltar ao Menu",
-                icon=ft.Icons.ARROW_BACK,
-                width=400,
-                on_click=voltar_menu)
-        ],
-        alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+
+    # Retorna os controles do formulário
+    return ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("Novo veículo", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                fabricante,
+                modelo,
+                ano,
+                motorizacao,
+                cambio,
+                ft.ElevatedButton(
+                    text="Cadastrar Veículo",
+                    icon=ft.Icons.ADD,
+                    width=400,
+                    on_click=cadastrar_veiculo),
+                ft.ElevatedButton(
+                    text="Voltar ao Menu",
+                    icon=ft.Icons.ARROW_BACK,
+                    width=400,
+                    on_click=voltar_menu)
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.60, ft.Colors.BLACK),
+        border_radius=20,
+        width=500,
+        height=600,
+        margin=ft.margin.only(left=300),  # Empurra o conteúdo 300px para a direita
     )
 
 def listar_veiculos(page: ft.Page):

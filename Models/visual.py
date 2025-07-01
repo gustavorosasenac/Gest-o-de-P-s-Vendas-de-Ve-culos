@@ -1,6 +1,5 @@
 import flet as ft
 from DB.Database import session
-from Models.veiculos import cadastros_de_veiculo, listar_veiculos, alterar_cadastro, excluir_veiculo
 
 class Menu_principal:
 
@@ -128,28 +127,35 @@ class MenuCarros:
         page.fonts = {"Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"}
         page.theme = ft.Theme(font_family="Poppins")
 
-        titulo = ft.Text("Veículos",size=36,weight=ft.FontWeight.BOLD,color=ft.Colors.WHITE,text_align=ft.TextAlign.CENTER)
-        subtitulo = ft.Text("Gerenciamento de veículos",size=16,color=ft.Colors.WHITE70,text_align=ft.TextAlign.CENTER)
+        titulo = ft.Text("Veículos", size=36, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE, text_align=ft.TextAlign.CENTER)
+        subtitulo = ft.Text("Gerenciamento de veículos", size=16, color=ft.Colors.WHITE70, text_align=ft.TextAlign.CENTER)
         
+        # Espaço para o conteúdo dinâmico
+        content_column = ft.Column([], expand=True)
+
         def voltar_menu(e):
             page.clean()
             Menu_principal(page)
             
         def cadastrar_veiculo(e):
-            page.clean()
-            cadastros_de_veiculo(page)
+            from Models.veiculos import cadastros_de_veiculo
+            content_column.controls = [cadastros_de_veiculo(page)]
+            page.update()
             
         def veiculos_cadastrados(e):
-            page.clean()
-            listar_veiculos(page)
+            from Models.veiculos import listar_veiculos
+            content_column.controls = [listar_veiculos(page)]
+            page.update()
             
         def alterar_cadastro_veiculo(e):
-            page.clean()
-            alterar_cadastro(page)
+            from Models.veiculos import alterar_cadastro
+            content_column.controls = [alterar_cadastro(page)]
+            page.update()
             
         def excluir_cadastro_veiculo(e):
-            page.clean()
-            excluir_veiculo(page)
+            from Models.veiculos import excluir_veiculo
+            content_column.controls = [excluir_veiculo(page)]
+            page.update()
 
         def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
             return ft.Container(
@@ -163,11 +169,12 @@ class MenuCarros:
                         bgcolor=cor,
                         color=ft.Colors.WHITE
                     ),
-                width=300,
-                height=60
+                    width=300,
+                    height=60
                 ),
                 margin=ft.margin.only(bottom=15),
-                animate=ft.Animation(300, "easeInOut"))
+                animate=ft.Animation(300, "easeInOut")
+            )
         
         botao_cadastrar = criar_botao("Cadastrar Veículo", ft.Icons.ADD, cadastrar_veiculo, ft.Colors.TEAL_700)
         botao_listar = criar_botao("Listar Veículos", ft.Icons.LIST, veiculos_cadastrados, ft.Colors.INDIGO_700)
@@ -175,7 +182,8 @@ class MenuCarros:
         botao_excluir = criar_botao("Excluir Veículo", ft.Icons.DELETE, excluir_cadastro_veiculo, ft.Colors.RED_700)
         botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
             
-        conteudo = ft.Column(
+        # Layout do menu (coluna à esquerda)
+        menu_column = ft.Column(
             [
                 ft.Container(
                     content=ft.Column(
@@ -203,6 +211,20 @@ class MenuCarros:
             horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
         
+        # Layout principal (menu à esquerda e conteúdo à direita)
+        main_row = ft.Row(
+    [
+        menu_column,  # Menu à esquerda (fixo)
+        ft.Container(  # Espaço flexível para o conteúdo
+            content=content_column,
+            expand=True,
+            padding=ft.padding.only(left=50)  # Ajuste opcional para afastar mais
+        )
+    ],
+    expand=True,
+    spacing=0  # Remove espaçamento entre colunas
+)
+        
         page.add(
             ft.Stack(
                 [
@@ -219,16 +241,13 @@ class MenuCarros:
                             end=ft.alignment.bottom_center,
                             colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
                         ),
-                        content=ft.Column(
-                            [conteudo],
-                            alignment=ft.MainAxisAlignment.CENTER,
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-                        ),
+                        content=main_row,
                         expand=True
                     )
                 ],
-                expand=True))
-
+                expand=True
+            )
+        )
 
 class MenuVendas:
     def menu_vendas(page: ft.Page):
