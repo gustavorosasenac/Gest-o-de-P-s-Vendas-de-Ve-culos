@@ -21,6 +21,25 @@ dlg_ja_cadastrado = ft.AlertDialog(
     alignment=ft.alignment.center,
     title_padding = ft.padding.all(25))
 
+def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
+            return ft.Container(
+                content=ft.ElevatedButton(
+                    text=texto,
+                    icon=icone,
+                    on_click=funcao,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=10),
+                        padding=20,
+                        bgcolor=cor,
+                        color=ft.Colors.WHITE
+                    ),
+                    width=300,
+                    height=60
+                ),
+                margin=ft.margin.only(bottom=15),
+                animate=ft.Animation(300, "easeInOut")
+            )
+
 #Inicia o cadastro de veiculos
 def cadastros_de_veiculo(page: ft.Page):
     # Campos do formulário
@@ -69,25 +88,6 @@ def cadastros_de_veiculo(page: ft.Page):
             dlg_sucesso.content = ft.Text("Veículo cadastrado com sucesso!", color="green", size=20)
             page.open(dlg_sucesso)
             dlg_sucesso.open = True
-            
-    def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
-            return ft.Container(
-                content=ft.ElevatedButton(
-                    text=texto,
-                    icon=icone,
-                    on_click=funcao,
-                    style=ft.ButtonStyle(
-                        shape=ft.RoundedRectangleBorder(radius=10),
-                        padding=20,
-                        bgcolor=cor,
-                        color=ft.Colors.WHITE
-                    ),
-                    width=300,
-                    height=60
-                ),
-                margin=ft.margin.only(bottom=15),
-                animate=ft.Animation(300, "easeInOut")
-            )
         
     botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_veiculo, ft.Colors.TEAL_700)
 
@@ -123,8 +123,7 @@ def listar_veiculos(page: ft.Page):
         dlg_erros.content = ft.Text("Nenhum veículo cadastrado", color="red", size=20)
         page.open(dlg_erros)
         dlg_erros.open = True
-
-        
+        page.update()
         return
     #ft.ListView vai exibir em formato de lista
     lista_veiculos = ft.ListView(
@@ -210,25 +209,6 @@ def alterar_cadastro(page: ft.Page):
             dlg_sucesso.content = ft.Text("Veiculo alterado com sucesso!", color="green", size=20)
             page.open(dlg_sucesso)
             dlg_sucesso.open = True
-
-    def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
-            return ft.Container(
-                content=ft.ElevatedButton(
-                    text=texto,
-                    icon=icone,
-                    on_click=funcao,
-                    style=ft.ButtonStyle(
-                        shape=ft.RoundedRectangleBorder(radius=10),
-                        padding=20,
-                        bgcolor=cor,
-                        color=ft.Colors.WHITE
-                    ),
-                    width=300,
-                    height=60
-                ),
-                margin=ft.margin.only(bottom=15),
-                animate=ft.Animation(300, "easeInOut")
-            )
         
     botao_alterar = criar_botao("Alterar", ft.Icons.ADD, buscar_veiculo, ft.Colors.TEAL_700)
 
@@ -256,9 +236,7 @@ def alterar_cadastro(page: ft.Page):
         padding=20
 )     
 
- 
 def excluir_veiculo(page: ft.Page):
-
 
     id_veiculo = ft.TextField(label="ID do Veículo", width=400)
     
@@ -281,25 +259,6 @@ def excluir_veiculo(page: ft.Page):
             dlg_erros.content = ft.Text("Veículo não encontrado.", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
-
-    def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
-            return ft.Container(
-                content=ft.ElevatedButton(
-                    text=texto,
-                    icon=icone,
-                    on_click=funcao,
-                    style=ft.ButtonStyle(
-                        shape=ft.RoundedRectangleBorder(radius=10),
-                        padding=20,
-                        bgcolor=cor,
-                        color=ft.Colors.WHITE
-                    ),
-                    width=300,
-                    height=60
-                ),
-                margin=ft.margin.only(bottom=15),
-                animate=ft.Animation(300, "easeInOut")
-            )
         
     botao_excluir= criar_botao("Excluir", ft.Icons.ADD, excluir_veiculo, ft.Colors.RED_700)
 

@@ -21,22 +21,31 @@ dlg_ja_cadastrado = ft.AlertDialog(
     alignment=ft.alignment.center,
     title_padding = ft.padding.all(25))
 
-def cadastrar_venda(page: ft.Page):
-    page.title = "Cadastrar Venda"
-    page.theme_mode = ft.ThemeMode.DARK
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
+            return ft.Container(
+                content=ft.ElevatedButton(
+                    text=texto,
+                    icon=icone,
+                    on_click=funcao,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=10),
+                        padding=20,
+                        bgcolor=cor,
+                        color=ft.Colors.WHITE
+                    ),
+                    width=300,
+                    height=60
+                ),
+                margin=ft.margin.only(bottom=15),
+                animate=ft.Animation(300, "easeInOut")
+            )
 
+def cadastrar_venda(page: ft.Page):
     data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
     comprador = ft.TextField(label="Comprador", width=400)
     valor = ft.TextField(label="Valor da Venda", width=400)
     
-    def voltar_menu(e):
-        page.clean()
-        from Models.visual import MenuVendas
-        MenuVendas.menu_vendas(page)
-    
-    def cadastrar_venda(e):
+    def cadastrar_nova_venda(e):
         if not all([data_venda.value, comprador.value, valor.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
@@ -67,90 +76,80 @@ def cadastrar_venda(page: ft.Page):
             dlg_sucesso.content = ft.Text("Venda cadastrada com sucesso!", color="green", size=20)
             page.open(dlg_sucesso)
             dlg_sucesso.open = True
-
-        page.update()
-
-    page.clean()
-    page.add(
-        ft.Column([
-            ft.Text("Cadastrar Venda", size=24, weight=ft.FontWeight.BOLD),
-            data_venda,
-            comprador,
-            valor,
-            ft.ElevatedButton(
-                text="Cadastrar Venda",
-                icon=ft.Icons.ADD,
-                width=400,
-                on_click=cadastrar_venda),
-            ft.ElevatedButton(
-                text="Voltar ao Menu",
-                icon=ft.Icons.ARROW_BACK,
-                width=400,
-                on_click=voltar_menu)
-        ],
-        alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+        
+    botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_nova_venda, ft.Colors.TEAL_700)
+    
+    return ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("Nova venda", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                data_venda,
+                comprador,
+                valor,
+                ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                botao_cadastrar,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=500,
+        alignment=ft.alignment.center,
+        margin=ft.margin.symmetric(vertical=130),
+        padding=20
     )
-    
+
 def listar_vendas(page: ft.Page):
-    page.title = "Listar Vendas"
-    page.theme_mode = ft.ThemeMode.DARK
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    
-    def voltar_menu(e):
-        page.clean()
-        from Models.visual import MenuVendas
-        MenuVendas.menu_vendas(page)
 
     vendas = session.query(Vendas).all()
 
     if not vendas:
-        page.add(ft.Text("Nenhuma venda cadastrada.", size=20, color="red"),
-        ft.ElevatedButton(
-            text="Voltar",
-            icon=ft.Icons.ARROW_BACK,
-            on_click=voltar_menu))
+        dlg_erros.content = ft.Text("Nenhuma venda cadastrada", color="red", size=20)
+        page.open(dlg_erros)
+        dlg_erros.open = True
+        page.update()
         return
+    
     lista_vendas = ft.ListView(
-        controls=[
-            ft.ListTile(
-                title=ft.Text(f"ID: {v.id} Data: {v.data_venda} Comprador: {v.comprador} Valor: R$ {v.valor}")
-            ) for v in vendas
-        ],
-        width=1200,
-        height=800,
+    controls=[
+        ft.Container(
+            content=ft.Text(f"ID: {v.id} Data: {v.data_venda} Comprador: {v.comprador} Valor: R$ {v.valor}", size=16,color=ft.Colors.WHITE),
+            padding=10,
+            border=ft.border.all(1, ft.Colors.GREY_800),
+            margin=ft.margin.only(bottom=5))
+            for v in vendas
+    ],
+        width=900,
         padding=10,
-        spacing=10,
-        auto_scroll=True,
-        expand=True,)
-
-    page.add(
-        ft.Column([
-            ft.Text("Vendas Cadastradas", size=24, weight=ft.FontWeight.BOLD),
-            ft.ElevatedButton(
-                text="Voltar ao Menu",
-                icon=ft.Icons.ARROW_BACK,
-                on_click=voltar_menu),
-            lista_vendas],
-        alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER))
+        spacing=5)
+    
+    return ft.Container(
+        content=ft.Column([
+            ft.Text("  Veículos Cadastrados", 
+                   size=40, 
+                   weight=ft.FontWeight.BOLD, 
+                   color="white",
+                   text_align=ft.TextAlign.LEFT),  # Alinhamento do título à esquerda
+            ft.Divider(height=20),
+            lista_vendas
+        ],
+        alignment=ft.MainAxisAlignment.START,  # Alinha no topo
+        horizontal_alignment=ft.CrossAxisAlignment.START  # Alinha tudo à esquerda
+        ),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=1000,
+        padding=ft.padding.only(left=20, top=20, right=20, bottom=20),  # Padding igual em todos os lados
+        margin=ft.margin.only(left = 20),  # Margem reduzida à esquerda
+        alignment=ft.alignment.top_left)  # Alinha o container no topo esquerdo
 
 def alterar_venda(page: ft.Page):
-    page.title = "Alterar Venda"
-    page.theme_mode = ft.ThemeMode.DARK
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    
+
     id_venda = ft.TextField(label="ID da Venda", width=400)
     data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
     comprador = ft.TextField(label="Comprador", width=400)
     valor = ft.TextField(label="Valor da Venda", width=400)
-
-    def voltar_menu(e):
-        page.clean()
-        from Models.visual import MenuVendas
-        MenuVendas.menu_vendas(page)
 
     def buscar_venda(e):
         if not all([id_venda.value, data_venda.value, comprador.value, valor.value]):
@@ -182,40 +181,34 @@ def alterar_venda(page: ft.Page):
             dlg_sucesso.content = ft.Text("Venda alterada com sucesso!", color="green", size=20)
             page.open(dlg_sucesso)
             dlg_sucesso.open = True
+        
+    botao_alterar = criar_botao("Alterar", ft.Icons.ADD, buscar_venda, ft.Colors.TEAL_700)
 
-        page.update()
-
-    page.clean()
-    page.add(
-        ft.Column([
-            ft.Text("Alterar Venda", size=24, weight=ft.FontWeight.BOLD),
+    return ft.Container(
+        content =ft.Column(
+            [
+            ft.Text("Alterar venda", size=50, weight=ft.FontWeight.BOLD, color="white"),
             id_venda,
             data_venda,
             comprador,
             valor,
-            ft.ElevatedButton(
-                text="Alterar Venda",
-                icon=ft.Icons.EDIT,
-                on_click=buscar_venda),
-            ft.ElevatedButton(
-                text="Voltar ao Menu",
-                icon=ft.Icons.ARROW_BACK,
-                on_click=voltar_menu)],
-        alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER))
+            ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+            botao_alterar,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,  
+        ),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=500,
+        alignment=ft.alignment.center,
+        margin=ft.margin.symmetric(vertical=100),
+        padding=20
+        )
 
 def excluir_venda(page: ft.Page):
-    page.title = "Excluir Venda"
-    page.theme_mode = ft.ThemeMode.DARK
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     id_venda = ft.TextField(label="ID da Venda", width=400)
-    
-    def voltar_menu(e):
-        page.clean()
-        from Models.visual import MenuVendas
-        MenuVendas.menu_vendas(page)
 
     def excluir_venda(e):
         if not id_venda.value.isdigit():
@@ -237,18 +230,23 @@ def excluir_venda(page: ft.Page):
             page.open(dlg_erros)
             dlg_erros.open = True
 
-    page.clean()
-    page.add(
-        ft.Column([
-            ft.Text("Excluir Venda", size=25, weight=ft.FontWeight.BOLD),
-            id_venda,
-            ft.ElevatedButton(
-                text="Excluir Venda",
-                icon=ft.Icons.DELETE,
-                on_click=excluir_venda),
-            ft.ElevatedButton(
-                text="Voltar ao Menu",
-                icon=ft.Icons.ARROW_BACK,
-                on_click=voltar_menu)],
-        alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER))
+    botao_excluir= criar_botao("Excluir", ft.Icons.ADD, excluir_venda, ft.Colors.RED_700)
+
+    return ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("Excluir Veiculo", size=30, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
+                id_venda,
+                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
+                botao_excluir,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=400,
+        alignment=ft.alignment.center,
+        margin=ft.margin.symmetric(vertical=220),
+        padding=20)

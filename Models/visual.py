@@ -3,7 +3,6 @@ from DB.Database import session
 
 class Menu_principal:
     def __init__(self, page: ft.Page):
-        # Abre em tela cheia
         # Configuração da página
         page.title = "🚘 Sistema de Veículos Premium"
         page.theme_mode = ft.ThemeMode.DARK
@@ -119,7 +118,7 @@ class Menu_principal:
         
 class MenuCarros:       
     def menu_carros(page: ft.Page):
-        page.title = "Menu de Cadastros"
+        page.title = "Menu Carros"
         page.theme_mode = ft.ThemeMode.DARK
         page.padding = 0
         page.fonts = {"Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"}
@@ -258,29 +257,32 @@ class MenuVendas:
         titulo = ft.Text("Vendas",size=36,weight=ft.FontWeight.BOLD,color=ft.Colors.WHITE,text_align=ft.TextAlign.CENTER) 
         subtitulo = ft.Text("Gerenciamento de vendas",size=16,color=ft.Colors.WHITE70,text_align=ft.TextAlign.CENTER)
         
+        # Espaço para o conteúdo dinâmico
+        content_column = ft.Column([], expand=True)
+
         def voltar_menu(e):
             page.clean()
             Menu_principal(page)
 
         def cadastrar_venda(e):
-            page.clean()
             from Models.vendas import cadastrar_venda
-            cadastrar_venda(page)
+            content_column.controls = [cadastrar_venda(page)]
+            page.update()
 
         def listar_vendas(e):
-            page.clean()
             from Models.vendas import listar_vendas
-            listar_vendas(page)
+            content_column.controls = [listar_vendas(page)]
+            page.update()
 
         def alterar_venda(e):
-            page.clean()
             from Models.vendas import alterar_venda
-            alterar_venda(page)
+            content_column.controls = [alterar_venda(page)]
+            page.update()
 
         def excluir_venda(e):
-            page.clean()
             from Models.vendas import excluir_venda
-            excluir_venda(page)
+            content_column.controls = [excluir_venda(page)]
+            page.update()
 
         def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
             return ft.Container(
@@ -299,18 +301,19 @@ class MenuVendas:
                 ),
                 margin=ft.margin.only(bottom=15),
                 animate=ft.Animation(300, "easeInOut"))
+        
         botao_cadastrar = criar_botao("Cadastrar Venda", ft.Icons.ADD, cadastrar_venda, ft.Colors.TEAL_700)
         botao_listar = criar_botao("Listar Vendas", ft.Icons.LIST, listar_vendas, ft.Colors.INDIGO_700)
         botao_alterar = criar_botao("Alterar Venda", ft.Icons.EDIT, alterar_venda, ft.Colors.PURPLE_700)
         botao_excluir = criar_botao("Excluir Venda", ft.Icons.DELETE, excluir_venda, ft.Colors.RED_700)
         botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
 
-        conteudo = ft.Column(
+        menu_column = ft.Column(
             [
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.Icon(name=ft.Icons.SHOPPING_CART, size=50, color=ft.Colors.WHITE),
+                            ft.Icon(name=ft.Icons.DIRECTIONS_CAR, size=50, color=ft.Colors.WHITE),
                             titulo,
                             subtitulo,
                             ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
@@ -330,7 +333,27 @@ class MenuVendas:
                 )
             ],
             alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
+        
+        # Layout principal (menu à esquerda e conteúdo à direita)
+        main_row = ft.Row(
+    [
+        menu_column,  # Menu à esquerda (fixo)
+        ft.Container(  # Área central expandível
+            content=ft.Row(
+                [
+                    content_column  # Conteúdo será centralizado dentro desta linha
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,  # Centraliza horizontalmente
+                vertical_alignment=ft.CrossAxisAlignment.CENTER  # Centraliza verticalmente
+            ),
+            expand=True
+        )
+    ],
+    expand=True,
+    spacing=300  # Espaçamento entre o menu e o conteúdo
+)
         
         page.add(
             ft.Stack(
@@ -343,20 +366,13 @@ class MenuVendas:
                         opacity=0.7
                     ),
                     ft.Container(
-                        gradient=ft.LinearGradient(
-                            begin=ft.alignment.top_center,
-                            end=ft.alignment.bottom_center,
-                            colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
-                        ),
-                        content=ft.Column(
-                            [conteudo],
-                            alignment=ft.MainAxisAlignment.CENTER,
-                            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-                        ),
+                        content=main_row,
                         expand=True
                     )
                 ],
-                expand=True))
+                expand=True
+            )
+        )
 
 
 class MenuPosvenda:       
