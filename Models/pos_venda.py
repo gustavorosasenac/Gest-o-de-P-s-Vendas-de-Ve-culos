@@ -1,7 +1,8 @@
-
 import flet as ft
-from DB.Database import session
+from DB.Database import session, Base, engine
 from DB.Tables.table_veiculos import Veiculos
+
+Base.metadata.create_all(engine)
 
 
 #inicializa o sistema de registro de ocorrências

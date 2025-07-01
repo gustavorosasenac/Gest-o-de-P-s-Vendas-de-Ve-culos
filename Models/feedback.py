@@ -1,7 +1,9 @@
 import flet as ft
-from DB.Database import session
+from DB.Database import session, engine, Base
 from DB.Tables.table_feeback import Feedback
 from DB.Tables.table_vendas import Vendas
+
+Base.metadata.create_all(engine)
 
 
 #dlg é só o nome da variavel, ft.AlertDialog cria a caixa de aviso de erro ou sucesso.
@@ -97,6 +99,33 @@ def cadastro_de_feedback(page: ft.Page):
         padding=20
     )
 
+def listar_feedback(page: ft.Page):
+    feedbacks = session.query(Feedback).all()
+    if not feedbacks:
+        return ft.Text("Nenhum feedback cadastrado.", size=20, color="white")
+
+    feedback_list = []
+    for feedback in feedbacks:
+        feedback_list.append(
+            ft.ListTile(
+                title=ft.Text(f"ID Venda: {feedback.id_venda_veiculo}"),
+                subtitle=ft.Text(feedback.comentario),
+                leading=ft.Icon(ft.Icons.FEEDBACK, color=ft.Colors.BLUE_700),
+                content_padding=ft.padding.all(10)
+            )
+        )
+
+    return ft.ListView(
+        controls=feedback_list,
+        width=500,
+        height=400,
+        padding=20,
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20
+    )
+
+def excluir_feedback(page: ft.Page):
+    pass
 
         
 

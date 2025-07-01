@@ -1,7 +1,9 @@
 import flet as ft
-from DB.Database import session
+from DB.Database import session, Base, engine
 from DB.Tables.table_vendas import Vendas
 from datetime import datetime
+
+Base.metadata.create_all(engine)
 
 dlg_erros = ft.AlertDialog(
     title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),

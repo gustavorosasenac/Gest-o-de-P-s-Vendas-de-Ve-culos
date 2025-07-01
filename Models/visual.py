@@ -528,7 +528,9 @@ class MenuFeedback():
             page.update()
 
         def listar_feedback(e):
-            pass
+            from Models.feedback import listar_feedback
+            content_column.controls = [listar_feedback(page)]
+            page.update()
 
         def alterar_feedback(e):
             pass
