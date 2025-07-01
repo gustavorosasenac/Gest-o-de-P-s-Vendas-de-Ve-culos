@@ -23,9 +23,3 @@ class Orcamento(Base):
     custo_total = Column(Float, nullable=False)
     id_venda_veiculo = Column(Integer, ForeignKey('vendas_veiculos.id'))
 
-class Itens(Base):
-    __tablename__ = 'itens'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    nome = Column(String(100), nullable=False)
-    preco = Column(Float, nullable=False)
-    quantidade = Column(Integer, nullable=False)
