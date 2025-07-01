@@ -3,6 +3,7 @@ from DB.Database import session
 
 class Menu_principal:
     def __init__(self, page: ft.Page):
+        page.window.maximized = True
         # Configuração da página
         page.title = "🚘 Sistema de Veículos Premium"
         page.theme_mode = ft.ThemeMode.DARK
