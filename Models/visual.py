@@ -2,14 +2,21 @@ import flet as ft
 from DB.Database import session
 from Models.veiculos import cadastros_de_veiculo, listar_veiculos, alterar_cadastro, excluir_veiculo
 
-
 class Menu_principal:
 
     def __init__(self, page: ft.Page):
-        page.title = "Menu Principal"
+        # Configuração da página
+        page.title = "🚘 Sistema de Veículos Premium"
         page.theme_mode = ft.ThemeMode.DARK
-        titulo = ft.Text("🚘 Sistema de Veículos", size=40, weight=ft.FontWeight.BOLD, color="white")
+        page.padding = 0
+        page.fonts = {"Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"}
+        page.theme = ft.Theme(font_family="Poppins")
 
+        # Elementos da UI
+        titulo = ft.Text("Sistema de Veículos",size=36,weight=ft.FontWeight.BOLD,color=ft.Colors.WHITE,text_align=ft.TextAlign.CENTER) 
+        subtitulo = ft.Text("Gerenciamento completo de frota e vendas",size=16,color=ft.Colors.WHITE70,text_align=ft.TextAlign.CENTER)
+        
+        # Funções dos botões
         def fechar_app(e):
             page.clean()
             page.update()
@@ -30,61 +37,99 @@ class Menu_principal:
             page.clean()
             MenuPosvenda.menu_pos(page)
 
-        botao_cadastros = ft.ElevatedButton(
-            text="Cadastros",
-            icon=ft.Icons.ASSIGNMENT,
-            width=400,
-            on_click=mostrar_cadastros)
-
-        botao_vendas = ft.ElevatedButton(
-            text="Vendas",
-            icon=ft.Icons.SHOP,
-            width=400,
-            on_click=mostrar_vendas)
         
-        botao_pos_venda = ft.ElevatedButton(
-            text = 'Pós-Vendas',
-            icon = ft.Icons.SHOP,
-            width = 400,
-            on_click =mostrar_pos_venda)
-
-        botao_fechar_app = ft.ElevatedButton(
-            text="Fechar Aplicação",
-            icon=ft.Icons.CLOSE,
-            width=400,
-            on_click=fechar_app)
-            
+        
+        # Estilo do botão, só precisando alterar os textos e ícones
+        def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
+            return ft.Container(
+                content=ft.ElevatedButton(
+                    text=texto,
+                    icon=icone,
+                    on_click=funcao,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=10),
+                        padding=20,
+                        bgcolor=cor,
+                        color=ft.Colors.WHITE
+                    ),
+                width=300,
+                height=60
+                ),
+                margin=ft.margin.only(bottom=15),
+                animate=ft.Animation(300, "easeInOut")
+            )
+        
+        botao_cadastros = criar_botao("Cadastros", ft.Icons.CAR_RENTAL, mostrar_cadastros, ft.Colors.TEAL_700)
+        botao_vendas = criar_botao("Vendas", ft.Icons.SHOPPING_CART, mostrar_vendas, ft.Colors.INDIGO_700)
+        botao_pos_venda = criar_botao("Pós-Vendas", ft.Icons.ASSIGNMENT_RETURN, mostrar_pos_venda, ft.Colors.PURPLE_700)
+        botao_fechar_app = criar_botao("Fechar Aplicação", ft.Icons.EXIT_TO_APP, fechar_app, ft.Colors.RED_700)
+        
+        # Layout principal
         conteudo = ft.Column(
-            [titulo, botao_cadastros, botao_vendas,botao_pos_venda, botao_fechar_app],
+            [
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Icon(name=ft.Icons.DIRECTIONS_CAR, size=50, color=ft.Colors.WHITE),
+                            titulo,
+                            subtitulo,
+                            ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                            botao_cadastros,
+                            botao_vendas,
+                            botao_pos_venda,
+                            ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
+                            botao_fechar_app
+                        ],
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=5
+                    ),
+                    padding=ft.padding.all(30),
+                    bgcolor=ft.Colors.with_opacity(0.85, ft.Colors.BLACK),
+                    border_radius=20,
+                    width=400
+                )
+            ],
             alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
         
+        # Fundo com gradiente e imagem
         page.add(
             ft.Stack(
-                controls=[
+                [
                     ft.Image(
-                        src="https://img.odcdn.com.br/wp-content/uploads/2024/03/shutterstock_1082263868-1.jpg",
-                        fit=ft.ImageFit.COVER,
+                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
                         width=page.width,
-                        height=page.height
+                        height=page.height,
+                        fit=ft.ImageFit.COVER,
+                        opacity=0.7
                     ),
                     ft.Container(
-                        content=conteudo,
-                        alignment=ft.alignment.center,
-                        padding=40,
-                        bgcolor="#00000088",
-                        border_radius=10
+                        gradient=ft.LinearGradient(
+                            begin=ft.alignment.top_center,
+                            end=ft.alignment.bottom_center,
+                            colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
+                        ),
+                        content=ft.Column(
+                            [conteudo],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                        ),
+                        expand=True
                     )
                 ],
-                expand=True
-            )
-        )
+                expand=True))
         
 class MenuCarros:       
     def menu_cadastros(page: ft.Page):
         page.title = "Menu de Cadastros"
         page.theme_mode = ft.ThemeMode.DARK
-        titulo = ft.Text("Cadastros", size=40, weight=ft.FontWeight.BOLD, color="white")
+        page.padding = 0
+        page.fonts = {"Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"}
+        page.theme = ft.Theme(font_family="Poppins")
+
+        titulo = ft.Text("Veículos",size=36,weight=ft.FontWeight.BOLD,color=ft.Colors.WHITE,text_align=ft.TextAlign.CENTER)
+        subtitulo = ft.Text("Gerenciamento de veículos",size=16,color=ft.Colors.WHITE70,text_align=ft.TextAlign.CENTER)
         
         def voltar_menu(e):
             page.clean()
@@ -106,62 +151,95 @@ class MenuCarros:
             page.clean()
             excluir_veiculo(page)
 
-        botoes = [
-            ft.ElevatedButton(
-                text="Cadastrar Veículo",
-                icon=ft.Icons.ADD,
-                width=400,
-                on_click=cadastrar_veiculo),
-            ft.ElevatedButton(
-                text="Mostrar Veículos Cadastrados",
-                icon=ft.Icons.LIST,
-                width=400,
-                on_click=veiculos_cadastrados),
-            ft.ElevatedButton(
-                text="Alterar Cadastro de Veículo",
-                icon=ft.Icons.EDIT,
-                width=400,
-                on_click=alterar_cadastro_veiculo),
-            ft.ElevatedButton(
-                text="Excluir Cadastro de Veículo",
-                icon=ft.Icons.DELETE,
-                width=400,
-                on_click=excluir_cadastro_veiculo),
-            ft.ElevatedButton(
-                text="Voltar ao Menu Principal",
-                icon=ft.Icons.ARROW_BACK,
-                width=400,
-                on_click=voltar_menu)]
+        def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
+            return ft.Container(
+                content=ft.ElevatedButton(
+                    text=texto,
+                    icon=icone,
+                    on_click=funcao,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=10),
+                        padding=20,
+                        bgcolor=cor,
+                        color=ft.Colors.WHITE
+                    ),
+                width=300,
+                height=60
+                ),
+                margin=ft.margin.only(bottom=15),
+                animate=ft.Animation(300, "easeInOut"))
+        
+        botao_cadastrar = criar_botao("Cadastrar Veículo", ft.Icons.ADD, cadastrar_veiculo, ft.Colors.TEAL_700)
+        botao_listar = criar_botao("Listar Veículos", ft.Icons.LIST, veiculos_cadastrados, ft.Colors.INDIGO_700)
+        botao_alterar = criar_botao("Alterar Veículo", ft.Icons.EDIT, alterar_cadastro_veiculo, ft.Colors.PURPLE_700)
+        botao_excluir = criar_botao("Excluir Veículo", ft.Icons.DELETE, excluir_cadastro_veiculo, ft.Colors.RED_700)
+        botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
             
         conteudo = ft.Column(
-            [titulo, *botoes],
+            [
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Icon(name=ft.Icons.DIRECTIONS_CAR, size=50, color=ft.Colors.WHITE),
+                            titulo,
+                            subtitulo,
+                            ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                            botao_cadastrar,
+                            botao_listar,
+                            botao_alterar,
+                            botao_excluir,
+                            botao_voltar
+                        ],
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=5
+                    ),
+                    padding=ft.padding.all(30),
+                    bgcolor=ft.Colors.with_opacity(0.85, ft.Colors.BLACK),
+                    border_radius=20,
+                    width=400
+                )
+            ],
             alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
         
         page.add(
             ft.Stack(
-                controls=[
+                [
                     ft.Image(
-                        src="https://img.odcdn.com.br/wp-content/uploads/2024/03/shutterstock_1082263868-1.jpg",
-                        fit=ft.ImageFit.COVER,
+                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
                         width=page.width,
-                        height=page.height
+                        height=page.height,
+                        fit=ft.ImageFit.COVER,
+                        opacity=0.7
                     ),
                     ft.Container(
-                        content=conteudo,
-                        alignment=ft.alignment.center,
-                        padding=40,
-                        bgcolor="#00000088",
-                        border_radius=10
+                        gradient=ft.LinearGradient(
+                            begin=ft.alignment.top_center,
+                            end=ft.alignment.bottom_center,
+                            colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
+                        ),
+                        content=ft.Column(
+                            [conteudo],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                        ),
+                        expand=True
                     )
                 ],
                 expand=True))
-        
+
+
 class MenuVendas:
     def menu_vendas(page: ft.Page):
         page.title = "Menu de Vendas"
         page.theme_mode = ft.ThemeMode.DARK
-        titulo = ft.Text("Vendas", size=40, weight=ft.FontWeight.BOLD, color="white")
+        page.padding = 0
+        page.fonts = {"Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"}
+        page.theme = ft.Theme(font_family="Poppins")
+
+        titulo = ft.Text("Vendas",size=36,weight=ft.FontWeight.BOLD,color=ft.Colors.WHITE,text_align=ft.TextAlign.CENTER) 
+        subtitulo = ft.Text("Gerenciamento de vendas",size=16,color=ft.Colors.WHITE70,text_align=ft.TextAlign.CENTER)
         
         def voltar_menu(e):
             page.clean()
@@ -176,75 +254,104 @@ class MenuVendas:
             page.clean()
             from Models.vendas import listar_vendas
             listar_vendas(page)
+
         def alterar_venda(e):
             page.clean()
             from Models.vendas import alterar_venda
             alterar_venda(page)
+
         def excluir_venda(e):
             page.clean()
             from Models.vendas import excluir_venda
             excluir_venda(page)
 
-        botoes = [
-            ft.ElevatedButton(
-                text="Cadastrar Venda",
-                icon=ft.Icons.ADD,
-                width=400,
-                on_click=cadastrar_venda),
-            ft.ElevatedButton(
-                text="Mostrar Vendas",
-                icon=ft.Icons.LIST,
-                width=400,
-                on_click=listar_vendas),
-            ft.ElevatedButton(
-                text="Alterar Venda",
-                icon=ft.Icons.EDIT,
-                width=400,
-                on_click=alterar_venda),
-            ft.ElevatedButton(
-                text="Excluir Venda",
-                icon=ft.Icons.DELETE,
-                width=400,
-                on_click=excluir_venda),
-            ft.ElevatedButton(
-                text="Voltar ao Menu Principal",
-                icon=ft.Icons.ARROW_BACK,
-                width=400,
-                on_click=voltar_menu)
-        ]
-            
+        def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
+            return ft.Container(
+                content=ft.ElevatedButton(
+                    text=texto,
+                    icon=icone,
+                    on_click=funcao,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=10),
+                        padding=20,
+                        bgcolor=cor,
+                        color=ft.Colors.WHITE
+                    ),
+                width=300,
+                height=60
+                ),
+                margin=ft.margin.only(bottom=15),
+                animate=ft.Animation(300, "easeInOut"))
+        botao_cadastrar = criar_botao("Cadastrar Venda", ft.Icons.ADD, cadastrar_venda, ft.Colors.TEAL_700)
+        botao_listar = criar_botao("Listar Vendas", ft.Icons.LIST, listar_vendas, ft.Colors.INDIGO_700)
+        botao_alterar = criar_botao("Alterar Venda", ft.Icons.EDIT, alterar_venda, ft.Colors.PURPLE_700)
+        botao_excluir = criar_botao("Excluir Venda", ft.Icons.DELETE, excluir_venda, ft.Colors.RED_700)
+        botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
+
         conteudo = ft.Column(
-            [titulo, *botoes],
+            [
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Icon(name=ft.Icons.SHOPPING_CART, size=50, color=ft.Colors.WHITE),
+                            titulo,
+                            subtitulo,
+                            ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                            botao_cadastrar,
+                            botao_listar,
+                            botao_alterar,
+                            botao_excluir,
+                            botao_voltar
+                        ],
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=5
+                    ),
+                    padding=ft.padding.all(30),
+                    bgcolor=ft.Colors.with_opacity(0.85, ft.Colors.BLACK),
+                    border_radius=20,
+                    width=400
+                )
+            ],
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER)
         
         page.add(
             ft.Stack(
-                controls=[
+                [
                     ft.Image(
-                        src="https://img.odcdn.com.br/wp-content/uploads/2024/03/shutterstock_1082263868-1.jpg",
-                        fit=ft.ImageFit.COVER,
+                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
                         width=page.width,
-                        height=page.height
+                        height=page.height,
+                        fit=ft.ImageFit.COVER,
+                        opacity=0.7
                     ),
                     ft.Container(
-                        content=conteudo,
-                        alignment=ft.alignment.center,
-                        padding=40,
-                        bgcolor="#00000088",
-                        border_radius=10
+                        gradient=ft.LinearGradient(
+                            begin=ft.alignment.top_center,
+                            end=ft.alignment.bottom_center,
+                            colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
+                        ),
+                        content=ft.Column(
+                            [conteudo],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                        ),
+                        expand=True
                     )
                 ],
-                expand=True
-            )
-        )
+                expand=True))
 
 
 class MenuPosvenda:       
     def menu_pos(page: ft.Page):
         page.title = "Menu Pós Venda"
         page.theme_mode = ft.ThemeMode.DARK
-        titulo = ft.Text("Cadastros", size=40, weight=ft.FontWeight.BOLD, color="white")
+        page.padding = 0
+        page.fonts = {"Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"}
+        page.theme = ft.Theme(font_family="Poppins")
+
+        titulo = ft.Text("Pós Vendas",size=36,weight=ft.FontWeight.BOLD,color=ft.Colors.WHITE,text_align=ft.TextAlign.CENTER)
+        subtitulo = ft.Text("Gerenciamento de Pós Vendas",size=16,color=ft.Colors.WHITE70,text_align=ft.TextAlign.CENTER)
         
         def voltar_menu(e):
             page.clean()
@@ -260,55 +367,86 @@ class MenuPosvenda:
             page.clean()
             procurar_veiculo(page)
             
-        def alterar_cadastro_veiculo(e):
-            pass
-            
-        def excluir_cadastro_veiculo(e):
+        def alterar_ocorrencia(e):
             pass
 
-        botoes = [
-            ft.ElevatedButton(
-                text="Registrar Ocorrência de problema.",
-                icon=ft.Icons.ADD,
-                width=400,
-                on_click=cadastrar_ocorrencia),
-            ft.ElevatedButton(
-                text="Histórico de problemas por Veículo",
-                icon=ft.Icons.LIST,
-                width=400,
-                on_click=historico_problema_veiculo),
-            ft.ElevatedButton(
-                text="Pesquisa de satisfação.",
-                icon=ft.Icons.EDIT,
-                width=400,
-                on_click=alterar_cadastro_veiculo),
-            ft.ElevatedButton(
-                text="Voltar ao Menu Principal",
-                icon=ft.Icons.ARROW_BACK,
-                width=400,
-                on_click=voltar_menu)
-        ]
-            
+        def excluir_ocorrencia(e):
+            pass
+
+        def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
+            return ft.Container(
+                content=ft.ElevatedButton(
+                    text=texto,
+                    icon=icone,
+                    on_click=funcao,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=10),
+                        padding=20,
+                        bgcolor=cor,
+                        color=ft.Colors.WHITE
+                    ),
+                width=300,
+                height=60
+                ),
+                margin=ft.margin.only(bottom=15),
+
+                animate=ft.Animation(300, "easeInOut"))
+        botao_cadastrar = criar_botao("Cadastrar Veículo", ft.Icons.ADD, cadastrar_ocorrencia, ft.Colors.TEAL_700)
+        botao_historico = criar_botao("Listar Veículos", ft.Icons.LIST, historico_problema_veiculo, ft.Colors.INDIGO_700)
+        botao_alterar = criar_botao("Alterar Veículo", ft.Icons.EDIT, alterar_ocorrencia, ft.Colors.PURPLE_700)
+        botao_excluir = criar_botao("Excluir Veículo", ft.Icons.DELETE, excluir_ocorrencia, ft.Colors.RED_700)
+        botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
+
         conteudo = ft.Column(
-            [titulo, *botoes],
+            [
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Icon(name=ft.Icons.DIRECTIONS_CAR, size=50, color=ft.Colors.WHITE),
+                            titulo,
+                            subtitulo,
+                            ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                            botao_cadastrar,
+                            botao_historico,
+                            botao_alterar,
+                            botao_excluir,
+                            botao_voltar
+                        ],
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=5
+                    ),
+                    padding=ft.padding.all(30),
+                    bgcolor=ft.Colors.with_opacity(0.85, ft.Colors.BLACK),
+                    border_radius=20,
+                    width=400
+                )
+            ],
             alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
         
         page.add(
             ft.Stack(
-                controls=[
+                [
                     ft.Image(
-                        src="https://img.odcdn.com.br/wp-content/uploads/2024/03/shutterstock_1082263868-1.jpg",
-                        fit=ft.ImageFit.COVER,
+                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
                         width=page.width,
-                        height=page.height
+                        height=page.height,
+                        fit=ft.ImageFit.COVER,
+                        opacity=0.7
                     ),
                     ft.Container(
-                        content=conteudo,
-                        alignment=ft.alignment.center,
-                        padding=40,
-                        bgcolor="#00000088",
-                        border_radius=10
+                        gradient=ft.LinearGradient(
+                            begin=ft.alignment.top_center,
+                            end=ft.alignment.bottom_center,
+                            colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
+                        ),
+                        content=ft.Column(
+                            [conteudo],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                        ),
+                        expand=True
                     )
                 ],
                 expand=True))
