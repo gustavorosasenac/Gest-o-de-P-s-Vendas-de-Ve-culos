@@ -521,6 +521,7 @@ class MenuFeedback():
         def voltar_menu(e):
             page.clean()
             Menu_principal(page)
+            page.update()
 
         def cadastro_feedback(e):
             from Models.feedback import cadastro_de_feedback
@@ -533,10 +534,14 @@ class MenuFeedback():
             page.update()
 
         def alterar_feedback(e):
-            pass
+            from Models.feedback import alterar_feedback
+            content_column.controls = [alterar_feedback(page)]
+            page.update()
 
         def excluir_feedback(e):
-            pass
+            from Models.feedback import excluir_feedback
+            content_column.controls = [excluir_feedback(page)]
+            page.update()
 
         def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
             return ft.Container(

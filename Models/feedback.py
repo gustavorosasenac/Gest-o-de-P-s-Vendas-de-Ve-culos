@@ -68,7 +68,7 @@ def cadastro_de_feedback(page: ft.Page):
             return
         else:
              novo_feedback = Feedback(
-                 id_venda_veiculo=id_venda.value,
+                 id_venda_veiculos=id_venda.value,
                  comentario=comentario.value)
              session.add(novo_feedback)
              session.commit()
@@ -99,32 +99,169 @@ def cadastro_de_feedback(page: ft.Page):
     )
 
 def listar_feedback(page: ft.Page):
+
     feedbacks = session.query(Feedback).all()
+
     if not feedbacks:
-        return ft.Text("Nenhum feedback cadastrado.", size=20, color="white")
+        dlg_erros.content = ft.Text("Nenhum feedback cadastrado", color="red", size=20)
+        page.open(dlg_erros)
+        dlg_erros.open = True
+        return
 
-    feedback_list = []
-    for feedback in feedbacks:
-        feedback_list.append(
-            ft.ListTile(
-                title=ft.Text(f"ID Venda: {feedback.id_venda_veiculo}"),
-                subtitle=ft.Text(feedback.comentario),
-                leading=ft.Icon(ft.Icons.FEEDBACK, color=ft.Colors.BLUE_700),
-                content_padding=ft.padding.all(10)
-            )
-        )
-
-    return ft.ListView(
-        controls=feedback_list,
-        width=500,
-        height=400,
-        padding=20,
+    lista_feedback = ft.ListView(
+    controls=[
+        ft.Container(
+            content=ft.Text(f"ID: {v.id} | Venda ID: {v.id_venda_veiculos} | Comentário: {v.comentario}",
+                          size=16,
+                          color=ft.Colors.WHITE),
+            padding=10,
+            border=ft.border.all(1, ft.Colors.GREY_800),
+            margin=ft.margin.only(bottom=5))
+        for v in feedbacks
+    ],
+    width=900,
+    spacing=5,
+    padding=10
+)
+    
+    return ft.Container(
+        content=ft.Column([
+            ft.Text("  Veículos Cadastrados", 
+                   size=40, 
+                   weight=ft.FontWeight.BOLD, 
+                   color="white",
+                   text_align=ft.TextAlign.LEFT),  # Alinhamento do título à esquerda
+            ft.Divider(height=20),
+            lista_feedback
+        ],
+        alignment=ft.MainAxisAlignment.START,  # Alinha no topo
+        horizontal_alignment=ft.CrossAxisAlignment.START  # Alinha tudo à esquerda
+        ),
         bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20
+        border_radius=20,
+        width=1000,
+        padding=ft.padding.only(left=20, top=20, right=20, bottom=20),  # Padding igual em todos os lados
+        margin=ft.margin.only(left = 20),  # Margem reduzida à esquerda
+        alignment=ft.alignment.top_left  # Alinha o container no topo esquerdo
+    )
+    
+    
+def alterar_feedback(page: ft.Page):
+    id_feedback = ft.TextField(label="ID do Feedback", width=400)
+    id_venda = ft.TextField(label="ID da Venda", width=400)
+    comentario = ft.TextField(label="Comentário", width=400)
+
+    def alterar_feedback(e):
+        if not all([id_feedback.value, id_venda.value, comentario.value]):
+            dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
+        if not id_feedback.value.isdigit() or not id_venda.value.isdigit():
+            dlg_erros.content = ft.Text("IDs devem ser números inteiros", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
+        feedback = session.query(Feedback).filter(Feedback.id == id_feedback.value).first()
+        
+        if not feedback:
+            dlg_erros.content = ft.Text("Feedback não encontrado", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
+        venda = session.query(Vendas).filter(Vendas.id == id_venda.value).first()
+        if not venda:
+            dlg_erros.content = ft.Text("Venda não encontrada", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
+        feedback.id_venda_veiculos = id_venda.value
+        feedback.comentario = comentario.value
+        session.commit()
+        
+        dlg_sucesso.content = ft.Text("Feedback alterado com sucesso!", color="green", size=20)
+        page.open(dlg_sucesso)
+        dlg_sucesso.open = True
+
+    botao_alterar = criar_botao("Alterar", ft.Icons.EDIT, alterar_feedback, ft.Colors.TEAL_700)
+    return ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("Alterar Feedback", size=30, weight=ft.FontWeight.BOLD, color="white"),
+                id_feedback,
+                id_venda,
+                comentario,
+                ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                botao_alterar,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=500,
+        alignment=ft.alignment.center,
+        margin=ft.margin.symmetric(vertical=100),
+        padding=20
     )
 
 def excluir_feedback(page: ft.Page):
-    pass
+    id_feedback = ft.TextField(label="ID do Feedback", width=400)
+
+    def excluir_feedback(e):
+        if not id_feedback.value:
+            dlg_erros.content = ft.Text("Preencha o ID do feedback!", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
+        if not id_feedback.value.isdigit():
+            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
+        feedback = session.query(Feedback).filter(Feedback.id == id_feedback.value).first()
+        
+        if not feedback:
+            dlg_erros.content = ft.Text("Feedback não encontrado", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
+        session.delete(feedback)
+        session.commit()
+        
+        dlg_sucesso.content = ft.Text("Feedback excluído com sucesso!", color="green", size=20)
+        page.open(dlg_sucesso)
+        dlg_sucesso.open = True
+
+    botao_excluir = criar_botao("Excluir", ft.Icons.DELETE, excluir_feedback, ft.Colors.RED_700)
+
+    return ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("Excluir Feedback", size=30, weight=ft.FontWeight.BOLD, color="white"),
+                id_feedback,
+                ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                botao_excluir,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=500,
+        alignment=ft.alignment.center,
+        margin=ft.margin.symmetric(vertical=100),
+        padding=20
+    )
+     
+    
 
         
 
