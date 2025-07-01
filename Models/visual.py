@@ -376,7 +376,7 @@ class MenuVendas:
         )
 
 
-class MenuPosvenda:       
+class MenuPosvenda():       
     def menu_pos(page: ft.Page):
         page.title = "Menu Pós Venda"
         page.theme_mode = ft.ThemeMode.DARK
