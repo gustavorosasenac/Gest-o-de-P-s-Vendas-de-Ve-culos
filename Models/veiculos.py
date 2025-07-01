@@ -103,11 +103,12 @@ def cadastros_de_veiculo(page: ft.Page):
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         ),
-        bgcolor=ft.Colors.with_opacity(0.60, ft.Colors.BLACK),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
         border_radius=20,
         width=500,
-        height=600,
-        margin=ft.margin.only(left=300, top=150),  # Empurra o conteúdo 300px para a direita
+        alignment=ft.alignment.center,
+        margin=ft.margin.symmetric(vertical=100),
+        padding=20
     )
 
 def listar_veiculos(page: ft.Page):

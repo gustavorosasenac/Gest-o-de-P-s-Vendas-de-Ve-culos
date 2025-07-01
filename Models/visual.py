@@ -2,8 +2,8 @@ import flet as ft
 from DB.Database import session
 
 class Menu_principal:
-
     def __init__(self, page: ft.Page):
+        # Abre em tela cheia
         # Configuração da página
         page.title = "🚘 Sistema de Veículos Premium"
         page.theme_mode = ft.ThemeMode.DARK
@@ -26,7 +26,7 @@ class Menu_principal:
             
         def mostrar_cadastros(e):
             page.clean()
-            MenuCarros.menu_cadastros(page)
+            MenuCarros.menu_carros(page)
 
         def mostrar_vendas(e):
             page.clean()
@@ -36,8 +36,6 @@ class Menu_principal:
             page.clean()
             MenuPosvenda.menu_pos(page)
 
-        
-        
         # Estilo do botão, só precisando alterar os textos e ícones
         def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
             return ft.Container(
@@ -97,7 +95,7 @@ class Menu_principal:
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        src="https://wallpapers.com/images/hd/1920x1080-hd-car-b2iukmgt7rdpuv8w.jpg",
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
@@ -120,7 +118,7 @@ class Menu_principal:
                 expand=True))
         
 class MenuCarros:       
-    def menu_cadastros(page: ft.Page):
+    def menu_carros(page: ft.Page):
         page.title = "Menu de Cadastros"
         page.theme_mode = ft.ThemeMode.DARK
         page.padding = 0
@@ -215,14 +213,19 @@ class MenuCarros:
         main_row = ft.Row(
     [
         menu_column,  # Menu à esquerda (fixo)
-        ft.Container(  # Espaço flexível para o conteúdo
-            content=content_column,
-            expand=True,
-            padding=ft.padding.only(left=50)  # Ajuste opcional para afastar mais
+        ft.Container(  # Área central expandível
+            content=ft.Row(
+                [
+                    content_column  # Conteúdo será centralizado dentro desta linha
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,  # Centraliza horizontalmente
+                vertical_alignment=ft.CrossAxisAlignment.CENTER  # Centraliza verticalmente
+            ),
+            expand=True
         )
     ],
     expand=True,
-    spacing=0  # Remove espaçamento entre colunas
+    spacing=300  # Espaçamento entre o menu e o conteúdo
 )
         
         page.add(
@@ -236,11 +239,6 @@ class MenuCarros:
                         opacity=0.7
                     ),
                     ft.Container(
-                        gradient=ft.LinearGradient(
-                            begin=ft.alignment.top_center,
-                            end=ft.alignment.bottom_center,
-                            colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
-                        ),
                         content=main_row,
                         expand=True
                     )
