@@ -4,7 +4,6 @@ from DB.Tables.table_veiculos import Veiculos
 
 Base.metadata.create_all(engine)
 
-
 #inicializa o sistema de registro de ocorrências
 def registrar_ocorrencia(page: ft.Page):
     page.title = "Registrar Ocorrência"
@@ -20,7 +19,6 @@ def registrar_ocorrencia(page: ft.Page):
         page.clean()
         MenuPosvenda.menu_pos(page)
 
-    veiculo
 
 
 

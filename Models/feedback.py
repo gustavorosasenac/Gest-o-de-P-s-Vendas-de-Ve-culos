@@ -5,7 +5,6 @@ from DB.Tables.table_vendas import Vendas
 
 Base.metadata.create_all(engine)
 
-
 #dlg é só o nome da variavel, ft.AlertDialog cria a caixa de aviso de erro ou sucesso.
 dlg_erros = ft.AlertDialog(
     title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
