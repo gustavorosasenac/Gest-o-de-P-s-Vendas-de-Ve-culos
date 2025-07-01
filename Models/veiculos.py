@@ -34,7 +34,7 @@ def cadastros_de_veiculo(page: ft.Page):
     def voltar_menu(e):
         from Models.visual import MenuCarros
         page.clean()
-        MenuCarros.menu_cadastros(page)
+        MenuCarros.menu_carros(page)
 
     # Função para cadastrar veículo
     def cadastrar_veiculo(e):
@@ -125,7 +125,7 @@ def listar_veiculos(page: ft.Page):
     def voltar_menu(e):
         from Models.visual import MenuCarros
         page.clean()
-        MenuCarros.menu_cadastros(page)
+        MenuCarros.menu_carros(page)
     
     veiculos = session.query(Veiculos).all()
     
@@ -177,7 +177,7 @@ def alterar_cadastro(page: ft.Page):
     def voltar_menu(e):
         from Models.visual import MenuCarros
         page.clean()
-        MenuCarros.menu_cadastros(page)
+        MenuCarros.menu_carros(page)
 
     def buscar_veiculo(e):
         if not all([id_veiculo, fabricante.value, modelo.value, ano.value, motorizacao.value, cambio.value]):
@@ -244,7 +244,7 @@ def excluir_veiculo(page: ft.Page):
     def voltar_menu(e):
         from Models.visual import MenuCarros
         page.clean()
-        MenuCarros.menu_cadastros(page)
+        MenuCarros.menu_carros(page)
     
     def excluir_veiculo(e):
         if not id_veiculo.value.isdigit():
