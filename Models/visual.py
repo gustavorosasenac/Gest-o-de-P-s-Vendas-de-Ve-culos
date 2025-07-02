@@ -202,6 +202,7 @@ class MenuCarros:
                             botao_listar,
                             botao_alterar,
                             botao_excluir,
+                            ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                             botao_voltar
                         ],
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -330,6 +331,7 @@ class MenuVendas:
                             botao_listar,
                             botao_alterar,
                             botao_excluir,
+                            ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                             botao_voltar
                         ],
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -452,6 +454,7 @@ class MenuPosvenda():
                             botao_historico,
                             botao_alterar,
                             botao_excluir,
+                            ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                             botao_voltar
                         ],
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -581,6 +584,7 @@ class MenuFeedback():
                             botao_listar,
                             botao_alterar,
                             botao_excluir,
+                            ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                             botao_voltar
                         ],
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -704,6 +708,7 @@ class MenuChamado():
                             botao_listar,
                             botao_alterar,
                             botao_excluir,
+                            ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                             botao_voltar
                         ],
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
