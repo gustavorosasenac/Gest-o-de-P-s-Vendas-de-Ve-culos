@@ -39,6 +39,10 @@ class Menu_principal:
         def mostrar_feedback(e):
             page.clean()
             MenuFeedback.menu_feedback(page)
+            
+        def mostrar_item(e):
+            page.clean()
+            MenuItem.menu_item(page)
 
 
         # Estilo do botão, só precisando alterar os textos e ícones
@@ -65,6 +69,7 @@ class Menu_principal:
         botao_vendas = criar_botao("Vendas", ft.Icons.SHOPPING_CART, mostrar_vendas, ft.Colors.INDIGO_700)
         botao_pos_venda = criar_botao("Pós-Vendas", ft.Icons.ASSIGNMENT_RETURN, mostrar_pos_venda, ft.Colors.PURPLE_700)
         botao_feedback = criar_botao("Feedback", ft.Icons.FEEDBACK, mostrar_feedback, ft.Colors.ORANGE_700)
+        botao_item = criar_botao("Itens", ft.Icons.INVENTORY, mostrar_item, ft.Colors.PINK_700)
         botao_fechar_app = criar_botao("Fechar Aplicação", ft.Icons.EXIT_TO_APP, fechar_app, ft.Colors.RED_700)
         
         # Layout principal
@@ -81,6 +86,7 @@ class Menu_principal:
                             botao_vendas,
                             botao_pos_venda,
                             botao_feedback,
+                            botao_item,
                             ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                             botao_fechar_app
                         ],
@@ -560,6 +566,134 @@ class MenuFeedback():
         botao_listar = criar_botao("Listar feedback", ft.Icons.LIST, listar_feedback, ft.Colors.INDIGO_700)
         botao_alterar = criar_botao("Alterar feedback", ft.Icons.EDIT, alterar_feedback, ft.Colors.PURPLE_700)
         botao_excluir = criar_botao("Excluir feedback", ft.Icons.DELETE, excluir_feedback, ft.Colors.RED_700)
+        botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
+
+        menu_column = ft.Column(
+            [
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Icon(name=ft.Icons.DIRECTIONS_CAR, size=50, color=ft.Colors.WHITE),
+                            titulo,
+                            subtitulo,
+                            ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                            botao_cadastrar,
+                            botao_listar,
+                            botao_alterar,
+                            botao_excluir,
+                            botao_voltar
+                        ],
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=5
+                    ),
+                    padding=ft.padding.all(30),
+                    bgcolor=ft.Colors.with_opacity(0.85, ft.Colors.BLACK),
+                    border_radius=20,
+                    width=400
+                )
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
+        
+        # Layout principal (menu à esquerda e conteúdo à direita)
+        main_row = ft.Row(
+    [
+        menu_column,  # Menu à esquerda (fixo)
+        ft.Container(  # Área central expandível
+            content=ft.Row(
+                [
+                    content_column  # Conteúdo será centralizado dentro desta linha
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,  # Centraliza horizontalmente
+                vertical_alignment=ft.CrossAxisAlignment.CENTER  # Centraliza verticalmente
+            ),
+            expand=True
+        )
+    ],
+    expand=True,
+    spacing=300  # Espaçamento entre o menu e o conteúdo
+)
+        
+        page.add(
+            ft.Stack(
+                [
+                    ft.Image(
+                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        width=page.width,
+                        height=page.height,
+                        fit=ft.ImageFit.COVER,
+                        opacity=0.7
+                    ),
+                    ft.Container(
+                        content=main_row,
+                        expand=True
+                    )
+                ],
+                expand=True
+            )
+        )
+
+class MenuItem():
+    def menu_item(page: ft.Page):
+        page.title = "Menu de Itens"
+        page.theme_mode = ft.ThemeMode.DARK
+        page.padding = 0
+        page.fonts = {"Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"}
+        page.theme = ft.Theme(font_family="Poppins")
+
+        titulo = ft.Text("Itens",size=36,weight=ft.FontWeight.BOLD,color=ft.Colors.WHITE,text_align=ft.TextAlign.CENTER) 
+        subtitulo = ft.Text("Gerenciamento de Itens",size=16,color=ft.Colors.WHITE70,text_align=ft.TextAlign.CENTER)
+        
+        # Espaço para o conteúdo dinâmico
+        content_column = ft.Column([], expand=True)
+
+        def voltar_menu(e):
+            page.clean()
+            Menu_principal(page)
+
+        def cadastrar_item(e):
+            from Models.item import cadastrar_item
+            content_column.controls = [cadastrar_item(page)]
+            page.update()
+
+        def listar_item(e):
+            from Models.item import listar_item
+            content_column.controls = [listar_item(page)]
+            page.update()
+
+        def alterar_item(e):
+            from Models.item import alterar_item
+            content_column.controls = [alterar_item(page)]
+            page.update()
+
+        def excluir_item(e):
+            from Models.item import excluir_item
+            content_column.controls = [excluir_item(page)]
+            page.update()
+
+        def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
+            return ft.Container(
+                content=ft.ElevatedButton(
+                    text=texto,
+                    icon=icone,
+                    on_click=funcao,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=10),
+                        padding=20,
+                        bgcolor=cor,
+                        color=ft.Colors.WHITE
+                    ),
+                width=300,
+                height=60
+                ),
+                margin=ft.margin.only(bottom=15),
+                animate=ft.Animation(300, "easeInOut"))
+        
+        botao_cadastrar = criar_botao("Cadastrar Venda", ft.Icons.ADD, cadastrar_item, ft.Colors.TEAL_700)
+        botao_listar = criar_botao("Listar Vendas", ft.Icons.LIST, listar_item, ft.Colors.INDIGO_700)
+        botao_alterar = criar_botao("Alterar Venda", ft.Icons.EDIT, alterar_item, ft.Colors.PURPLE_700)
+        botao_excluir = criar_botao("Excluir Venda", ft.Icons.DELETE, excluir_item, ft.Colors.RED_700)
         botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
 
         menu_column = ft.Column(
