@@ -95,7 +95,7 @@ def cadastro_de_chamado(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=100),
+        margin=ft.margin.symmetric(vertical=150),
         padding=20
     )
 
