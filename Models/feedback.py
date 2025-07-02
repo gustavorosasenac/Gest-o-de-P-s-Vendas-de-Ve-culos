@@ -1,9 +1,7 @@
 import flet as ft
-from DB.Database import session, engine, Base
+from DB.Database import session
 from DB.Tables.table_feeback import Feedback
 from DB.Tables.table_vendas import Vendas
-
-Base.metadata.create_all(engine)
 
 #dlg é só o nome da variavel, ft.AlertDialog cria a caixa de aviso de erro ou sucesso.
 dlg_erros = ft.AlertDialog(
