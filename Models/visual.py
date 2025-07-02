@@ -662,13 +662,19 @@ class MenuChamado():
             page.update()
             
         def listar_chamado(e):
-            pass
+            from Models.chamado import listar_chamados
+            content_column.controls = [listar_chamados(page)]
+            page.update()
             
         def alterar_chamado(e):
-            pass
+            from Models.chamado import alterar_cadastro
+            content_column.controls = [alterar_cadastro(page)]
+            page.update()
             
         def excluir_chamado(e):
-            pass
+            from Models.chamado import excluir_chamado
+            content_column.controls = [excluir_chamado(page)]
+            page.update()
 
         def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
             return ft.Container(
