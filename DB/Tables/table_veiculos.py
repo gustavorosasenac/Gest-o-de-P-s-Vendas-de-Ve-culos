@@ -1,8 +1,8 @@
 from DB.Database import Base
-from sqlalchemy import Column, Integer, String, Date, Float
+from sqlalchemy import Column, Integer, String
 
 class Veiculos(Base):
-    __tablename__ = "veiculos"
+    __tablename__ = 'veiculos'
     id = Column(Integer, primary_key=True, autoincrement=True)
     fabricante = Column(String(100), nullable=False)
     modelo = Column(String(100), nullable=False)

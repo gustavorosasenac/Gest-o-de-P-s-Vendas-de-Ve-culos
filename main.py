@@ -1,6 +1,12 @@
 import flet as ft
 from DB.Database import Base, engine
 from Models.login import Login
+from DB.Tables.table_veiculos import Veiculos
+from DB.Tables.table_vendas import Vendas
+from DB.Tables.table_vendas import VendaVeiculo
+from DB.Tables.table_feeback import Feedback
+from DB.Tables.table_item import Itens
+from DB.Tables.table_pos_venda import Chamado, Diagnostico, Orcamento
 
 #cria o BD
 Base.metadata.create_all(engine)

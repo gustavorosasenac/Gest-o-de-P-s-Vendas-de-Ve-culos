@@ -8,7 +8,7 @@ class Vendas(Base):
     comprador = Column(String(100), nullable=False)
     valor = Column(String(100), nullable=False)
 
-class Vendaveiculo(Base):
+class VendaVeiculo(Base):
     __tablename__ = 'vendas_veiculos'
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_veiculo = Column(Integer, ForeignKey('veiculos.id'))

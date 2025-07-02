@@ -1,9 +1,7 @@
 import flet as ft
-from DB.Database import session, Base, engine
-from DB.Tables.table_vendas import Vendas
+from DB.Database import session
+from DB.Tables.table_vendas import Vendas, VendaVeiculo
 from datetime import datetime
-
-Base.metadata.create_all(engine)
 
 dlg_erros = ft.AlertDialog(
     title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
@@ -43,12 +41,13 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
             )
 
 def cadastrar_venda(page: ft.Page):
+    id_veiculo = ft.TextField(label="ID do Veículo Vendido", width=400)
     data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
     comprador = ft.TextField(label="Comprador", width=400)
     valor = ft.TextField(label="Valor da Venda", width=400)
     
     def cadastrar_nova_venda(e):
-        if not all([data_venda.value, comprador.value, valor.value]):
+        if not all([id_veiculo.value, data_venda.value, comprador.value, valor.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
@@ -72,9 +71,14 @@ def cadastrar_venda(page: ft.Page):
                 data_venda=data_formatada,
                 comprador=comprador.value,
                 valor=valor.value)
-
+            
             session.add(nova_venda)
+            venda_veiculo = VendaVeiculo(
+                id_veiculo=int(id_veiculo.value),
+                id_vendas=nova_venda.id)
+            session.add(venda_veiculo)
             session.commit()
+
             dlg_sucesso.content = ft.Text("Venda cadastrada com sucesso!", color="green", size=20)
             page.open(dlg_sucesso)
             dlg_sucesso.open = True
@@ -85,6 +89,7 @@ def cadastrar_venda(page: ft.Page):
         content=ft.Column(
             [
                 ft.Text("Nova venda", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                id_veiculo,
                 data_venda,
                 comprador,
                 valor,
