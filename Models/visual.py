@@ -73,7 +73,7 @@ class Menu_principal:
         botao_cadastros = criar_botao("Cadastros", ft.Icons.CAR_RENTAL, mostrar_cadastros, ft.Colors.TEAL_700)
         botao_vendas = criar_botao("Vendas", ft.Icons.SHOPPING_CART, mostrar_vendas, ft.Colors.INDIGO_700)
         botao_feedback = criar_botao("Feedback", ft.Icons.FEEDBACK, mostrar_feedback, ft.Colors.ORANGE_700)
-        botao_chamado = criar_botao("Chamados", ft.Icons.ASSIGNMENT, mostrar_chamado, ft.Colors.RED_700)
+        botao_chamado = criar_botao("Chamados", ft.Icons.ASSIGNMENT, mostrar_chamado, ft.Colors.YELLOW_700)
         botao_orcamento = criar_botao("Orçamento", ft.Icons.MONEY, mostrar_orcamento, ft.Colors.PURPLE_700)
         botao_diagnostico = criar_botao("Diagnóstico", ft.Icons.TROUBLESHOOT, mostrar_diagnostico, ft.Colors.GREEN_700)
         botao_fechar_app = criar_botao("Fechar Aplicação", ft.Icons.EXIT_TO_APP, fechar_app, ft.Colors.RED_700)

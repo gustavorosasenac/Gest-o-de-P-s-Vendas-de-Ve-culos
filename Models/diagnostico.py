@@ -48,7 +48,7 @@ def cadastro_de_diagnostico(page: ft.Page):
     manutencao = ft.TextField(label="Preciso de manutenção? Sim ou Não", width=400)
 
     def cadastrar_diagnostico(e):
-        if not all([id_chamado, categoria, sintoma, manutencao]):
+        if not all([id_chamado.value, categoria.value, sintoma.value, manutencao.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
