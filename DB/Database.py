@@ -6,3 +6,4 @@ engine = create_engine("mysql+pymysql://root:root@localhost:3306/veiculos")
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()
+

@@ -44,10 +44,11 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
 def cadastro_de_orcamento(page: ft.Page):
     id_diagnostico = ft.TextField(label="ID do Diagnostico", width=400)
     id_item = ft.TextField(label="ID do Item", width=400)
+    id_venda_veiculo = ft.TextField(label="ID da venda", width=400)
 
 
     def cadastrar_chamado(e):
-        if not all([id_venda_veiculo.value, descricao.value]):
+        if not all([id_diagnostico.value, id_item.value, id_venda_veiculo.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
