@@ -7,7 +7,8 @@ from DB.Tables.table_vendas import VendaVeiculo
 from DB.Tables.table_feeback import Feedback
 from DB.Tables.table_item import Itens
 from DB.Tables.table_chamado import Chamado
-from DB.Tables.table_pos_venda import Diagnostico, Orcamento
+from DB.Tables.table_diagnostico import Diagnostico
+from DB.Tables.table_orcamento import Orcamento
 
 #cria o BD
 Base.metadata.create_all(engine)
@@ -19,6 +20,3 @@ def main(page: ft.Page):
 #Inicia a aplicação chamando o main
 if __name__ == "__main__":
     ft.app(target=main)
-
-
-
