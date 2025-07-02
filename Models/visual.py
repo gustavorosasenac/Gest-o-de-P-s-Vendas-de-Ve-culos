@@ -701,7 +701,7 @@ class MenuItem():
                 ft.Container(
                     content=ft.Column(
                         [
-                            ft.Icon(name=ft.Icons.DIRECTIONS_CAR, size=50, color=ft.Colors.WHITE),
+                            ft.Icon(name=ft.Icons.INVENTORY, size=50, color=ft.Colors.WHITE),
                             titulo,
                             subtitulo,
                             ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
