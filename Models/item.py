@@ -130,7 +130,7 @@ def listar_itens(page: ft.Page):
                 padding=10,
                 border=ft.border.all(1, ft.Colors.GREY_800),
                 margin=ft.margin.only(bottom=5))
-            for v in item
+            for v in itens
         ],
         width=900,
         spacing=5,
@@ -157,3 +157,115 @@ def listar_itens(page: ft.Page):
         margin=ft.margin.only(left=20),  # Margem reduzida à esquerda
         alignment=ft.alignment.top_left  # Alinha o container no topo esquerdo
     )
+
+
+def alterar_itens(page: ft.Page):
+    id_itens = ft.TextField(label="ID do item", width=400)
+    nome = ft.TextField(label="Nome do item", width=400)
+    preço = ft.TextField(label="Preço", width=400)
+    quantidade = ft.TextField(label="Quantidade", width=400)
+
+    def buscar_itens(e):
+        if not all([id_itens, nome.value, preço.value, quantidade.value]):
+            dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+
+        if not id_itens.value.isdigit():
+            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+
+        if not quantidade.value.isdigit():
+            dlg_erros.content = ft.Text("Quantidade deve ser um número inteiro", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+
+        itens = session.query(Itens).filter(Itens.id == int(id_itens.value)).first()
+
+        if not itens:
+            dlg_erros.content = ft.Text("Item não encontrado.", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        else:
+            itens.nome = nome.value
+            itens.preço = preço.value
+            itens.quantidade = quantidade.value
+            session.commit()
+
+            dlg_sucesso.content = ft.Text("Item alterado com sucesso!", color="green", size=20)
+            page.open(dlg_sucesso)
+            dlg_sucesso.open = True
+
+    botao_alterar = criar_botao("Alterar", ft.Icons.ADD, buscar_itens(), ft.Colors.TEAL_700)
+
+    return ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("Alterar Item", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                id_itens,
+                nome,
+                preço,
+                quantidade,
+                ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                botao_alterar,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=500,
+        alignment=ft.alignment.center,
+        margin=ft.margin.symmetric(vertical=100),
+        padding=20
+    )
+
+
+def excluir_veiculo(page: ft.Page):
+    id_itens = ft.TextField(label="ID do Item", width=400)
+
+    def excluir_itens(e):
+        if not id_itens.value.isdigit():
+            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+
+        item = session.query(Itens).filter(Itens.id == int(id_itens.value)).first()
+
+        if item:
+            session.delete(Itens)
+            session.commit()
+            dlg_sucesso.content = ft.Text("Item excluído com sucesso!", color="green", size=20)
+            page.open(dlg_sucesso)
+            dlg_sucesso.open = True
+        else:
+            dlg_erros.content = ft.Text("Item não encontrado.", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+
+    botao_excluir = criar_botao("Excluir", ft.Icons.ADD, excluir_veiculo, ft.Colors.RED_700)
+
+    return ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("Excluir Item", size=30, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
+                id_itens,
+                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
+                botao_excluir,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=400,
+        alignment=ft.alignment.center,
+        margin=ft.margin.symmetric(vertical=220),
+        padding=20)
