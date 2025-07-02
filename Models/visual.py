@@ -690,10 +690,10 @@ class MenuItem():
                 margin=ft.margin.only(bottom=15),
                 animate=ft.Animation(300, "easeInOut"))
         
-        botao_cadastrar = criar_botao("Cadastrar Venda", ft.Icons.ADD, cadastrar_item, ft.Colors.TEAL_700)
-        botao_listar = criar_botao("Listar Vendas", ft.Icons.LIST, listar_item, ft.Colors.INDIGO_700)
-        botao_alterar = criar_botao("Alterar Venda", ft.Icons.EDIT, alterar_item, ft.Colors.PURPLE_700)
-        botao_excluir = criar_botao("Excluir Venda", ft.Icons.DELETE, excluir_item, ft.Colors.RED_700)
+        botao_cadastrar = criar_botao("Cadastrar item", ft.Icons.ADD, cadastrar_item, ft.Colors.TEAL_700)
+        botao_listar = criar_botao("Listar item", ft.Icons.LIST, listar_item, ft.Colors.INDIGO_700)
+        botao_alterar = criar_botao("Alterar item", ft.Icons.EDIT, alterar_item, ft.Colors.PURPLE_700)
+        botao_excluir = criar_botao("Excluir item", ft.Icons.DELETE, excluir_item, ft.Colors.RED_700)
         botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
 
         menu_column = ft.Column(
