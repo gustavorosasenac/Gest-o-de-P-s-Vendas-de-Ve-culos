@@ -6,6 +6,7 @@ from DB.Tables.table_vendas import Vendas
 from DB.Tables.table_vendas import VendaVeiculo
 from DB.Tables.table_feeback import Feedback
 from DB.Tables.table_item import Itens
+from DB.Tables.table_chamado import Chamado
 from DB.Tables.table_pos_venda import Diagnostico, Orcamento
 
 #cria o BD
