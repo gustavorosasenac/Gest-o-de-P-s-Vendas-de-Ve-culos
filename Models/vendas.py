@@ -2,6 +2,7 @@ import flet as ft
 from DB.Database import session
 from DB.Tables.table_vendas import Vendas, VendaVeiculo
 from datetime import datetime
+from Models.veiculos import Veiculos 
 
 dlg_erros = ft.AlertDialog(
     title=ft.Text("Erro!", color="red", text_align=ft.TextAlign.CENTER),
@@ -56,15 +57,12 @@ def cadastrar_venda(page: ft.Page):
         data_str = data_venda.value
         data_formatada = datetime.strptime(data_str, "%d-%m-%Y").date()
 
-        verificar_cadastro = session.query(Vendas).filter(
-            Vendas.data_venda == data_formatada,
-            Vendas.comprador == comprador.value,
-            Vendas.valor == valor.value).first()
-        
-        if verificar_cadastro:
-            dlg_ja_cadastrado.content = ft.Text("Venda já cadastrada", color="red", size=20)
-            page.open(dlg_ja_cadastrado)
-            dlg_ja_cadastrado.open = True
+        verificar_carro = session.query(Veiculos).filter(Veiculos.id == int(id_veiculo.value)).first()
+
+        if not verificar_carro:
+            dlg_erros.content = ft.Text("Veículo não encontrado", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
             return
         else:
             nova_venda = Vendas(
