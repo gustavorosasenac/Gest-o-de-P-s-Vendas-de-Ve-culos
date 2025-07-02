@@ -73,9 +73,12 @@ def cadastrar_venda(page: ft.Page):
                 valor=valor.value)
             
             session.add(nova_venda)
+            session.flush()#Força a geração do ID antes do commit(solução)
+
             venda_veiculo = VendaVeiculo(
                 id_veiculo=int(id_veiculo.value),
-                id_vendas=nova_venda.id)
+                id_vendas= nova_venda.id)
+            
             session.add(venda_veiculo)
             session.commit()
 
