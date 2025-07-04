@@ -47,8 +47,10 @@ class Menu_principal:
         def mostrar_diagnostico(e):
             page.clean()
             MenuDiagnostico.menu_diagnostico(page)
-
-
+        
+        def mostrar_itens(e):
+            page.clean()
+            MenuItens.menu_itens(page)
 
         # Estilo do botão, só precisando alterar os textos e ícones
         def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
@@ -63,8 +65,8 @@ class Menu_principal:
                         bgcolor=cor,
                         color=ft.Colors.WHITE
                     ),
-                width=300,
-                height=60
+                width=280,
+                height=45
                 ),
                 margin=ft.margin.only(bottom=15),
                 animate=ft.Animation(300, "easeInOut")
@@ -76,6 +78,7 @@ class Menu_principal:
         botao_chamado = criar_botao("Chamados", ft.Icons.ASSIGNMENT, mostrar_chamado, ft.Colors.YELLOW_700)
         botao_orcamento = criar_botao("Orçamento", ft.Icons.MONEY, mostrar_orcamento, ft.Colors.PURPLE_700)
         botao_diagnostico = criar_botao("Diagnóstico", ft.Icons.TROUBLESHOOT, mostrar_diagnostico, ft.Colors.GREEN_700)
+        botao_item = criar_botao("Itens", ft.Icons.ADD_BOX, mostrar_itens, ft.Colors.RED_700)
         botao_fechar_app = criar_botao("Fechar Aplicação", ft.Icons.EXIT_TO_APP, fechar_app, ft.Colors.RED_700)
         
         # Layout principal
@@ -94,6 +97,7 @@ class Menu_principal:
                             botao_chamado,
                             botao_orcamento,
                             botao_diagnostico,
+                            botao_item,
                             ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                             botao_fechar_app
                         ],
@@ -912,7 +916,6 @@ class MenuOrcamento():
             )
         )
 
-
 class MenuItens():
     def menu_itens(page: ft.Page):
         page.title = "Menu Itens"
@@ -972,10 +975,10 @@ class MenuItens():
                 margin=ft.margin.only(bottom=15),
                 animate=ft.Animation(300, "easeInOut"))
 
-        botao_cadastrar = criar_botao("Cadastrar item", ft.Icons.ADD, cadastro_de_itens(), ft.Colors.TEAL_700)
-        botao_listar = criar_botao("Listar itens", ft.Icons.LIST, listar_itens(), ft.Colors.INDIGO_700)
-        botao_alterar = criar_botao("Alterar item", ft.Icons.EDIT, alterar_itens(), ft.Colors.PURPLE_700)
-        botao_excluir = criar_botao("Excluir itens", ft.Icons.DELETE, excluir_itens(), ft.Colors.RED_700)
+        botao_cadastrar = criar_botao("Cadastrar item", ft.Icons.ADD, cadastro_de_itens, ft.Colors.TEAL_700)
+        botao_listar = criar_botao("Listar itens", ft.Icons.LIST, listar_itens, ft.Colors.INDIGO_700)
+        botao_alterar = criar_botao("Alterar item", ft.Icons.EDIT, alterar_itens, ft.Colors.PURPLE_700)
+        botao_excluir = criar_botao("Excluir itens", ft.Icons.DELETE, excluir_itens, ft.Colors.RED_700)
         botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
 
         menu_column = ft.Column(
