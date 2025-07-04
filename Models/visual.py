@@ -95,8 +95,8 @@ class Menu_principal:
                             botao_vendas,
                             botao_feedback,
                             botao_chamado,
-                            botao_orcamento,
                             botao_diagnostico,
+                            botao_orcamento,
                             botao_item,
                             ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                             botao_fechar_app

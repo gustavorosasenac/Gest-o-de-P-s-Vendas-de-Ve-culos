@@ -45,10 +45,10 @@ def cadastro_de_diagnostico(page: ft.Page):
     id_chamado = ft.TextField(label="ID do Chamado", width=400)
     categoria = ft.TextField(label="Categoria", width=400)
     sintoma = ft.TextField(label="Sintoma", width=400)
-    manutencao = ft.TextField(label="Preciso de manutenção? Sim ou Não", width=400)
+    manutencao = ft.TextField(label="Preciso de manutenção? (TRUE/FALSE)", width=400)
 
     def cadastrar_diagnostico(e):
-        if not all([id_chamado.value, categoria.value, sintoma.value, manutencao.value]):
+        if not all([id_chamado.value, categoria.value, sintoma.value,manutencao.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
@@ -56,12 +56,6 @@ def cadastro_de_diagnostico(page: ft.Page):
         
         if not id_chamado.value.isdigit():
             dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        if manutencao != "Sim" and manutencao != "Não":
-            dlg_erros.content = ft.Text("Responda a manutenção somente com Sim ou Não", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
@@ -80,7 +74,6 @@ def cadastro_de_diagnostico(page: ft.Page):
             categoria=categoria.value,
             sintoma=sintoma.value,
             manutencao=manutencao.value)
-            
             session.add(novo_diagnostico)
             session.commit()
 

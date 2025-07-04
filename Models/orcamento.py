@@ -1,6 +1,12 @@
 import flet as ft
 from DB.Database import session
+from sqlalchemy import text
 from DB.Tables.table_orcamento import Orcamento
+from DB.Tables.table_vendas import VendaVeiculo
+from DB.Tables.table_chamado import Chamado
+from DB.Tables.table_item import Itens
+from DB.Tables.table_diagnostico import Diagnostico
+
 
 
 dlg_erros = ft.AlertDialog(
@@ -44,17 +50,23 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
 def cadastro_de_orcamento(page: ft.Page):
     id_diagnostico = ft.TextField(label="ID do Diagnostico", width=400)
     id_item = ft.TextField(label="ID do Item", width=400)
+    quantidade_item = ft.TextField(label="Quantidade do Item", width=400)
+    custo_total = 0.0
     id_venda_veiculo = ft.TextField(label="ID da venda", width=400)
 
-
-    def cadastrar_chamado(e):
-        if not all([id_diagnostico.value, id_item.value, id_venda_veiculo.value]):
+    def cadastrar_orcamento(e):
+        if not all([id_diagnostico.value, id_item.value, quantidade_item.value, id_venda_veiculo.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
         if not id_venda_veiculo.value.isdigit():
             dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        if not quantidade_item.value.isdigit():
+            dlg_erros.content = ft.Text("A quantidade de itens deve ser um número inteiro", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
@@ -67,27 +79,46 @@ def cadastro_de_orcamento(page: ft.Page):
             dlg_erros.open = True
             return
         
+        verificar_orcamento = session.query(Orcamento).filter(
+            Orcamento.id_venda_veiculo == int(id_venda_veiculo.value),
+            Orcamento.id_diagnostico == int(id_diagnostico.value),
+            Orcamento.id_item == int(id_item.value),
+            Orcamento.quantidade_item == int(quantidade_item.value)).first()
+        
+        item = session.query(Itens).filter(Itens.id == int(id_item.value)).first()
+        custo_total = item.preco * int(quantidade_item.value)
+        
+        if verificar_orcamento:
+                dlg_ja_cadastrado.content = ft.Text("Orçamento já cadastrado", color="red", size=20)
+                page.open(dlg_ja_cadastrado)
+                dlg_ja_cadastrado.open = True
+                return
         else:
-                novo_chamado = Chamado(
-                id_venda_veiculo=id_venda_veiculo.value,
-                descricao=descricao.value)
+                novo_orcamento = Orcamento(
+                id_diagnostico=id_diagnostico.value,
+                id_item=id_item.value,
+                quantidade_item=quantidade_item.value,
+                custo_total=custo_total,
+                id_venda_veiculo=id_venda_veiculo.value
+                )
                 
-                session.add(novo_chamado)
+                session.add(novo_orcamento)
                 session.commit()
 
-                dlg_sucesso.content = ft.Text("Chamado cadastrado com sucesso!", color="green", size=20)
+                dlg_sucesso.content = ft.Text("Orçamento cadastrado com sucesso!", color="green", size=20)
                 page.open(dlg_sucesso)
                 dlg_sucesso.open = True
 
-    botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_chamado, ft.Colors.TEAL_700)
-
+    botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_orcamento, ft.Colors.TEAL_700)
 
     return ft.Container(
     content=ft.Column(
         [
-            ft.Text("Novo Chamado", size=50, weight=ft.FontWeight.BOLD, color="white"),
+            ft.Text("Novo Orçamento", size=50, weight=ft.FontWeight.BOLD, color="white"),
+            id_diagnostico,
+            id_item,
+            quantidade_item,
             id_venda_veiculo,
-            descricao,
             ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
             botao_cadastrar,
         ],
@@ -103,24 +134,24 @@ def cadastro_de_orcamento(page: ft.Page):
 )
 
 def listar_orcamento(page: ft.Page):
-    chamados = session.query(Chamado).all()
+    orcamento = session.query(Orcamento).all()
     
-    if not chamados:
-        dlg_erros.content = ft.Text("Nenhum chamado encontrado", color="red", size=20)
+    if not orcamento:
+        dlg_erros.content = ft.Text("Nenhum Orçamento encontrado", color="red", size=20)
         page.open(dlg_erros)
         dlg_erros.open = True
         return
     
-    lista_chamados = ft.ListView(
+    lista_orcamento = ft.ListView(
     controls=[
         ft.Container(
-            content=ft.Text(f" ID Veiculo: {c.id_venda_veiculo} | Descrição: {c.descricao}",
+            content=ft.Text(f"ID do Diagnostico: {o.id_diagnostico}\nID do Item: {o.id_item} \nQuantidade do Item: {o.quantidade_item}\nCusto Total: {o.custo_total}\nID da Venda: {o.id_venda_veiculo}\n",
                           size=16,
                           color=ft.Colors.WHITE),
             padding=10,
             border=ft.border.all(1, ft.Colors.GREY_800),
             margin=ft.margin.only(bottom=5))
-        for c in chamados
+        for o in orcamento
     ],
     width=900,
     spacing=5,
@@ -129,13 +160,13 @@ def listar_orcamento(page: ft.Page):
     
     return ft.Container(
         content=ft.Column([
-            ft.Text("  Chamados Cadastrados", 
+            ft.Text("  Orçamentos Cadastrados", 
                    size=40, 
                    weight=ft.FontWeight.BOLD, 
                    color="white",
                    text_align=ft.TextAlign.LEFT),  # Alinhamento do título à esquerda
             ft.Divider(height=20),
-            lista_chamados
+            lista_orcamento
         ],
         alignment=ft.MainAxisAlignment.START,  # Alinha no topo
         horizontal_alignment=ft.CrossAxisAlignment.START  # Alinha tudo à esquerda
