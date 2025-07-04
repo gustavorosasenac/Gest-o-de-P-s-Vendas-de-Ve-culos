@@ -813,6 +813,11 @@ class MenuOrcamento():
             from Models.orcamento import listar_orcamento
             content_column.controls = [listar_orcamento(page)]
             page.update()
+
+        def listar_orcamento_venda(e):
+            from Models.orcamento import listar_orcamento_por_venda
+            content_column.controls = [listar_orcamento_por_venda(page, session)]
+            page.update()
             
         def alterar_orcamento(e):
             from Models.orcamento import alterar_orcamento
@@ -845,6 +850,7 @@ class MenuOrcamento():
         
         botao_cadastrar = criar_botao("Cadastrar Orçamento", ft.Icons.ADD, cadastrar_orcamento, ft.Colors.TEAL_700)
         botao_listar = criar_botao("Listar Orçamento", ft.Icons.LIST, listar_orcamento, ft.Colors.INDIGO_700)
+        botao_lista_venda = criar_botao("Listar Orçamento por Venda", ft.Icons.LIST, listar_orcamento_venda, ft.Colors.INDIGO_700)
         botao_alterar = criar_botao("Alterar Orçamento", ft.Icons.EDIT, alterar_orcamento, ft.Colors.PURPLE_700)
         botao_excluir = criar_botao("Excluir Orçamento", ft.Icons.DELETE, excluir_orcamento, ft.Colors.RED_700)
         botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
@@ -860,6 +866,7 @@ class MenuOrcamento():
                             ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
                             botao_cadastrar,
                             botao_listar,
+                            botao_lista_venda,
                             botao_alterar,
                             botao_excluir,
                             ft.Divider(height=20, color=ft.Colors.TRANSPARENT),

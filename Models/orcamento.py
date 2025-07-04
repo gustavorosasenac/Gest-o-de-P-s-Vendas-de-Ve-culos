@@ -133,7 +133,7 @@ def cadastro_de_orcamento(page: ft.Page):
     padding=20
 )
 
-def listar_orcamento(page: ft.Page):
+'''def listar_orcamento(page: ft.Page):
     orcamento = session.query(Orcamento).all()
     
     if not orcamento:
@@ -178,7 +178,7 @@ def listar_orcamento(page: ft.Page):
         margin=ft.margin.only(left = 20),  # Margem reduzida à esquerda
         alignment=ft.alignment.top_left  # Alinha o container no topo esquerdo
     )
-
+'''
 def alterar_orcamento(page: ft.Page):
     id_chamado = ft.TextField(label="ID do Chamado", width=400)
     descricao = ft.TextField(label="Descição", width=400)
@@ -277,3 +277,157 @@ def excluir_orcamento(page: ft.Page):
         alignment=ft.alignment.center,
         margin=ft.margin.symmetric(vertical=220),
         padding=20)
+
+
+
+
+
+
+
+
+def listar_orcamento_por_venda(page: ft.Page, session):
+    # Dialogo de erros
+    dlg_erros = ft.AlertDialog(
+        modal=True,
+        actions=[ft.TextButton("OK", on_click=lambda e: dlg_erros.close())]
+    )
+
+    # Componentes da UI
+    id_venda_field = ft.TextField(
+        label="Digite o ID da Venda",
+        width=300,
+        keyboard_type=ft.KeyboardType.NUMBER,
+        autofocus=True,
+        border_color=ft.Colors.AMBER
+    )
+
+    lista_orcamento = ft.ListView(
+        expand=True,
+        spacing=5,
+        padding=10
+    )
+
+    def buscar_orcamentos(e):
+        try:
+            id_venda = int(id_venda_field.value)
+        except ValueError:
+            dlg_erros.content = ft.Text("Digite um ID válido (número inteiro)!", color="red", size=20)
+            page.dialog = dlg_erros
+            dlg_erros.open = True
+            page.update()
+            return
+        
+        orcamentos = session.query(Orcamento).filter(
+            Orcamento.id_venda_veiculo == id_venda
+        ).all()
+        
+        lista_orcamento.controls.clear()
+        
+        if not orcamentos:
+            lista_orcamento.controls.append(
+                ft.Container(
+                    content=ft.Text(f"Nenhum orçamento encontrado para venda ID {id_venda}", size=16),
+                    padding=15,
+                    border=ft.border.all(1, ft.Colors.RED_400)
+                )
+            )
+        else:
+            # Agrupa os dados
+            dados_agrupados = {
+                'id_venda': id_venda,
+                'id_diagnostico': orcamentos[0].id_diagnostico,
+                'itens': [],
+                'custo_total': 0.0
+            }
+            
+            for o in orcamentos:
+                dados_agrupados['itens'].append({
+                    'id_item': o.id_item,
+                    'quantidade': o.quantidade_item,
+                    'custo': o.custo_total
+                })
+                dados_agrupados['custo_total'] += o.custo_total
+            
+            # Cabeçalho
+            lista_orcamento.controls.append(
+                ft.Container(
+                    content=ft.Column([
+                        ft.Text(f"Venda Veículo: #{dados_agrupados['id_venda']}", 
+                                size=20, 
+                                weight=ft.FontWeight.BOLD),
+                        ft.Text(f"Diagnóstico: #{dados_agrupados['id_diagnostico']}", 
+                                size=16)
+                    ]),
+                    padding=15,
+                    border=ft.border.all(1, ft.Colors.AMBER)
+                )
+            )
+            
+            # Itens
+            for item in dados_agrupados['itens']:
+                lista_orcamento.controls.append(
+                    ft.Container(
+                        content=ft.Column([
+                            ft.Text(f"Item: #{item['id_item']}", size=16),
+                            ft.Text(f"Quantidade: {item['quantidade']}", size=14),
+                            ft.Text(f"R$ {item['custo']:.2f}", 
+                                    size=14, 
+                                    color=ft.Colors.GREEN_300)
+                        ]),
+                        padding=15,
+                        margin=ft.margin.only(left=20),
+                        border=ft.border.all(1, ft.Colors.GREY_700)
+                    )
+                )
+            
+            # Total
+            lista_orcamento.controls.append(
+                ft.Container(
+                    content=ft.Text(
+                        f"TOTAL: R$ {dados_agrupados['custo_total']:.2f}",
+                        size=18,
+                        weight=ft.FontWeight.BOLD,
+                        color=ft.Colors.AMBER
+                    ),
+                    padding=15,
+                    border=ft.border.all(2, ft.Colors.AMBER),
+                    margin=ft.margin.only(top=10)
+                )
+            )
+        
+        page.update()
+
+    # Layout principal
+    return ft.Container(
+        content=ft.Column([
+            ft.Row([
+                ft.Icon(ft.Icons.RECEIPT_LONG, color=ft.Colors.AMBER),
+                ft.Text("Orçamentos por Venda", 
+                        size=24, 
+                        weight=ft.FontWeight.BOLD,
+                        color=ft.Colors.WHITE)
+            ]),
+            ft.Divider(height=20),
+            ft.Row([
+                id_venda_field,
+                ft.ElevatedButton(
+                    "Buscar",
+                    icon=ft.Icons.SEARCH,
+                    on_click=buscar_orcamentos,
+                    bgcolor=ft.Colors.AMBER,
+                    color=ft.Colors.BLACK
+                )
+            ]),
+            ft.Divider(height=20),
+            lista_orcamento
+        ],
+        scroll=ft.ScrollMode.AUTO,
+        expand=True
+        ),
+        bgcolor=ft.Colors.with_opacity(0.95, ft.Colors.BLACK),
+        border_radius=15,
+        padding=20,
+        width=900,
+        margin=ft.margin.symmetric(horizontal=20),
+        alignment=ft.alignment.top_left
+    )
