@@ -53,10 +53,14 @@ def cadastrar_venda(page: ft.Page):
             page.open(dlg_erros)
             dlg_erros.open = True
             return
-        
-        data_str = data_venda.value
-        data_formatada = datetime.strptime(data_str, "%d-%m-%Y").date()
-
+        try:
+            data_str = data_venda.value
+            data_formatada = datetime.strptime(data_str, "%d-%m-%Y").date()
+        except:
+            dlg_erros.content = ft.Text("Data inválida. Use o formato DD-MM-YYYY", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
         verificar_carro = session.query(Veiculos).filter(Veiculos.id == int(id_veiculo.value)).first()
 
         if not verificar_carro:
