@@ -133,7 +133,7 @@ def cadastro_de_orcamento(page: ft.Page):
     padding=20
 )
 
-'''def listar_orcamento(page: ft.Page):
+def listar_orcamento(page: ft.Page):
     orcamento = session.query(Orcamento).all()
     
     if not orcamento:
@@ -178,7 +178,7 @@ def cadastro_de_orcamento(page: ft.Page):
         margin=ft.margin.only(left = 20),  # Margem reduzida à esquerda
         alignment=ft.alignment.top_left  # Alinha o container no topo esquerdo
     )
-'''
+
 def alterar_orcamento(page: ft.Page):
     id_chamado = ft.TextField(label="ID do Chamado", width=400)
     descricao = ft.TextField(label="Descição", width=400)
@@ -278,28 +278,9 @@ def excluir_orcamento(page: ft.Page):
         margin=ft.margin.symmetric(vertical=220),
         padding=20)
 
-
-
-
-
-
-
-
 def listar_orcamento_por_venda(page: ft.Page, session):
-    # Dialogo de erros
-    dlg_erros = ft.AlertDialog(
-        modal=True,
-        actions=[ft.TextButton("OK", on_click=lambda e: dlg_erros.close())]
-    )
-
     # Componentes da UI
-    id_venda_field = ft.TextField(
-        label="Digite o ID da Venda",
-        width=300,
-        keyboard_type=ft.KeyboardType.NUMBER,
-        autofocus=True,
-        border_color=ft.Colors.AMBER
-    )
+    id_venda = ft.TextField(label="Digite o ID da Venda", width=300, border_color=ft.Colors.AMBER)
 
     lista_orcamento = ft.ListView(
         expand=True,
@@ -308,18 +289,19 @@ def listar_orcamento_por_venda(page: ft.Page, session):
     )
 
     def buscar_orcamentos(e):
-        try:
-            id_venda = int(id_venda_field.value)
-        except ValueError:
-            dlg_erros.content = ft.Text("Digite um ID válido (número inteiro)!", color="red", size=20)
-            page.dialog = dlg_erros
+        if not id_venda.value:
+            dlg_erros.content = ft.Text("Digite um ID", color="red", size=20)
+            page.open(dlg_erros)
             dlg_erros.open = True
-            page.update()
+            return
+        if not id_venda.value.isdigit():
+            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
             return
         
         orcamentos = session.query(Orcamento).filter(
-            Orcamento.id_venda_veiculo == id_venda
-        ).all()
+            Orcamento.id_venda_veiculo == id_venda).all()
         
         lista_orcamento.controls.clear()
         
@@ -409,7 +391,7 @@ def listar_orcamento_por_venda(page: ft.Page, session):
             ]),
             ft.Divider(height=20),
             ft.Row([
-                id_venda_field,
+                id_venda,
                 ft.ElevatedButton(
                     "Buscar",
                     icon=ft.Icons.SEARCH,
