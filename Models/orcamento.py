@@ -94,20 +94,20 @@ def cadastro_de_orcamento(page: ft.Page):
                 dlg_ja_cadastrado.open = True
                 return
         else:
-                novo_orcamento = Orcamento(
-                id_diagnostico=id_diagnostico.value,
-                id_item=id_item.value,
-                quantidade_item=quantidade_item.value,
-                custo_total=custo_total,
-                id_venda_veiculo=id_venda_veiculo.value
-                )
-                
-                session.add(novo_orcamento)
-                session.commit()
+            novo_orcamento = Orcamento(
+            id_diagnostico=id_diagnostico.value,
+            id_item=id_item.value,
+            quantidade_item=quantidade_item.value,
+            custo_total=custo_total,
+            id_venda_veiculo=id_venda_veiculo.value
+            )
+            
+            session.add(novo_orcamento)
+            session.commit()
 
-                dlg_sucesso.content = ft.Text("Orçamento cadastrado com sucesso!", color="green", size=20)
-                page.open(dlg_sucesso)
-                dlg_sucesso.open = True
+            dlg_sucesso.content = ft.Text("Orçamento cadastrado com sucesso!", color="green", size=20)
+            page.open(dlg_sucesso)
+            dlg_sucesso.open = True
 
     botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_orcamento, ft.Colors.TEAL_700)
 

@@ -24,7 +24,7 @@ class Menu_principal:
             page.add(ft.Text("Aplicação fechada."))
             session.close()
             
-        def mostrar_cadastros(e):
+        def mostrar_veiculos(e):
             page.clean()
             MenuCarros.menu_carros(page)
 
@@ -72,7 +72,7 @@ class Menu_principal:
                 animate=ft.Animation(300, "easeInOut")
             )
         
-        botao_cadastros = criar_botao("Cadastros", ft.Icons.CAR_RENTAL, mostrar_cadastros, ft.Colors.TEAL_700)
+        botao_cadastros = criar_botao("Veículos", ft.Icons.CAR_RENTAL, mostrar_veiculos, ft.Colors.TEAL_700)
         botao_vendas = criar_botao("Vendas", ft.Icons.SHOPPING_CART, mostrar_vendas, ft.Colors.INDIGO_700)
         botao_feedback = criar_botao("Feedback", ft.Icons.FEEDBACK, mostrar_feedback, ft.Colors.ORANGE_700)
         botao_chamado = criar_botao("Chamados", ft.Icons.ASSIGNMENT, mostrar_chamado, ft.Colors.YELLOW_700)
