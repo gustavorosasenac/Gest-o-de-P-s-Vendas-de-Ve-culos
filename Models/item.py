@@ -44,12 +44,12 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
 def cadastro_de_itens(page: ft.Page):
     # Campos do formulário
     nome = ft.TextField(label="Nome", width=400)
-    preço  = ft.TextField(label="Preço", width=400)
+    preco  = ft.TextField(label="Preço", width=400)
     quantidade = ft.TextField(label="Quantidade", width=400)
 
     # Função para cadastrar ‘item’
     def cadastro_de_itens(e):
-        if not all([nome.value, preço.value, quantidade.value]):
+        if not all([nome.value, preco.value, quantidade.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
@@ -62,7 +62,7 @@ def cadastro_de_itens(page: ft.Page):
 
         verificar_cadastro = session.query(Itens).filter(
             Itens.nome == nome.value,
-            Itens.preco == preço.value,
+            Itens.preco == preco.value,
             Itens.quantidade == int(quantidade.value),
         ).first()
 
@@ -74,7 +74,7 @@ def cadastro_de_itens(page: ft.Page):
         else:
             novo_item = Itens(
                 nome = nome.value,
-                preco = preço.value,
+                preco = preco.value,
                 quantidade = int(quantidade.value),
                 )
 
@@ -93,7 +93,7 @@ def cadastro_de_itens(page: ft.Page):
             [
                 ft.Text("Novo item", size=50, weight=ft.FontWeight.BOLD, color="white"),
                 nome,
-                preço,
+                preco,
                 quantidade,
                 ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
                 botao_cadastrar,
@@ -121,10 +121,10 @@ def listar_itens(page: ft.Page):
         return
     # ft.ListView vai exibir em formato de lista
 
-    lista_item = ft.ListView(
+    lista_itens = ft.ListView(
         controls=[
             ft.Container(
-                content=ft.Text(f"ID: {v.id} | Nome: {v.nome} | Preço: {v.preço} | ",
+                content=ft.Text(f"ID: {v.id} | Nome: {v.nome} | Preço: {v.preco} | ",
                                 size=16,
                                 color=ft.Colors.WHITE),
                 padding=10,
@@ -139,13 +139,13 @@ def listar_itens(page: ft.Page):
 
     return ft.Container(
         content=ft.Column([
-            ft.Text("  Itens Cadastrados",
+            ft.Text("Itens Cadastrados",
                     size=40,
                     weight=ft.FontWeight.BOLD,
                     color="white",
                     text_align=ft.TextAlign.LEFT),  # Alinhamento do título à esquerda
             ft.Divider(height=20),
-            lista_item
+            lista_itens
         ],
             alignment=ft.MainAxisAlignment.START,  # Alinha no topo
             horizontal_alignment=ft.CrossAxisAlignment.START  # Alinha tudo à esquerda
@@ -160,19 +160,19 @@ def listar_itens(page: ft.Page):
 
 
 def alterar_itens(page: ft.Page):
-    id_itens = ft.TextField(label="ID do item", width=400)
+    id_Itens = ft.TextField(label="ID do item", width=400)
     nome = ft.TextField(label="Nome do item", width=400)
-    preço = ft.TextField(label="Preço", width=400)
+    preco = ft.TextField(label="Preço", width=400)
     quantidade = ft.TextField(label="Quantidade", width=400)
 
-    def buscar_itens(e):
-        if not all([id_itens, nome.value, preço.value, quantidade.value]):
+    def buscar_itens():
+        if not all([id_Itens, nome.value, preco.value, quantidade.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
 
-        if not id_itens.value.isdigit():
+        if not id_Itens.value.isdigit():
             dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
@@ -184,7 +184,7 @@ def alterar_itens(page: ft.Page):
             dlg_erros.open = True
             return
 
-        itens = session.query(Itens).filter(Itens.id == int(id_itens.value)).first()
+        itens = session.query(Itens).filter(Itens.id == int(id_Itens.value)).first()
 
         if not itens:
             dlg_erros.content = ft.Text("Item não encontrado.", color="red", size=20)
@@ -193,7 +193,7 @@ def alterar_itens(page: ft.Page):
             return
         else:
             itens.nome = nome.value
-            itens.preço = preço.value
+            itens.preco = preco.value
             itens.quantidade = quantidade.value
             session.commit()
 
@@ -201,15 +201,15 @@ def alterar_itens(page: ft.Page):
             page.open(dlg_sucesso)
             dlg_sucesso.open = True
 
-    botao_alterar = criar_botao("Alterar", ft.Icons.ADD, buscar_itens(), ft.Colors.TEAL_700)
+    botao_alterar = criar_botao("Alterar", ft.Icons.ADD, buscar_itens, ft.Colors.TEAL_700)
 
     return ft.Container(
         content=ft.Column(
             [
                 ft.Text("Alterar Item", size=50, weight=ft.FontWeight.BOLD, color="white"),
-                id_itens,
+                id_Itens,
                 nome,
-                preço,
+                preco,
                 quantidade,
                 ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
                 botao_alterar,
@@ -226,7 +226,8 @@ def alterar_itens(page: ft.Page):
     )
 
 
-def excluir_veiculo(page: ft.Page):
+def excluir_itens(page: ft.Page):
+
     id_itens = ft.TextField(label="ID do Item", width=400)
 
     def excluir_itens(e):
@@ -236,10 +237,10 @@ def excluir_veiculo(page: ft.Page):
             dlg_erros.open = True
             return
 
-        item = session.query(Itens).filter(Itens.id == int(id_itens.value)).first()
+        itens = session.query(Itens).filter(Itens.id == int(id_itens.value)).first()
 
-        if item:
-            session.delete(Itens)
+        if itens:
+            session.delete(itens)
             session.commit()
             dlg_sucesso.content = ft.Text("Item excluído com sucesso!", color="green", size=20)
             page.open(dlg_sucesso)
@@ -249,7 +250,7 @@ def excluir_veiculo(page: ft.Page):
             page.open(dlg_erros)
             dlg_erros.open = True
 
-    botao_excluir = criar_botao("Excluir", ft.Icons.ADD, excluir_veiculo, ft.Colors.RED_700)
+    botao_excluir = criar_botao("Excluir", ft.Icons.ADD, excluir_itens, ft.Colors.RED_700)
 
     return ft.Container(
         content=ft.Column(
