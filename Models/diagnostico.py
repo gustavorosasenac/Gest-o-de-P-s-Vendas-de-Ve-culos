@@ -323,7 +323,7 @@ def alterar_diagnostico(page: ft.Page):
     return ft.Container(
         content=ft.Column(
             [
-                ft.Text("Alterar Diagnostico", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Text("Alterar Diagnostico", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 id_diagnostico,
                 id_chamado,
                 categoria,
@@ -339,7 +339,7 @@ def alterar_diagnostico(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=150),
+        margin=ft.margin.symmetric(vertical=100),
         padding=20
     )
 

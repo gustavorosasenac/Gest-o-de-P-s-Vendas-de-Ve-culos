@@ -79,7 +79,7 @@ def cadastro_de_feedback(page: ft.Page):
     return ft.Container(
         content=ft.Column(
             [
-                ft.Text("Nova venda", size=30, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Text("Novo Feedback", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 id_venda,
                 comentario,
                 ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
@@ -92,7 +92,7 @@ def cadastro_de_feedback(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=100),
+        margin=ft.margin.symmetric(vertical=200),
         padding=20
     )
 
@@ -203,7 +203,7 @@ def alterar_feedback(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=100),
+        margin=ft.margin.symmetric(vertical=150),
         padding=20
     )
 
@@ -255,7 +255,7 @@ def excluir_feedback(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=100),
+        margin=ft.margin.symmetric(vertical=200),
         padding=20
     )
      
