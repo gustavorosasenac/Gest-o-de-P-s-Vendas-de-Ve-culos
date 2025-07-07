@@ -176,43 +176,46 @@ def listar_diagnostico(page: ft.Page):
         return
     
     lista_diagnostico = ft.ListView(
-    controls=[
-        ft.Container(
-            content=ft.Text(f"ID do Chamado: {d.id_chamado}\n"
-                            f"Categoria: {d.categoria}\n"
-                            f"Sintoma: {d.sintoma}\n"
-                            f"Manutenção: {d.manutencao}",
-                          size=16,
-                          color=ft.Colors.WHITE),
-            padding=10,
-            border=ft.border.all(1, ft.Colors.GREY_800),
-            margin=ft.margin.only(bottom=5))
-        for d in diagnostico
-    ],
-    width=900,
-    spacing=5,
-    padding=10
-)
+        controls=[
+            ft.Container(
+                content=ft.Text(f"ID do Chamado: {d.id_chamado}\n"
+                              f"Categoria: {d.categoria}\n"
+                              f"Sintoma: {d.sintoma}\n"
+                              f"Manutenção: {'Sim' if d.manutencao else 'Não'}",
+                              size=16,
+                              color=ft.Colors.WHITE),
+                padding=10,
+                border=ft.border.all(1, ft.Colors.GREY_800),
+                margin=ft.margin.only(bottom=5))
+            for d in diagnostico
+        ],
+        width=900,
+        height=700,
+        spacing=5,
+        padding=10,
+        auto_scroll=False)
     
     return ft.Container(
         content=ft.Column([
-            ft.Text("  Diagnosticos Cadastrados", 
+            ft.Text("Diagnosticos Cadastrados", 
                    size=40, 
                    weight=ft.FontWeight.BOLD, 
                    color="white",
-                   text_align=ft.TextAlign.LEFT),  # Alinhamento do título à esquerda
+                   text_align=ft.TextAlign.LEFT),
             ft.Divider(height=20),
             lista_diagnostico
         ],
-        alignment=ft.MainAxisAlignment.START,  # Alinha no topo
-        horizontal_alignment=ft.CrossAxisAlignment.START  # Alinha tudo à esquerda
+        alignment=ft.MainAxisAlignment.START,
+        horizontal_alignment=ft.CrossAxisAlignment.START,
+        expand=True
         ),
         bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
         border_radius=20,
         width=1000,
-        padding=ft.padding.only(left=20, top=20, right=20, bottom=20),  # Padding igual em todos os lados
-        margin=ft.margin.only(left = 20),  # Margem reduzida à esquerda
-        alignment=ft.alignment.top_left  # Alinha o container no topo esquerdo
+        height=800,
+        padding=ft.padding.all(20),
+        margin=ft.margin.only(left=20),
+        alignment=ft.alignment.top_left
     )
 
 def alterar_diagnostico(page: ft.Page):
