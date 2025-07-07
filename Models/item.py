@@ -62,7 +62,7 @@ def cadastro_de_itens(page: ft.Page):
 
         verificar_cadastro = session.query(Itens).filter(
             Itens.nome == nome.value,
-            Itens.preço == preço.value,
+            Itens.preco == preço.value,
             Itens.quantidade == int(quantidade.value),
         ).first()
 
@@ -74,7 +74,7 @@ def cadastro_de_itens(page: ft.Page):
         else:
             novo_item = Itens(
                 nome = nome.value,
-                preço = preço.value,
+                preco = preço.value,
                 quantidade = int(quantidade.value),
                 )
 

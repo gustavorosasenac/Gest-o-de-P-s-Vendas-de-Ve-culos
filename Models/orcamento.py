@@ -195,46 +195,55 @@ def listar_orcamento(page: ft.Page):
     )
 
 def alterar_orcamento(page: ft.Page):
-    id_chamado = ft.TextField(label="ID do Chamado", width=400)
-    descricao = ft.TextField(label="Descição", width=400)
+    id_orcamento = ft.TextField(label="ID do Orçamento", width=400)
+    id_diagnostico = ft.TextField(label="ID do Diagnóstico", width=400)
+    id_item  = ft.TextField(label="ID do Item", width=400)
+    quantidade = ft.TextField(label="Quantidade do Item", width=400)
+    id_venda_veiculo = ft.TextField(label="ID da Venda", width=400)
 
-    def buscar_chamado(e):
-        if not all([id_chamado, descricao]):
+
+    def buscar_orcamentos(e):
+        if not all([id_orcamento, id_diagnostico, id_item, quantidade, id_venda_veiculo]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
         
-        if not id_chamado.value.isdigit():
+        if not id_orcamento.value.isdigit():
             dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
         
-        chamado = session.query(Chamado).filter(Chamado.id == int(id_chamado.value)).first()
+        orcamento = session.query(Orcamento).filter(Orcamento.id == int(id_orcamento.value)).first()
         
-        if not chamado:
-            dlg_erros.content = ft.Text("Chamado não encontrado.", color="red", size=20)
+        if not orcamento:
+            dlg_erros.content = ft.Text("Orçamento não encontrado.", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
         else:
-            chamado.id_venda_veiculo = id_chamado.value
-            chamado.descricao = descricao.value
+            orcamento.id_diagnostico = id_diagnostico.value
+            orcamento.id_item = id_item.value
+            orcamento.quantidade_item = quantidade.value
+            orcamento.id_venda_veiculo = id_venda_veiculo.value
             session.commit()
 
-            dlg_sucesso.content = ft.Text("Chamado alterado com sucesso!", color="green", size=20)
+            dlg_sucesso.content = ft.Text("Orçamento alterado com sucesso!", color="green", size=20)
             page.open(dlg_sucesso)
             dlg_sucesso.open = True
         
-    botao_alterar = criar_botao("Alterar", ft.Icons.ADD, buscar_chamado, ft.Colors.TEAL_700)
+    botao_alterar = criar_botao("Alterar", ft.Icons.ADD, buscar_orcamentos, ft.Colors.TEAL_700)
 
     return ft.Container(
         content =ft.Column(
             [
             ft.Text("Alterar Veículo", size=50, weight=ft.FontWeight.BOLD, color="white"),
-            id_chamado,
-            descricao,
+            id_orcamento,
+            id_diagnostico,
+            id_item,
+            quantidade,
+            id_venda_veiculo,
             ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
             botao_alterar,
             ],
@@ -250,36 +259,36 @@ def alterar_orcamento(page: ft.Page):
 )
 
 def excluir_orcamento(page: ft.Page):
-    id_chamado = ft.TextField(label="ID do Chamado", width=400)
+    id_orcamento = ft.TextField(label="ID do Orçamento", width=400)
     
-    def excluir_chamado(e):
-        if not id_chamado.value.isdigit():
+    def excluir_orcamentos(e):
+        if not id_orcamento.value.isdigit():
             dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
         
-        veiculo = session.query(Chamado).filter(Chamado.id == int(id_chamado.value)).first()
+        orcamento = session.query(Orcamento).filter(Orcamento.id == int(id_orcamento.value)).first()
         
-        if veiculo:
-            session.delete(veiculo)
+        if orcamento:
+            session.delete(orcamento)
             session.commit()
-            dlg_sucesso.content = ft.Text("Chamado excluído com sucesso!", color="green", size=20)
+            dlg_sucesso.content = ft.Text("Orçamento excluído com sucesso!", color="green", size=20)
             page.open(dlg_sucesso)
             dlg_sucesso.open = True
         else:
-            dlg_erros.content = ft.Text("Chamado não encontrado.", color="red", size=20)
+            dlg_erros.content = ft.Text("Orçamento não encontrado.", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
         
-    botao_excluir= criar_botao("Excluir", ft.Icons.ADD, excluir_chamado, ft.Colors.RED_700)
+    botao_excluir= criar_botao("Excluir", ft.Icons.ADD, excluir_orcamentos, ft.Colors.RED_700)
 
     return ft.Container(
         content=ft.Column(
             [
-                ft.Text("Excluir Chamado", size=30, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Text("Excluir Orçamento", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                id_chamado,
+                id_orcamento,
                 ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
                 botao_excluir,
             ],
@@ -330,7 +339,7 @@ def listar_orcamento_por_venda(page: ft.Page, session):
         else:
             # Agrupa os dados
             dados_agrupados = {
-                'id_venda': id_venda,
+                'id_venda': id_venda.value,
                 'id_diagnostico': orcamentos[0].id_diagnostico,
                 'itens': [],
                 'custo_total': 0.0
