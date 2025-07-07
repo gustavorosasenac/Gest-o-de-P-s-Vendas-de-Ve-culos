@@ -1,6 +1,5 @@
 import flet as ft
 from DB.Database import session
-from sqlalchemy import text
 from DB.Tables.table_orcamento import Orcamento
 from DB.Tables.table_vendas import VendaVeiculo
 from DB.Tables.table_chamado import Chamado
@@ -71,6 +70,22 @@ def cadastro_de_orcamento(page: ft.Page):
             dlg_erros.open = True
             return
         
+        verificar_diagnostico = session.query(Diagnostico).filter(Diagnostico.id == int(id_diagnostico.value)).first()
+        
+        if not verificar_diagnostico:
+            dlg_erros.content = ft.Text("Diagnostico não encontrado", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+        
+        verificar_item = session.query(Itens).filter(Itens.id == int(id_item.value)).first()
+
+        if not verificar_item:
+            dlg_erros.content = ft.Text("Item não encontrado", color="red", size=20)
+            page.open(dlg_erros)
+            dlg_erros.open = True
+            return
+
         verificar_venda = session.query(VendaVeiculo).filter(VendaVeiculo.id == int(id_venda_veiculo.value)).first()
         
         if not verificar_venda:
@@ -279,14 +294,14 @@ def excluir_orcamento(page: ft.Page):
         padding=20)
 
 def listar_orcamento_por_venda(page: ft.Page, session):
+    
     # Componentes da UI
     id_venda = ft.TextField(label="Digite o ID da Venda", width=300, border_color=ft.Colors.AMBER)
 
     lista_orcamento = ft.ListView(
         expand=True,
         spacing=5,
-        padding=10
-    )
+        padding=10)
 
     def buscar_orcamentos(e):
         if not id_venda.value:
@@ -300,8 +315,7 @@ def listar_orcamento_por_venda(page: ft.Page, session):
             dlg_erros.open = True
             return
         
-        orcamentos = session.query(Orcamento).filter(
-            Orcamento.id_venda_veiculo == id_venda).all()
+        orcamentos = session.query(Orcamento).filter(Orcamento.id_venda_veiculo == int(id_venda.value)).all()
         
         lista_orcamento.controls.clear()
         
