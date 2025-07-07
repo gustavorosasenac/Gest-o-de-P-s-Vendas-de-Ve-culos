@@ -165,7 +165,7 @@ def alterar_itens(page: ft.Page):
     preco = ft.TextField(label="Preço", width=400)
     quantidade = ft.TextField(label="Quantidade", width=400)
 
-    def buscar_itens():
+    def buscar_itens(e):
         if not all([id_Itens, nome.value, preco.value, quantidade.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
