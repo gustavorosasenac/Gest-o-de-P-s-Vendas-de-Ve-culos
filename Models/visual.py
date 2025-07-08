@@ -1,6 +1,6 @@
 import flet as ft
 from DB.Database import session
-
+imagem_fundo = src="imagens/foto.jpg"
 
 class Menu_principal:
     def __init__(self, page: ft.Page):
@@ -130,7 +130,7 @@ class Menu_principal:
             ft.Stack(
                 [
                     ft.Image(
-                        src="imagens/foto.jpg",
+                        imagem_fundo,
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
@@ -256,7 +256,7 @@ class MenuCarros:
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        imagem_fundo,
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
@@ -378,7 +378,7 @@ class MenuVendas:
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        imagem_fundo,
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
@@ -501,7 +501,7 @@ class MenuFeedback():
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        imagem_fundo,
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
@@ -624,7 +624,7 @@ class MenuChamado():
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        imagem_fundo,
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
@@ -747,7 +747,7 @@ class MenuDiagnostico():
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        imagem_fundo,
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
@@ -877,7 +877,7 @@ class MenuOrcamento():
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        imagem_fundo,
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
@@ -1002,7 +1002,7 @@ class MenuItens():
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        imagem_fundo,
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
@@ -1151,7 +1151,7 @@ class MenuAdm():
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+                        imagem_fundo,
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
