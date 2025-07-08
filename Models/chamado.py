@@ -39,10 +39,14 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
                 margin=ft.margin.only(bottom=15),
                 animate=ft.Animation(300, "easeInOut")
             )
+def maiusculo(e):
+        # Converte o texto para maiúsculas e atualiza
+        e.control.value = e.control.value.upper()
+        e.control.update()
 
 def cadastro_de_chamado(page: ft.Page):
         id_venda_veiculo = ft.TextField(label="ID da Venda", width=400)
-        descricao = ft.TextField(label="Descrição do Chamado", width=400)
+        descricao = ft.TextField(label="Descrição do Chamado", width=400, on_change=maiusculo)
 
         def cadastrar_chamado(e):
             if not all([id_venda_veiculo.value, descricao.value]):
@@ -147,7 +151,7 @@ def listar_chamados(page: ft.Page):
     
 def alterar_cadastro(page: ft.Page):
     id_chamado = ft.TextField(label="ID do Chamado", width=400)
-    descricao = ft.TextField(label="Descição", width=400)
+    descricao = ft.TextField(label="Descição", width=400, on_change=maiusculo)
 
     def buscar_chamado(e):
         if not all([id_chamado, descricao]):

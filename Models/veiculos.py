@@ -39,15 +39,19 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
                 margin=ft.margin.only(bottom=15),
                 animate=ft.Animation(300, "easeInOut")
             )
+def maiusculo(e):
+        # Converte o texto para maiúsculas e atualiza
+        e.control.value = e.control.value.upper()
+        e.control.update()
 
 #Inicia o cadastro de veiculos
 def cadastros_de_veiculo(page: ft.Page):
     # Campos do formulário
-    fabricante = ft.TextField(label="Fabricante", width=400)
-    modelo = ft.TextField(label="Modelo", width=400)    
-    ano = ft.TextField(label="Ano", width=400)
-    motorizacao = ft.TextField(label="Motorização", width=400)
-    cambio = ft.TextField(label="Câmbio", width=400)
+    fabricante = ft.TextField(label="Fabricante", width=400, on_change=maiusculo)
+    modelo = ft.TextField(label="Modelo", width=400, on_change=maiusculo)    
+    ano = ft.TextField(label="Ano", width=400, on_change=maiusculo)
+    motorizacao = ft.TextField(label="Motorização", width=400, on_change=maiusculo)
+    cambio = ft.TextField(label="Câmbio", width=400, on_change=maiusculo)
 
     # Função para cadastrar veículo
     def cadastrar_veiculo(e):
@@ -165,12 +169,12 @@ def listar_veiculos(page: ft.Page):
     )
 
 def alterar_cadastro(page: ft.Page):
-    id_veiculo = ft.TextField(label="ID do Veículo", width=400)
-    fabricante = ft.TextField(label="Fabricante", width=400)
-    modelo = ft.TextField(label="Modelo", width=400)
-    ano = ft.TextField(label="Ano", width=400)
-    motorizacao = ft.TextField(label="Motorização", width=400)
-    cambio = ft.TextField(label="Câmbio", width=400)
+    id_veiculo = ft.TextField(label="ID do Veículo", width=400, on_change=maiusculo)
+    fabricante = ft.TextField(label="Fabricante", width=400, on_change=maiusculo)
+    modelo = ft.TextField(label="Modelo", width=400, on_change=maiusculo)
+    ano = ft.TextField(label="Ano", width=400, on_change=maiusculo)
+    motorizacao = ft.TextField(label="Motorização", width=400, on_change=maiusculo)
+    cambio = ft.TextField(label="Câmbio", width=400, on_change=maiusculo)
 
     def buscar_veiculo(e):
         if not all([id_veiculo, fabricante.value, modelo.value, ano.value, motorizacao.value, cambio.value]):

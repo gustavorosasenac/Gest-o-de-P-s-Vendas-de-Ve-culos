@@ -22,6 +22,11 @@ dlg_ja_cadastrado = ft.AlertDialog(
     alignment=ft.alignment.center,
     title_padding = ft.padding.all(25))
 
+def maiusculo(e):
+        # Converte o texto para maiúsculas e atualiza
+        e.control.value = e.control.value.upper()
+        e.control.update()
+
 def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
             return ft.Container(
                 content=ft.ElevatedButton(
@@ -43,7 +48,7 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
 
 def cadastro_de_feedback(page: ft.Page):
     id_venda = ft.TextField(label="ID da Venda", width=400)
-    comentario = ft.TextField(label="Comentário", width=400)
+    comentario = ft.TextField(label="Comentário", width=400, on_change=maiusculo)
 
     def cadastrar_feedback(e):
         if not all([id_venda.value, comentario.value]):
@@ -146,7 +151,7 @@ def listar_feedback(page: ft.Page):
 def alterar_feedback(page: ft.Page):
     id_feedback = ft.TextField(label="ID do Feedback", width=400)
     id_venda = ft.TextField(label="ID da Venda", width=400)
-    comentario = ft.TextField(label="Comentário", width=400)
+    comentario = ft.TextField(label="Comentário", width=400, on_change=maiusculo)
 
     def alterar_feedback(e):
         if not all([id_feedback.value, id_venda.value, comentario.value]):

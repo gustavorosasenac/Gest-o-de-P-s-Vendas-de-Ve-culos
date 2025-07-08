@@ -40,12 +40,16 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
                 margin=ft.margin.only(bottom=15),
                 animate=ft.Animation(300, "easeInOut")
             )
+def maiusculo(e):
+        # Converte o texto para maiúsculas e atualiza
+        e.control.value = e.control.value.upper()
+        e.control.update()
 
 def cadastrar_venda(page: ft.Page):
     id_veiculo = ft.TextField(label="ID do Veículo Vendido", width=400)
     data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
-    comprador = ft.TextField(label="Comprador", width=400)
-    valor = ft.TextField(label="Valor da Venda", width=400)
+    comprador = ft.TextField(label="Comprador", width=400, on_change=maiusculo)
+    valor = ft.TextField(label="Valor da Venda", width=400, on_change=maiusculo)
     
     def cadastrar_nova_venda(e):
         if not all([id_veiculo.value, data_venda.value, comprador.value, valor.value]):
@@ -160,8 +164,8 @@ def alterar_venda(page: ft.Page):
 
     id_venda = ft.TextField(label="ID da Venda", width=400)
     data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
-    comprador = ft.TextField(label="Comprador", width=400)
-    valor = ft.TextField(label="Valor da Venda", width=400)
+    comprador = ft.TextField(label="Comprador", width=400, on_change=maiusculo)
+    valor = ft.TextField(label="Valor da Venda", width=400, on_change=maiusculo)
 
     def buscar_venda(e):
         if not all([id_venda.value, data_venda.value, comprador.value, valor.value]):

@@ -41,10 +41,15 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
                 animate=ft.Animation(300, "easeInOut")
             )
 
+def maiusculo(e):
+        # Converte o texto para maiúsculas e atualiza
+        e.control.value = e.control.value.upper()
+        e.control.update()
+
 def cadastro_de_diagnostico(page: ft.Page):
     id_chamado = ft.TextField(label="ID do Chamado", width=400)
-    categoria = ft.TextField(label="Categoria", width=400)
-    sintoma = ft.TextField(label="Sintoma", width=400)
+    categoria = ft.TextField(label="Categoria", width=400, on_change=maiusculo)
+    sintoma = ft.TextField(label="Sintoma", width=400, on_change=maiusculo)
     
     # Variável para armazenar a seleção de manutenção
     manutencao_selecionada = ft.Ref[bool]()
@@ -221,8 +226,8 @@ def listar_diagnostico(page: ft.Page):
 def alterar_diagnostico(page: ft.Page):
     id_diagnostico = ft.TextField(label="ID do Diagnostico", width=400)
     id_chamado = ft.TextField(label="ID do Chamado", width=400)
-    categoria = ft.TextField(label="Categoria", width=400)
-    sintoma = ft.TextField(label="Sintoma", width=400)
+    categoria = ft.TextField(label="Categoria", width=400, on_change=maiusculo)
+    sintoma = ft.TextField(label="Sintoma", width=400, on_change=maiusculo)
     
     # Variável para armazenar a seleção de manutenção
     manutencao_selecionada = ft.Ref[bool]()

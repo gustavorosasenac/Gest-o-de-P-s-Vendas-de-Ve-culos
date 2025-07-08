@@ -39,12 +39,16 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
                 margin=ft.margin.only(bottom=15),
                 animate=ft.Animation(300, "easeInOut")
             )
+def maiusculo(e):
+        # Converte o texto para maiúsculas e atualiza
+        e.control.value = e.control.value.upper()
+        e.control.update()
 
 #Inicia o cadastro de item
 def cadastro_de_itens(page: ft.Page):
     # Campos do formulário
-    nome = ft.TextField(label="Nome", width=400)
-    preco  = ft.TextField(label="Preço", width=400)
+    nome = ft.TextField(label="Nome", width=400, on_change=maiusculo)
+    preco  = ft.TextField(label="Preço", width=400, on_change=maiusculo)
 
     # Função para cadastrar ‘item’
     def cadastro_de_itens(e):
@@ -152,8 +156,8 @@ def listar_itens(page: ft.Page):
 
 def alterar_itens(page: ft.Page):
     id_Itens = ft.TextField(label="ID do item", width=400)
-    nome = ft.TextField(label="Nome do item", width=400)
-    preco = ft.TextField(label="Preço", width=400)
+    nome = ft.TextField(label="Nome do item", width=400, on_change=maiusculo)
+    preco = ft.TextField(label="Preço", width=400, on_change=maiusculo)
 
     def buscar_itens(e):
         if not all([id_Itens, nome.value, preco.value]):
