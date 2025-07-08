@@ -16,6 +16,7 @@ Base.metadata.create_all(engine)
 #Chama o menu principal
 def main(page: ft.Page):
     Login(page)
+    page.update()
     
 #Inicia a aplicação chamando o main
 if __name__ == "__main__":

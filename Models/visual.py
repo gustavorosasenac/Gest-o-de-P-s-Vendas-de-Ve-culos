@@ -1,8 +1,10 @@
 import flet as ft
 from DB.Database import session
 
+
 class Menu_principal:
     def __init__(self, page: ft.Page):
+        page.assets_dir = "assets"
         page.window.maximized = True
         # Configuração da página
         page.title = "🚘 Sistema de Veículos Premium"
@@ -128,7 +130,7 @@ class Menu_principal:
             ft.Stack(
                 [
                     ft.Image(
-                        src="https://wallpapers.com/images/hd/1920x1080-hd-car-b2iukmgt7rdpuv8w.jpg",
+                        src="imagens/foto.jpg",
                         width=page.width,
                         height=page.height,
                         fit=ft.ImageFit.COVER,
