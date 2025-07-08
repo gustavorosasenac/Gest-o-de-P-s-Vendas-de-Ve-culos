@@ -188,6 +188,12 @@ class Login:
                 aviso.value = "Preencha todos os campos"
                 page.update()
                 return
+            
+            if len (senha.value) < 8:
+                aviso.value = "A senha deve ter no mínimo 8 caracteres"
+                page.update()
+                return
+            
             if senha.value != confirmar_senha.value:
                 aviso.value = "As senhas não são iguais"
                 page.update()
