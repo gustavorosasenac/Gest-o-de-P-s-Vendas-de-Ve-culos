@@ -1,23 +1,40 @@
 import flet as ft
 from DB.Database import session
+from werkzeug.security import generate_password_hash, check_password_hash
+from DB.Tables.table_usuario import Usuario
 
 class Login:
     def __init__(self, page: ft.Page):
+        page.update()
         page.window.maximized = True
-        # Configuração da página
         page.title = "Login"
         page.theme_mode = ft.ThemeMode.DARK
         page.padding = 0
         page.fonts = {"Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"}
         page.theme = ft.Theme(font_family="Poppins")
 
-        page.vertical_alignment = ft.MainAxisAlignment.CENTER
-        page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+        # Campos de login
+        self.username_field = ft.TextField(
+            label="Usuário",
+            hint_text="Digite seu nome de usuário",
+            width=300,
+            border_radius=10,
+            prefix_icon=ft.Icons.PERSON
+        )
 
-        # Elementos da UI
-        titulo = ft.Text("Login",size=36,weight=ft.FontWeight.BOLD,color=ft.Colors.WHITE,text_align=ft.TextAlign.CENTER) 
-        
-        # Funções dos botões
+        self.password_field = ft.TextField(
+            label="Senha",
+            hint_text="Digite sua senha",
+            width=300,
+            password=True,
+            can_reveal_password=True,
+            border_radius=10,
+            prefix_icon=ft.Icons.LOCK
+        )
+
+        self.error_text = ft.Text("", color=ft.Colors.RED)
+
+        # Funções
         def fechar_app(e):
             page.clean()
             page.update()
@@ -25,75 +42,245 @@ class Login:
             page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
             page.add(ft.Text("Aplicação fechada."))
             session.close()
-            
-        def logar(e):
-            from Models.visual import Menu_principal
-            page.clean()
-            Menu_principal(page)
 
-        def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
-            return ft.Container(
-                content=ft.ElevatedButton(
-                    text=texto,
-                    icon=icone,
-                    on_click=funcao,
-                    style=ft.ButtonStyle(
-                        shape=ft.RoundedRectangleBorder(radius=10),
-                        padding=20,
-                        bgcolor=cor,
-                        color=ft.Colors.WHITE
-                    ),
-                width=300,
-                height=60
-                ),
-                margin=ft.margin.only(bottom=15),
-                animate=ft.Animation(300, "easeInOut")
-            )
-        
-        botao_logar = criar_botao("Entrar", ft.Icons.LOGIN, logar, ft.Colors.TEAL_700)
-        botao_fechar_app = criar_botao("Fechar Aplicação", ft.Icons.EXIT_TO_APP, fechar_app, ft.Colors.RED_700)
+        def logar(e):
+            usuario = self.username_field.value
+            senha = self.password_field.value
+
+            if not usuario or not senha:
+                self.error_text.value = "Preencha todos os campos!"
+                page.update()
+                return
+
+            try:
+                usuario = session.query(Usuario).filter_by(usuario=usuario).first()
+                
+                if usuario and check_password_hash(usuario.senha, senha):
+                    from Models.visual import Menu_principal
+                    page.clean()
+                    Menu_principal(page)
+                else:
+                    self.error_text.value = "Usuário ou senha inválidos!"
+                    page.update()
+                    
+            except Exception as e:
+                self.error_text.value = f"Erro: {str(e)}"
+                page.update()
 
         conteudo = ft.Column(
             [
+                ft.Icon(ft.Icons.LOCK_PERSON, size=50),
+                ft.Text("Login", size=36, weight=ft.FontWeight.BOLD),
+                self.username_field,
+                self.password_field,
                 ft.Container(
-                    content=ft.Column(
-                        [
-                            ft.Icon(name=ft.Icons.LOGIN, size=50, color=ft.Colors.WHITE),
-                            titulo,
-                            ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
-                            botao_logar,
-                            ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                            botao_fechar_app
-                        ],
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                        spacing=5
+                    ft.ElevatedButton(
+                        "Entrar",
+                        on_click=logar,
+                        icon=ft.Icons.LOGIN,
+                        style=ft.ButtonStyle(
+                            shape=ft.RoundedRectangleBorder(radius=10),
+                            padding=20,
+                            bgcolor=ft.Colors.TEAL_700
+                        ),
+                        width=300,
+                        height=50
                     ),
-                    padding=ft.padding.all(30),
-                    bgcolor=ft.Colors.with_opacity(0.85, ft.Colors.BLACK),
-                    border_radius=20,
-                    width=400
-                )
+                    margin=ft.margin.only(top=20)
+                ),
+                self.error_text,
+                ft.ElevatedButton(
+                    "Novo Usuário",
+                    on_click=lambda e: self.novo_usuario(page),
+                    icon=ft.Icons.PERSON_ADD,
+                    style=ft.ButtonStyle(color=ft.Colors.TEAL),
+                    width=300,
+                    height=50
+                ),
+                ft.TextButton(
+                    "Fechar Aplicação",
+                    on_click=fechar_app,
+                    icon=ft.Icons.EXIT_TO_APP,
+                    style=ft.ButtonStyle(color=ft.Colors.RED))
             ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER
-        )
-        
-        # Fundo com gradiente e imagem
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=20)
+        page.clean()
         page.add(
-            ft.Stack(
-                [
-                    ft.Container(
-                        gradient=ft.LinearGradient(
-                            begin=ft.alignment.top_center,
-                            end=ft.alignment.bottom_center,
-                            colors=[ft.Colors.with_opacity(0.5, ft.Colors.BLACK), ft.Colors.BLACK]
+    ft.Stack(
+        [
+            ft.Container(
+                gradient=ft.LinearGradient(
+                    colors=[ft.Colors.BLUE, ft.Colors.BLACK],
+                    begin=ft.alignment.top_center,
+                    end=ft.alignment.bottom_center
+                ),
+                expand=True
+            ),
+            
+            ft.Container(
+                content=ft.Card(
+                    content=ft.Container(
+                        content=conteudo,
+                        padding=40,
+                        width=500,
+                        height=600,
+                        border_radius=20,
+
+                        bgcolor=ft.Colors.with_opacity(0.8, ft.Colors.BLACK),
+                    ),
+                    elevation=20,
+                    shape=ft.RoundedRectangleBorder(radius=20),
+                ),
+                alignment=ft.alignment.center,
+                expand=True
+            )
+        ],
+        expand=True
+    )
+)
+
+    def novo_usuario(self, page: ft.Page):
+        page.update()
+        page.window.maximized = True
+        page.title = "Novo Usuário"
+        page.theme_mode = ft.ThemeMode.DARK
+        page.padding = 0
+        page.fonts = {"Poppins": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"}
+        page.theme = ft.Theme(font_family="Poppins")
+        aviso = ft.Text("", color=ft.Colors.RED)
+
+
+        usuario = ft.TextField(
+            label="Usuário",
+            hint_text="Digite seu nome de usuário",
+            width=300,
+            border_radius=10,
+            prefix_icon=ft.Icons.PERSON
+        )
+
+        senha = ft.TextField(
+            label="Senha",
+            hint_text="Digite sua senha",
+            width=300,
+            password=True,
+            can_reveal_password=True,
+            border_radius=10,
+            prefix_icon=ft.Icons.LOCK
+        )
+
+        confirmar_senha = ft.TextField(
+            label="Confirme sua senha",
+            hint_text="Digite sua senha",
+            width=300,
+            password=True,
+            can_reveal_password=True,
+            border_radius=10,
+            prefix_icon=ft.Icons.LOCK
+        )
+
+        def voltar(e):
+            self.__init__(page)
+            page.update()
+
+        def cadastrar(e):
+            if not all ([usuario.value, senha.value, confirmar_senha.value]):
+                aviso.value = "Preencha todos os campos"
+                page.update()
+                return
+            if senha.value != confirmar_senha.value:
+                aviso.value = "As senhas não são iguais"
+                page.update()
+                return
+            
+            verificar_usuario = session.query(Usuario).filter_by(usuario=usuario.value).first()
+            try:
+                if verificar_usuario:
+                    aviso.value = "Usuario ja existe"
+                    aviso.color = ft.Colors.RED
+
+                    page.update()
+                    return
+                novo_usuario = Usuario(usuario=usuario.value, senha=generate_password_hash(senha.value))
+                session.add(novo_usuario)
+                session.commit()
+
+                aviso.value = "Usuario cadastrado com sucesso"
+                aviso.color = ft.Colors.GREEN
+                page.update()
+            except Exception as e:
+                aviso.value = f"Erro: {str(e)}"
+                page.update()
+
+        page.clean()
+        login_form = ft.Column(
+            [
+                ft.Icon(ft.Icons.LOCK_PERSON, size=50),
+                ft.Text("Novo Usuario", size=36, weight=ft.FontWeight.BOLD),
+                usuario,
+                senha,
+                confirmar_senha,
+                ft.Container(
+                    ft.ElevatedButton(
+                        "Cadastrar",
+                        on_click=cadastrar,
+                        icon=ft.Icons.ADD,
+                        style=ft.ButtonStyle(
+                            shape=ft.RoundedRectangleBorder(radius=10),
+                            padding=20,
+                            bgcolor=ft.Colors.TEAL_700
                         ),
-                        content=ft.Row(
-                            [conteudo],
-                            alignment=ft.MainAxisAlignment.CENTER,
-                            vertical_alignment=ft.CrossAxisAlignment.CENTER
-                        ),
-                        expand=True
-                    )
-                ],
-                expand=True))
+                        width=300,
+                        height=50
+                    ),
+                    margin=ft.margin.only(top=20)
+                ),
+                aviso,
+                ft.TextButton(
+                    "Voltar",
+                    on_click=voltar,
+                    icon=ft.Icons.EXIT_TO_APP,
+                    style=ft.ButtonStyle(color=ft.Colors.RED))
+            ],
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=20)
+
+        page.add(
+    ft.Stack(
+        [
+            ft.Container(
+                gradient=ft.LinearGradient(
+                    colors=[ft.Colors.BLUE, ft.Colors.BLACK],
+                    begin=ft.alignment.top_center,
+                    end=ft.alignment.bottom_center
+                ),
+                expand=True
+            ),
+            
+            ft.Container(
+                content=ft.Card(
+                    content=ft.Container(
+                        content=login_form,
+                        padding=40,
+                        width=500,
+                        height=600,
+                        border_radius=20,
+
+                        bgcolor=ft.Colors.with_opacity(0.8, ft.Colors.BLACK),
+                    ),
+                    elevation=20,
+                    shape=ft.RoundedRectangleBorder(radius=20),
+                ),
+                alignment=ft.alignment.center,
+                expand=True
+            )
+        ],
+        expand=True
+    )
+)
+            
+
+
+                
+
+        

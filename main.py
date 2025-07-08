@@ -9,6 +9,8 @@ from DB.Tables.table_item import Itens
 from DB.Tables.table_chamado import Chamado
 from DB.Tables.table_diagnostico import Diagnostico
 from DB.Tables.table_orcamento import Orcamento
+from DB.Tables.table_usuario import Usuario
+
 
 #cria o BD
 Base.metadata.create_all(engine)
