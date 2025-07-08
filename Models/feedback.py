@@ -124,7 +124,7 @@ def listar_feedback(page: ft.Page):
     
     return ft.Container(
         content=ft.Column([
-            ft.Text("  Veículos Cadastrados", 
+            ft.Text("  Feedbacks Cadastrados", 
                    size=40, 
                    weight=ft.FontWeight.BOLD, 
                    color="white",
@@ -142,8 +142,7 @@ def listar_feedback(page: ft.Page):
         margin=ft.margin.only(left = 20),  # Margem reduzida à esquerda
         alignment=ft.alignment.top_left  # Alinha o container no topo esquerdo
     )
-    
-    
+
 def alterar_feedback(page: ft.Page):
     id_feedback = ft.TextField(label="ID do Feedback", width=400)
     id_venda = ft.TextField(label="ID da Venda", width=400)
@@ -207,59 +206,6 @@ def alterar_feedback(page: ft.Page):
         padding=20
     )
 
-def excluir_feedback(page: ft.Page):
-    id_feedback = ft.TextField(label="ID do Feedback", width=400)
-
-    def excluir_feedback(e):
-        if not id_feedback.value:
-            dlg_erros.content = ft.Text("Preencha o ID do feedback!", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        if not id_feedback.value.isdigit():
-            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        feedback = session.query(Feedback).filter(Feedback.id == id_feedback.value).first()
-        
-        if not feedback:
-            dlg_erros.content = ft.Text("Feedback não encontrado", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        session.delete(feedback)
-        session.commit()
-        
-        dlg_sucesso.content = ft.Text("Feedback excluído com sucesso!", color="green", size=20)
-        page.open(dlg_sucesso)
-        dlg_sucesso.open = True
-
-    botao_excluir = criar_botao("Excluir", ft.Icons.DELETE, excluir_feedback, ft.Colors.RED_700)
-
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Excluir Feedback", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                id_feedback,
-                ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
-                botao_excluir,
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        ),
-        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20,
-        width=500,
-        alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=200),
-        padding=20
-    )
-     
-    
 
         
 

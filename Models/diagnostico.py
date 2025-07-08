@@ -147,7 +147,7 @@ def cadastro_de_diagnostico(page: ft.Page):
     return ft.Container(
         content=ft.Column(
             [
-                ft.Text("Novo Diagnostico", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Text("Novo Diagnostico", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 id_chamado,
                 categoria,
                 sintoma,
@@ -342,47 +342,3 @@ def alterar_diagnostico(page: ft.Page):
         margin=ft.margin.symmetric(vertical=100),
         padding=20
     )
-
-def excluir_diagnostico(page: ft.Page):
-    id_diagnostico = ft.TextField(label="ID do Diagnostico", width=400)
-    
-    def excluir_diagnostico(e):
-        if not id_diagnostico.value.isdigit():
-            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        diagnostico = session.query(Diagnostico).filter(Diagnostico.id == int(id_diagnostico.value)).first()
-        
-        if diagnostico:
-            session.delete(diagnostico)
-            session.commit()
-            dlg_sucesso.content = ft.Text("Diagnostico excluído com sucesso!", color="green", size=20)
-            page.open(dlg_sucesso)
-            dlg_sucesso.open = True
-        else:
-            dlg_erros.content = ft.Text("Diagnostico não encontrado.", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-        
-    botao_excluir= criar_botao("Excluir", ft.Icons.ADD, excluir_diagnostico, ft.Colors.RED_700)
-
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Excluir Chamado", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                id_diagnostico,
-                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                botao_excluir,
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        ),
-        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20,
-        width=400,
-        alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=220),
-        padding=20)

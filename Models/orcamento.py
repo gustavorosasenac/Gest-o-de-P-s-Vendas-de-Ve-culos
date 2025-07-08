@@ -129,7 +129,7 @@ def cadastro_de_orcamento(page: ft.Page):
     return ft.Container(
     content=ft.Column(
         [
-            ft.Text("Novo Orçamento", size=50, weight=ft.FontWeight.BOLD, color="white"),
+            ft.Text("Novo Orçamento", size=30, weight=ft.FontWeight.BOLD, color="white"),
             id_diagnostico,
             id_item,
             quantidade_item,
@@ -238,7 +238,7 @@ def alterar_orcamento(page: ft.Page):
     return ft.Container(
         content =ft.Column(
             [
-            ft.Text("Alterar Veículo", size=50, weight=ft.FontWeight.BOLD, color="white"),
+            ft.Text("Alterar Orçamento", size=30, weight=ft.FontWeight.BOLD, color="white"),
             id_orcamento,
             id_diagnostico,
             id_item,
@@ -257,50 +257,6 @@ def alterar_orcamento(page: ft.Page):
         margin=ft.margin.symmetric(vertical=150),
         padding=20
 )
-
-def excluir_orcamento(page: ft.Page):
-    id_orcamento = ft.TextField(label="ID do Orçamento", width=400)
-    
-    def excluir_orcamentos(e):
-        if not id_orcamento.value.isdigit():
-            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        orcamento = session.query(Orcamento).filter(Orcamento.id == int(id_orcamento.value)).first()
-        
-        if orcamento:
-            session.delete(orcamento)
-            session.commit()
-            dlg_sucesso.content = ft.Text("Orçamento excluído com sucesso!", color="green", size=20)
-            page.open(dlg_sucesso)
-            dlg_sucesso.open = True
-        else:
-            dlg_erros.content = ft.Text("Orçamento não encontrado.", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-        
-    botao_excluir= criar_botao("Excluir", ft.Icons.ADD, excluir_orcamentos, ft.Colors.RED_700)
-
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Excluir Orçamento", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                id_orcamento,
-                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                botao_excluir,
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        ),
-        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20,
-        width=400,
-        alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=220),
-        padding=20)
 
 def listar_orcamento_por_venda(page: ft.Page, session):
     

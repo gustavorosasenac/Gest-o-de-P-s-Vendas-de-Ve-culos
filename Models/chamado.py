@@ -82,7 +82,7 @@ def cadastro_de_chamado(page: ft.Page):
         return ft.Container(
         content=ft.Column(
             [
-                ft.Text("Novo Chamado", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Text("Novo Chamado", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 id_venda_veiculo,
                 descricao,
                 ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
@@ -183,7 +183,7 @@ def alterar_cadastro(page: ft.Page):
     return ft.Container(
         content =ft.Column(
             [
-            ft.Text("Alterar Veículo", size=50, weight=ft.FontWeight.BOLD, color="white"),
+            ft.Text("Alterar Chamado", size=30, weight=ft.FontWeight.BOLD, color="white"),
             id_chamado,
             descricao,
             ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
@@ -199,47 +199,3 @@ def alterar_cadastro(page: ft.Page):
         margin=ft.margin.symmetric(vertical=180),
         padding=20
 )     
-
-def excluir_chamado(page: ft.Page):
-    id_chamado = ft.TextField(label="ID do Chamado", width=400)
-    
-    def excluir_chamado(e):
-        if not id_chamado.value.isdigit():
-            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        veiculo = session.query(Chamado).filter(Chamado.id == int(id_chamado.value)).first()
-        
-        if veiculo:
-            session.delete(veiculo)
-            session.commit()
-            dlg_sucesso.content = ft.Text("Chamado excluído com sucesso!", color="green", size=20)
-            page.open(dlg_sucesso)
-            dlg_sucesso.open = True
-        else:
-            dlg_erros.content = ft.Text("Chamado não encontrado.", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-        
-    botao_excluir= criar_botao("Excluir", ft.Icons.ADD, excluir_chamado, ft.Colors.RED_700)
-
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Excluir Chamado", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                id_chamado,
-                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                botao_excluir,
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        ),
-        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20,
-        width=400,
-        alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=220),
-        padding=20)

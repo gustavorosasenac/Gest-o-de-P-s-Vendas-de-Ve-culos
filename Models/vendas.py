@@ -93,7 +93,7 @@ def cadastrar_venda(page: ft.Page):
     return ft.Container(
         content=ft.Column(
             [
-                ft.Text("Nova venda", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Text("Nova venda", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 id_veiculo,
                 data_venda,
                 comprador,
@@ -108,7 +108,7 @@ def cadastrar_venda(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=130),
+        margin=ft.margin.symmetric(vertical=150),
         padding=20
     )
 
@@ -138,7 +138,7 @@ def listar_vendas(page: ft.Page):
     
     return ft.Container(
         content=ft.Column([
-            ft.Text("  Veículos Cadastrados", 
+            ft.Text("  Vendas Cadastradas", 
                    size=40, 
                    weight=ft.FontWeight.BOLD, 
                    color="white",
@@ -199,7 +199,7 @@ def alterar_venda(page: ft.Page):
     return ft.Container(
         content =ft.Column(
             [
-            ft.Text("Alterar venda", size=50, weight=ft.FontWeight.BOLD, color="white"),
+            ft.Text("Alterar venda", size=30, weight=ft.FontWeight.BOLD, color="white"),
             id_venda,
             data_venda,
             comprador,
@@ -214,51 +214,6 @@ def alterar_venda(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=100),
+        margin=ft.margin.symmetric(vertical=150),
         padding=20
         )
-
-def excluir_venda(page: ft.Page):
-
-    id_venda = ft.TextField(label="ID da Venda", width=400)
-
-    def excluir_venda(e):
-        if not id_venda.value.isdigit():
-            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        venda = session.query(Vendas).filter(Vendas.id == int(id_venda.value)).first()
-        
-        if venda:
-            session.delete(venda)
-            session.commit()
-            dlg_sucesso.content = ft.Text("Venda excluída com sucesso!", color="green", size=20)
-            page.open(dlg_sucesso)
-            dlg_sucesso.open = True
-        else:
-            dlg_erros.content = ft.Text("Venda não encontrada.", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-
-    botao_excluir= criar_botao("Excluir", ft.Icons.ADD, excluir_venda, ft.Colors.RED_700)
-
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Excluir Veiculo", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                id_venda,
-                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                botao_excluir,
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        ),
-        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20,
-        width=400,
-        alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=220),
-        padding=20)

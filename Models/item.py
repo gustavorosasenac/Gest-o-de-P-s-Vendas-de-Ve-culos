@@ -45,25 +45,18 @@ def cadastro_de_itens(page: ft.Page):
     # Campos do formulário
     nome = ft.TextField(label="Nome", width=400)
     preco  = ft.TextField(label="Preço", width=400)
-    quantidade = ft.TextField(label="Quantidade", width=400)
 
     # Função para cadastrar ‘item’
     def cadastro_de_itens(e):
-        if not all([nome.value, preco.value, quantidade.value]):
+        if not all([nome.value, preco.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
-        if not quantidade.value.isdigit():
-            dlg_erros.content = ft.Text("Quantidade deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-
+        
         verificar_cadastro = session.query(Itens).filter(
             Itens.nome == nome.value,
             Itens.preco == preco.value,
-            Itens.quantidade == int(quantidade.value),
         ).first()
 
         if verificar_cadastro:
@@ -75,7 +68,6 @@ def cadastro_de_itens(page: ft.Page):
             novo_item = Itens(
                 nome = nome.value,
                 preco = preco.value,
-                quantidade = int(quantidade.value),
                 )
 
             session.add(novo_item)
@@ -91,10 +83,9 @@ def cadastro_de_itens(page: ft.Page):
     return ft.Container(
         content=ft.Column(
             [
-                ft.Text("Novo item", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Text("Novo item", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 nome,
                 preco,
-                quantidade,
                 ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
                 botao_cadastrar,
             ],
@@ -105,7 +96,7 @@ def cadastro_de_itens(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=100),
+        margin=ft.margin.symmetric(vertical=150),
         padding=20
     )
 
@@ -163,10 +154,9 @@ def alterar_itens(page: ft.Page):
     id_Itens = ft.TextField(label="ID do item", width=400)
     nome = ft.TextField(label="Nome do item", width=400)
     preco = ft.TextField(label="Preço", width=400)
-    quantidade = ft.TextField(label="Quantidade", width=400)
 
     def buscar_itens(e):
-        if not all([id_Itens, nome.value, preco.value, quantidade.value]):
+        if not all([id_Itens, nome.value, preco.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
@@ -174,12 +164,6 @@ def alterar_itens(page: ft.Page):
 
         if not id_Itens.value.isdigit():
             dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-
-        if not quantidade.value.isdigit():
-            dlg_erros.content = ft.Text("Quantidade deve ser um número inteiro", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
@@ -194,7 +178,6 @@ def alterar_itens(page: ft.Page):
         else:
             itens.nome = nome.value
             itens.preco = preco.value
-            itens.quantidade = quantidade.value
             session.commit()
 
             dlg_sucesso.content = ft.Text("Item alterado com sucesso!", color="green", size=20)
@@ -206,11 +189,10 @@ def alterar_itens(page: ft.Page):
     return ft.Container(
         content=ft.Column(
             [
-                ft.Text("Alterar Item", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Text("Alterar Item", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 id_Itens,
                 nome,
                 preco,
-                quantidade,
                 ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
                 botao_alterar,
             ],
@@ -224,49 +206,3 @@ def alterar_itens(page: ft.Page):
         margin=ft.margin.symmetric(vertical=100),
         padding=20
     )
-
-
-def excluir_itens(page: ft.Page):
-
-    id_itens = ft.TextField(label="ID do Item", width=400)
-
-    def excluir_itens(e):
-        if not id_itens.value.isdigit():
-            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-
-        itens = session.query(Itens).filter(Itens.id == int(id_itens.value)).first()
-
-        if itens:
-            session.delete(itens)
-            session.commit()
-            dlg_sucesso.content = ft.Text("Item excluído com sucesso!", color="green", size=20)
-            page.open(dlg_sucesso)
-            dlg_sucesso.open = True
-        else:
-            dlg_erros.content = ft.Text("Item não encontrado.", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-
-    botao_excluir = criar_botao("Excluir", ft.Icons.ADD, excluir_itens, ft.Colors.RED_700)
-
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Excluir Item", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                id_itens,
-                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                botao_excluir,
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        ),
-        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20,
-        width=400,
-        alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=220),
-        padding=20)

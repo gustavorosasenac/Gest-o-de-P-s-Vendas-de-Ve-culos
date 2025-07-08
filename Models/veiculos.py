@@ -95,7 +95,7 @@ def cadastros_de_veiculo(page: ft.Page):
     return ft.Container(
         content=ft.Column(
             [
-                ft.Text("Novo veículo", size=50, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Text("Novo veículo", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 fabricante,
                 modelo,
                 ano,
@@ -215,7 +215,7 @@ def alterar_cadastro(page: ft.Page):
     return ft.Container(
         content =ft.Column(
             [
-            ft.Text("Alterar Veículo", size=50, weight=ft.FontWeight.BOLD, color="white"),
+            ft.Text("Alterar Veículo", size=30, weight=ft.FontWeight.BOLD, color="white"),
             id_veiculo,
             fabricante,
             modelo,
@@ -235,48 +235,3 @@ def alterar_cadastro(page: ft.Page):
         margin=ft.margin.symmetric(vertical=100),
         padding=20
 )     
-
-def excluir_veiculo(page: ft.Page):
-
-    id_veiculo = ft.TextField(label="ID do Veículo", width=400)
-    
-    def excluir_veiculo(e):
-        if not id_veiculo.value.isdigit():
-            dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        
-        veiculo = session.query(Veiculos).filter(Veiculos.id == int(id_veiculo.value)).first()
-        
-        if veiculo:
-            session.delete(veiculo)
-            session.commit()
-            dlg_sucesso.content = ft.Text("Veículo excluído com sucesso!", color="green", size=20)
-            page.open(dlg_sucesso)
-            dlg_sucesso.open = True
-        else:
-            dlg_erros.content = ft.Text("Veículo não encontrado.", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-        
-    botao_excluir= criar_botao("Excluir", ft.Icons.ADD, excluir_veiculo, ft.Colors.RED_700)
-
-    return ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Excluir Veiculo", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
-                id_veiculo,
-                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
-                botao_excluir,
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        ),
-        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20,
-        width=400,
-        alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=220),
-        padding=20)
