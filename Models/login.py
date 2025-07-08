@@ -2,6 +2,7 @@ import flet as ft
 from DB.Database import session
 from werkzeug.security import generate_password_hash, check_password_hash
 from DB.Tables.table_usuario import Usuario
+import time
 
 class Login:
     def __init__(self, page: ft.Page):
@@ -214,6 +215,9 @@ class Login:
                 aviso.value = "Usuario cadastrado com sucesso"
                 aviso.color = ft.Colors.GREEN
                 page.update()
+                time.sleep(2)
+                self.__init__(page)
+
             except Exception as e:
                 aviso.value = f"Erro: {str(e)}"
                 page.update()
