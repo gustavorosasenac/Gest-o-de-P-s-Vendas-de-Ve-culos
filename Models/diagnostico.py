@@ -49,66 +49,32 @@ def maiusculo(e):
 def cadastro_de_diagnostico(page: ft.Page):
     id_chamado = ft.TextField(label="ID do Chamado", width=400)
     sintoma = ft.TextField(label="Sintoma", width=400, on_change=maiusculo)
-    categoria = ft.TextField(label="Categoria", width=400, on_change=maiusculo)
+    dropdown_categoria = ft.Dropdown(label="Selecione a categoria", width=400)
 
-    botao_abaixar = ft.IconButton(
-        icon=ft.Icons.ARROW_DOWNWARD,
-        icon_color= ft.Colors.WHITE,
-        on_click=alternar_lista_categorias)
-    
-    lista_categorias_controls.current = ft.Column([], spacing=2)
-
-    linha_categoria = ft.Column([
-        ft.Row([categoria, botao_abaixar]),
-        ft.Column(
-            controls=lista_categorias_controls.current,
-            visible=categorias_visiveis.current,
-            spacing=5
-        )
-    ])
+    def obter_categorias():
+        dropdown_categoria.options = []
+        categorias = session.query(Diagnostico.categoria).distinct().all()
 
 
-    # Referência para visibilidade e campo de categoria
-categorias_visiveis = ft.Ref[bool](False)
-lista_categorias_controls = ft.Ref[list]([])
-    
-def obter_categorias():
-    categorias = session.query(Diagnostico.categoria).distinct().all()
-    return sorted({c[0] for c in categorias if c[0]})
+        for categoria in categorias:
+            dropdown_categoria.options.append(ft.dropdown.Option(categoria[0]))
+            print("categoria:", categorias)
+            page.update()
 
-def alternar_lista_categorias(e):
-    categorias_visiveis.current = not categorias_visiveis.current
-    lista = obter_categorias()
 
-    lista_categorias_controls.current = [
-            ft.TextButton(
-                content=ft.Text(cat, color="white"),
-                on_click=lambda e, valor=cat: selecionar_categoria(valor)
-            ) for cat in lista
-        ]
-    page.update()
-
-    def selecionar_categoria(valor):
-        categoria.value = valor
-        categorias_visiveis.current = False
-        page.update()
-
-    # Variável para armazenar a seleção de manutenção
-    manutencao_selecionada = ft.Ref[bool]()
-    
-    # Funções para definir a seleção
+        # Funções para definir a seleção
     def selecionar_sim(e):
         manutencao_selecionada.current = True
         botao_sim.bgcolor = ft.Colors.GREEN
         botao_nao.bgcolor = ft.Colors.GREY
         page.update()
-    
+
     def selecionar_nao(e):
         manutencao_selecionada.current = False
         botao_sim.bgcolor = ft.Colors.GREY
         botao_nao.bgcolor = ft.Colors.RED
         page.update()
-    
+
     # Botões de seleção
     botao_sim = ft.ElevatedButton(
         "Sim",
@@ -121,7 +87,7 @@ def alternar_lista_categorias(e):
         ),
         width=150
     )
-    
+
     botao_nao = ft.ElevatedButton(
         "Não",
         on_click=selecionar_nao,
@@ -133,8 +99,8 @@ def alternar_lista_categorias(e):
         ),
         width=150
     )
-    
-    # Container para os botões
+
+        # Container para os botões
     container_manutencao = ft.Container(
         content=ft.Column([
             ft.Text("Preciso de manutenção?", size=16),
@@ -144,43 +110,40 @@ def alternar_lista_categorias(e):
     )
 
     def cadastrar_diagnostico(e):
-        if not all([id_chamado.value, categoria.value, sintoma.value]) or manutencao_selecionada.current is None:
+        if not all([id_chamado.value, sintoma.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
-        
+
         if not id_chamado.value.isdigit():
             dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
             page.open = (dlg_erros)
             dlg_erros.open = True
             return
-        
+
         verificar_diagnostico = session.query(Diagnostico).filter(
-            Diagnostico.id_chamado == int(id_chamado.value),
-            Diagnostico.categoria == categoria.value).first()
-        
+            Diagnostico.id_chamado == int(id_chamado.value).first())
+
         if verificar_diagnostico:
             dlg_ja_cadastrado.content = ft.Text("Diagnostico já cadastrado", color="red", size=20)
             page.open(dlg_ja_cadastrado)
             dlg_ja_cadastrado.open = True
             return
-        
+
         verificar_chamado = session.query(Chamado).filter(Chamado.id == int(id_chamado.value)).first()
-        
+
         if not verificar_chamado:
             dlg_erros.content = ft.Text("Chamado não encontrado", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
-        
+
         else:
             novo_diagnostico = Diagnostico(
             id_chamado=id_chamado.value,
-            categoria=categoria.value,
-            sintoma=sintoma.value,
-            manutencao=manutencao_selecionada.current)
-            
+            sintoma=sintoma.value)
+
             session.add(novo_diagnostico)
             session.commit()
 
@@ -189,15 +152,17 @@ def alternar_lista_categorias(e):
         dlg_sucesso.open = True
         return
 
+    botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD,cadastrar_diagnostico, ft.Colors.TEAL_700)
 
     return ft.Container(
         content=ft.Column(
             [
                 ft.Text("Novo Diagnostico", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 id_chamado,
-                linha_categoria,
                 sintoma,
-                container_manutencao,  # Substitui o TextField pelo container com os botões
+                ft.Row([dropdown_categoria], alignment=ft.MainAxisAlignment.CENTER),
+                container_manutencao,
+                  # Substitui o TextField pelo container com os botões
                 ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
                 botao_cadastrar,
             ],
@@ -211,8 +176,9 @@ def alternar_lista_categorias(e):
         margin=ft.margin.symmetric(vertical=150),
         padding=20
     )
+    obter_categorias()
 
-    botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_diagnostico, ft.Colors.TEAL_700)
+
 
 def listar_diagnostico(page: ft.Page):
     diagnostico = session.query(Diagnostico).all()
