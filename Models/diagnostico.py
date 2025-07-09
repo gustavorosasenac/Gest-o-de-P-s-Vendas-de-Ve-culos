@@ -48,9 +48,51 @@ def maiusculo(e):
 
 def cadastro_de_diagnostico(page: ft.Page):
     id_chamado = ft.TextField(label="ID do Chamado", width=400)
-    categoria = ft.TextField(label="Categoria", width=400, on_change=maiusculo)
     sintoma = ft.TextField(label="Sintoma", width=400, on_change=maiusculo)
+    categoria = ft.TextField(label="Categoria", width=400, on_change=maiusculo)
+
+    botao_abaixar = ft.IconButton(
+        icon=ft.Icons.ARROW_DOWNWARD,
+        icon_color= ft.Colors.WHITE,
+        on_click=alternar_lista_categorias)
     
+    lista_categorias_controls.current = ft.Column([], spacing=2)
+
+    linha_categoria = ft.Column([
+        ft.Row([categoria, botao_abaixar]),
+        ft.Column(
+            controls=lista_categorias_controls.current,
+            visible=categorias_visiveis.current,
+            spacing=5
+        )
+    ])
+
+
+    # Referência para visibilidade e campo de categoria
+categorias_visiveis = ft.Ref[bool](False)
+lista_categorias_controls = ft.Ref[list]([])
+    
+def obter_categorias():
+    categorias = session.query(Diagnostico.categoria).distinct().all()
+    return sorted({c[0] for c in categorias if c[0]})
+
+def alternar_lista_categorias(e):
+    categorias_visiveis.current = not categorias_visiveis.current
+    lista = obter_categorias()
+
+    lista_categorias_controls.current = [
+            ft.TextButton(
+                content=ft.Text(cat, color="white"),
+                on_click=lambda e, valor=cat: selecionar_categoria(valor)
+            ) for cat in lista
+        ]
+    page.update()
+
+    def selecionar_categoria(valor):
+        categoria.value = valor
+        categorias_visiveis.current = False
+        page.update()
+
     # Variável para armazenar a seleção de manutenção
     manutencao_selecionada = ft.Ref[bool]()
     
@@ -147,14 +189,13 @@ def cadastro_de_diagnostico(page: ft.Page):
         dlg_sucesso.open = True
         return
 
-    botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_diagnostico, ft.Colors.TEAL_700)
 
     return ft.Container(
         content=ft.Column(
             [
                 ft.Text("Novo Diagnostico", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 id_chamado,
-                categoria,
+                linha_categoria,
                 sintoma,
                 container_manutencao,  # Substitui o TextField pelo container com os botões
                 ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
@@ -171,6 +212,8 @@ def cadastro_de_diagnostico(page: ft.Page):
         padding=20
     )
 
+    botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_diagnostico, ft.Colors.TEAL_700)
+
 def listar_diagnostico(page: ft.Page):
     diagnostico = session.query(Diagnostico).all()
     
@@ -184,11 +227,11 @@ def listar_diagnostico(page: ft.Page):
         controls=[
             ft.Container(
                 content=ft.Text(f"ID do Chamado: {d.id_chamado}\n"
-                              f"Categoria: {d.categoria}\n"
-                              f"Sintoma: {d.sintoma}\n"
-                              f"Manutenção: {'Sim' if d.manutencao else 'Não'}",
-                              size=16,
-                              color=ft.Colors.WHITE),
+                            f"Categoria: {d.categoria}\n"
+                            f"Sintoma: {d.sintoma}\n"
+                            f"Manutenção: {'Sim' if d.manutencao else 'Não'}",
+                            size=16,
+                            color=ft.Colors.WHITE),
                 padding=10,
                 border=ft.border.all(1, ft.Colors.GREY_800),
                 margin=ft.margin.only(bottom=5))
@@ -203,10 +246,10 @@ def listar_diagnostico(page: ft.Page):
     return ft.Container(
         content=ft.Column([
             ft.Text("Diagnosticos Cadastrados", 
-                   size=40, 
-                   weight=ft.FontWeight.BOLD, 
-                   color="white",
-                   text_align=ft.TextAlign.LEFT),
+                size=40, 
+                weight=ft.FontWeight.BOLD, 
+                color="white",
+                text_align=ft.TextAlign.LEFT),
             ft.Divider(height=20),
             lista_diagnostico
         ],
