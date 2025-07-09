@@ -9,6 +9,5 @@ Bibliotecas necessarias: pip install flet, mysql, pymysql, sqlachemy, cryptograp
 
 comando para compilar
 
-pyinstaller --onefile --windowed --name "AppVeiculos" --add-data "DB;DB" --add-data 
-"assets;assets"  --hidden-import "DB.Database" --hidden-import "sqlalchemy" --hidden-import "sqlite3" main.py
+pyinstaller --onefile --windowed --name "AppVeiculos" --add-data "DB;DB" --add-data "assets;assets"  --hidden-import "DB.Database" --hidden-import "sqlalchemy" --hidden-import "sqlite3" main.py
 
