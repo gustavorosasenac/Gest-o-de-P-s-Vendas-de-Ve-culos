@@ -58,7 +58,6 @@ def cadastro_de_diagnostico(page: ft.Page):
 
         for categoria in categorias:
             dropdown_categoria.options.append(ft.dropdown.Option(categoria[0]))
-            print("categoria:", categorias)
             page.update()
 
 
@@ -153,7 +152,7 @@ def cadastro_de_diagnostico(page: ft.Page):
         return
 
     botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD,cadastrar_diagnostico, ft.Colors.TEAL_700)
-
+    obter_categorias()
     return ft.Container(
         content=ft.Column(
             [
@@ -176,7 +175,6 @@ def cadastro_de_diagnostico(page: ft.Page):
         margin=ft.margin.symmetric(vertical=150),
         padding=20
     )
-    obter_categorias()
 
 
 
