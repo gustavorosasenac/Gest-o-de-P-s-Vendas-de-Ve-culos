@@ -98,7 +98,7 @@ def cadastrar_venda(page: ft.Page):
             ).distinct().order_by(Veiculos.ano.desc()).all()
             
             for ano in anos:
-                dropdown_ano.options.append(ft.dropdown.Option(str(ano[0])))
+                dropdown_ano.options.append(ft.dropdown.Option(int(ano[0])))
         
         page.update()
     
@@ -125,9 +125,13 @@ def cadastrar_venda(page: ft.Page):
     
     carregar_marcas()
     
-    
     def cadastrar_nova_venda(e):
-        if not all([id_veiculo.value, data_venda.value, comprador.value, valor.value]):
+        veiculo_id = session.query(Veiculos.id).filter(Veiculos.fabricante == dropdown_marca.value,
+                                                        Veiculos.modelo == dropdown_modelo.value,
+                                                        Veiculos.ano == int(dropdown_ano.value),
+                                                        Veiculos.motorizacao == dropdown_motor.value).scalar()
+
+        if not all([data_venda.value, comprador.value, valor.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
@@ -140,32 +144,25 @@ def cadastrar_venda(page: ft.Page):
             page.open(dlg_erros)
             dlg_erros.open = True
             return
-        verificar_carro = session.query(Veiculos).filter(Veiculos.id == int(id_veiculo.value)).first()
+        
+        nova_venda = Vendas(
+            data_venda=data_formatada,
+            comprador=comprador.value,
+            valor=valor.value)
+        
+        session.add(nova_venda)
+        session.flush()#Força a geração do ID antes do commit(solução)
 
-        if not verificar_carro:
-            dlg_erros.content = ft.Text("Veículo não encontrado", color="red", size=20)
-            page.open(dlg_erros)
-            dlg_erros.open = True
-            return
-        else:
-            nova_venda = Vendas(
-                data_venda=data_formatada,
-                comprador=comprador.value,
-                valor=valor.value)
-            
-            session.add(nova_venda)
-            session.flush()#Força a geração do ID antes do commit(solução)
-
-            venda_veiculo = VendaVeiculo(
-                id_veiculo=int(id_veiculo.value),
-                id_vendas= nova_venda.id)
-            
-            session.add(venda_veiculo)
-            session.commit()
-
-            dlg_sucesso.content = ft.Text("Venda cadastrada com sucesso!", color="green", size=20)
-            page.open(dlg_sucesso)
-            dlg_sucesso.open = True
+        venda_veiculo = VendaVeiculo(
+            id_vendas= nova_venda.id,
+            id_veiculo= veiculo_id
+            )
+        
+        session.add(venda_veiculo)
+        session.commit()
+        dlg_sucesso.content = ft.Text("Venda cadastrada com sucesso!", color="green", size=20)
+        page.open(dlg_sucesso)
+        dlg_sucesso.open = True
         
     botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_nova_venda, ft.Colors.TEAL_700)
     
