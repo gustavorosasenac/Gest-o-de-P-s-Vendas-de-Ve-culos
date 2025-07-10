@@ -46,10 +46,85 @@ def maiusculo(e):
         e.control.update()
 
 def cadastrar_venda(page: ft.Page):
-    id_veiculo = ft.TextField(label="ID do Veículo Vendido", width=400)
     data_venda = ft.TextField(label="Data da Venda (DD-MM-YYYY)", width=400)
     comprador = ft.TextField(label="Comprador", width=400, on_change=maiusculo)
     valor = ft.TextField(label="Valor da Venda", width=400, on_change=maiusculo)
+    dropdown_marca = ft.Dropdown(label="Selecione a marca", width=400)
+    dropdown_modelo = ft.Dropdown(label="Selecione o modelo", width=400, disabled=True)
+    dropdown_ano = ft.Dropdown(label="Selecione o ano", width=400, disabled=True)
+    dropdown_motor = ft.Dropdown(label="Selecione o motor", width=400, disabled=True)
+    
+    def carregar_marcas():
+        dropdown_marca.options = []
+        marcas = session.query(Veiculos.fabricante).distinct().all()
+
+        for marca in marcas:
+            dropdown_marca.options.append(ft.dropdown.Option(marca[0]))
+            page.update()
+    
+    def atualizar_modelos(e):
+        dropdown_modelo.disabled = False
+        dropdown_modelo.options = []
+        dropdown_modelo.value = None
+        dropdown_ano.disabled = True
+        dropdown_ano.options = []
+        dropdown_ano.value = None
+        dropdown_motor.disabled = True
+        dropdown_motor.options = []
+        dropdown_motor.value = None
+        
+        if dropdown_marca.value:
+            modelos = session.query(Veiculos.modelo).filter(
+                Veiculos.fabricante == dropdown_marca.value
+            ).distinct().all()
+            
+            for modelo in modelos:
+                dropdown_modelo.options.append(ft.dropdown.Option(modelo[0]))
+        
+        page.update()
+    
+    def atualizar_anos(e):
+        dropdown_ano.disabled = False
+        dropdown_ano.options = []
+        dropdown_ano.value = None
+        dropdown_motor.disabled = True
+        dropdown_motor.options = []
+        dropdown_motor.value = None
+        
+        if dropdown_marca.value and dropdown_modelo.value:
+            anos = session.query(Veiculos.ano).filter(
+                Veiculos.fabricante == dropdown_marca.value,
+                Veiculos.modelo == dropdown_modelo.value
+            ).distinct().order_by(Veiculos.ano.desc()).all()
+            
+            for ano in anos:
+                dropdown_ano.options.append(ft.dropdown.Option(str(ano[0])))
+        
+        page.update()
+    
+    def atualizar_motores(e):
+        dropdown_motor.disabled = False
+        dropdown_motor.options = []
+        dropdown_motor.value = None
+        
+        if dropdown_marca.value and dropdown_modelo.value and dropdown_ano.value:
+            motores = session.query(Veiculos.motorizacao).filter(
+                Veiculos.fabricante == dropdown_marca.value,
+                Veiculos.modelo == dropdown_modelo.value,
+                Veiculos.ano == int(dropdown_ano.value)
+            ).distinct().all()
+            
+            for motor in motores:
+                dropdown_motor.options.append(ft.dropdown.Option(motor[0]))
+        
+        page.update()
+    
+    dropdown_marca.on_change = atualizar_modelos
+    dropdown_modelo.on_change = atualizar_anos
+    dropdown_ano.on_change = atualizar_motores
+    
+    carregar_marcas()
+    
     
     def cadastrar_nova_venda(e):
         if not all([id_veiculo.value, data_venda.value, comprador.value, valor.value]):
@@ -98,7 +173,10 @@ def cadastrar_venda(page: ft.Page):
         content=ft.Column(
             [
                 ft.Text("Nova venda", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                id_veiculo,
+                ft.Row([dropdown_marca], alignment=ft.MainAxisAlignment.CENTER),
+                ft.Row([dropdown_modelo], alignment=ft.MainAxisAlignment.CENTER),
+                ft.Row([dropdown_ano], alignment=ft.MainAxisAlignment.CENTER),
+                ft.Row([dropdown_motor], alignment=ft.MainAxisAlignment.CENTER),
                 data_venda,
                 comprador,
                 valor,
