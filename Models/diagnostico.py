@@ -53,11 +53,12 @@ def cadastro_de_diagnostico(page: ft.Page):
 
     def obter_categorias():
         dropdown_categoria.options = []
-        categorias = session.query(Diagnostico.categoria).distinct().all()
+        categorias = ["MOTOR E TRANSMISSÃO", "SISTEMA ELÉTRICO E ELETRÔNICO", "SUSPENÇÃO E DIREÇÃO", "FREIOS",
+                       "CLIMATIZAÇÃO E CONFORTO", "CARROCERIA E ACABAMENTO", "ITENS DE SEGURANÇA", "OUTROS" ]
 
 
         for categoria in categorias:
-            dropdown_categoria.options.append(ft.dropdown.Option(categoria[0]))
+            dropdown_categoria.options.append(ft.dropdown.Option(categoria))
             page.update()
 
     manutencao_selecionada = ft.Ref[bool]()
