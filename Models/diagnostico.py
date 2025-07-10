@@ -60,6 +60,7 @@ def cadastro_de_diagnostico(page: ft.Page):
             dropdown_categoria.options.append(ft.dropdown.Option(categoria[0]))
             page.update()
 
+    manutencao_selecionada = ft.Ref[bool]()
 
         # Funções para definir a seleção
     def selecionar_sim(e):
@@ -122,7 +123,7 @@ def cadastro_de_diagnostico(page: ft.Page):
             return
 
         verificar_diagnostico = session.query(Diagnostico).filter(
-            Diagnostico.id_chamado == int(id_chamado.value).first())
+            Diagnostico.id_chamado == id_chamado.value).first()
 
         if verificar_diagnostico:
             dlg_ja_cadastrado.content = ft.Text("Diagnostico já cadastrado", color="red", size=20)
@@ -141,6 +142,7 @@ def cadastro_de_diagnostico(page: ft.Page):
         else:
             novo_diagnostico = Diagnostico(
             id_chamado=id_chamado.value,
+            categoria=dropdown_categoria.value if dropdown_categoria.value else None,
             sintoma=sintoma.value)
 
             session.add(novo_diagnostico)
