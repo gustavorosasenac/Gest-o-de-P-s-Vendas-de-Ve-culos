@@ -48,25 +48,34 @@ def maiusculo(e):
 
 def cadastro_de_diagnostico(page: ft.Page):
     id_chamado = ft.TextField(label="ID do Chamado", width=400)
-    categoria = ft.TextField(label="Categoria", width=400, on_change=maiusculo)
     sintoma = ft.TextField(label="Sintoma", width=400, on_change=maiusculo)
-    
-    # Variável para armazenar a seleção de manutenção
+    dropdown_categoria = ft.Dropdown(label="Selecione a categoria", width=400)
+
+    def obter_categorias():
+        dropdown_categoria.options = []
+        categorias = ["MOTOR E TRANSMISSÃO", "SISTEMA ELÉTRICO E ELETRÔNICO", "SUSPENÇÃO E DIREÇÃO", "FREIOS",
+                       "CLIMATIZAÇÃO E CONFORTO", "CARROCERIA E ACABAMENTO", "ITENS DE SEGURANÇA", "OUTROS" ]
+
+
+        for categoria in categorias:
+            dropdown_categoria.options.append(ft.dropdown.Option(categoria))
+            page.update()
+
     manutencao_selecionada = ft.Ref[bool]()
-    
-    # Funções para definir a seleção
+
+        # Funções para definir a seleção
     def selecionar_sim(e):
         manutencao_selecionada.current = True
         botao_sim.bgcolor = ft.Colors.GREEN
         botao_nao.bgcolor = ft.Colors.GREY
         page.update()
-    
+
     def selecionar_nao(e):
         manutencao_selecionada.current = False
         botao_sim.bgcolor = ft.Colors.GREY
         botao_nao.bgcolor = ft.Colors.RED
         page.update()
-    
+
     # Botões de seleção
     botao_sim = ft.ElevatedButton(
         "Sim",
@@ -79,7 +88,7 @@ def cadastro_de_diagnostico(page: ft.Page):
         ),
         width=150
     )
-    
+
     botao_nao = ft.ElevatedButton(
         "Não",
         on_click=selecionar_nao,
@@ -91,8 +100,8 @@ def cadastro_de_diagnostico(page: ft.Page):
         ),
         width=150
     )
-    
-    # Container para os botões
+
+        # Container para os botões
     container_manutencao = ft.Container(
         content=ft.Column([
             ft.Text("Preciso de manutenção?", size=16),
@@ -102,43 +111,41 @@ def cadastro_de_diagnostico(page: ft.Page):
     )
 
     def cadastrar_diagnostico(e):
-        if not all([id_chamado.value, categoria.value, sintoma.value]) or manutencao_selecionada.current is None:
+        if not all([id_chamado.value, sintoma.value]):
             dlg_erros.content = ft.Text("Preencha todos os campos!", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
-        
+
         if not id_chamado.value.isdigit():
             dlg_erros.content = ft.Text("ID deve ser um número inteiro", color="red", size=20)
             page.open = (dlg_erros)
             dlg_erros.open = True
             return
-        
+
         verificar_diagnostico = session.query(Diagnostico).filter(
-            Diagnostico.id_chamado == int(id_chamado.value),
-            Diagnostico.categoria == categoria.value).first()
-        
+            Diagnostico.id_chamado == id_chamado.value).first()
+
         if verificar_diagnostico:
             dlg_ja_cadastrado.content = ft.Text("Diagnostico já cadastrado", color="red", size=20)
             page.open(dlg_ja_cadastrado)
             dlg_ja_cadastrado.open = True
             return
-        
+
         verificar_chamado = session.query(Chamado).filter(Chamado.id == int(id_chamado.value)).first()
-        
+
         if not verificar_chamado:
             dlg_erros.content = ft.Text("Chamado não encontrado", color="red", size=20)
             page.open(dlg_erros)
             dlg_erros.open = True
             return
-        
+
         else:
             novo_diagnostico = Diagnostico(
             id_chamado=id_chamado.value,
-            categoria=categoria.value,
-            sintoma=sintoma.value,
-            manutencao=manutencao_selecionada.current)
-            
+            categoria=dropdown_categoria.value if dropdown_categoria.value else None,
+            sintoma=sintoma.value)
+
             session.add(novo_diagnostico)
             session.commit()
 
@@ -147,16 +154,17 @@ def cadastro_de_diagnostico(page: ft.Page):
         dlg_sucesso.open = True
         return
 
-    botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD, cadastrar_diagnostico, ft.Colors.TEAL_700)
-
+    botao_cadastrar = criar_botao("Cadastrar", ft.Icons.ADD,cadastrar_diagnostico, ft.Colors.TEAL_700)
+    obter_categorias()
     return ft.Container(
         content=ft.Column(
             [
                 ft.Text("Novo Diagnostico", size=30, weight=ft.FontWeight.BOLD, color="white"),
                 id_chamado,
-                categoria,
                 sintoma,
-                container_manutencao,  # Substitui o TextField pelo container com os botões
+                ft.Row([dropdown_categoria], alignment=ft.MainAxisAlignment.CENTER),
+                container_manutencao,
+                  # Substitui o TextField pelo container com os botões
                 ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
                 botao_cadastrar,
             ],
@@ -171,6 +179,8 @@ def cadastro_de_diagnostico(page: ft.Page):
         padding=20
     )
 
+
+
 def listar_diagnostico(page: ft.Page):
     diagnostico = session.query(Diagnostico).all()
     
@@ -184,11 +194,11 @@ def listar_diagnostico(page: ft.Page):
         controls=[
             ft.Container(
                 content=ft.Text(f"ID do Chamado: {d.id_chamado}\n"
-                              f"Categoria: {d.categoria}\n"
-                              f"Sintoma: {d.sintoma}\n"
-                              f"Manutenção: {'Sim' if d.manutencao else 'Não'}",
-                              size=16,
-                              color=ft.Colors.WHITE),
+                            f"Categoria: {d.categoria}\n"
+                            f"Sintoma: {d.sintoma}\n"
+                            f"Manutenção: {'Sim' if d.manutencao else 'Não'}",
+                            size=16,
+                            color=ft.Colors.WHITE),
                 padding=10,
                 border=ft.border.all(1, ft.Colors.GREY_800),
                 margin=ft.margin.only(bottom=5))
@@ -203,10 +213,10 @@ def listar_diagnostico(page: ft.Page):
     return ft.Container(
         content=ft.Column([
             ft.Text("Diagnosticos Cadastrados", 
-                   size=40, 
-                   weight=ft.FontWeight.BOLD, 
-                   color="white",
-                   text_align=ft.TextAlign.LEFT),
+                size=40, 
+                weight=ft.FontWeight.BOLD, 
+                color="white",
+                text_align=ft.TextAlign.LEFT),
             ft.Divider(height=20),
             lista_diagnostico
         ],

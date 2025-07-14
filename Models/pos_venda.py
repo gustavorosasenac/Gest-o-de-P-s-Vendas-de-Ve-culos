@@ -47,7 +47,7 @@ def procurar_veiculo(page: ft.Page):
 
         for marca in marcas:
             dropdown_marca.options.append(ft.dropdown.Option(marca[0]))
-        page.update()
+            page.update()
     
     def atualizar_modelos(e):
         dropdown_modelo.disabled = False
