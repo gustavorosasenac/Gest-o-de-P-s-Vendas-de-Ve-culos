@@ -158,6 +158,7 @@ def listar_orcamento(page: ft.Page):
         dlg_erros.content = ft.Text("Nenhum Orçamento encontrado", color="red", size=20)
         page.open(dlg_erros)
         dlg_erros.open = True
+        page.update()
         return
     
     lista_orcamento = ft.ListView(
