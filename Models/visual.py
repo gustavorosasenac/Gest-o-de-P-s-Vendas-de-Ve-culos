@@ -800,6 +800,12 @@ class MenuOrcamento():
             content_column.controls = [alterar_orcamento(page)]
             page.update()
 
+        def relatorios_orcamentos(e):
+            from Models.orcamento import relatorio_orcamento
+            content_column.controls = [relatorio_orcamento(page)]
+            page.update()
+
+
         def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
             return ft.Container(
                 content=ft.ElevatedButton(
@@ -823,6 +829,7 @@ class MenuOrcamento():
         botao_listar = criar_botao("Listar Orçamento", ft.Icons.LIST, listar_orcamento, ft.Colors.INDIGO_700)
         botao_lista_venda = criar_botao("Listar Orçamento por Venda", ft.Icons.LIST, listar_orcamento_venda, ft.Colors.INDIGO_700)
         botao_alterar = criar_botao("Alterar Orçamento", ft.Icons.EDIT, alterar_orcamento, ft.Colors.PURPLE_700)
+        botao_orcamento = criar_botao("Relatorio de Orçamentos", ft.Icons.LIST, relatorios_orcamentos, ft.Colors.INDIGO_700)
         botao_voltar = criar_botao("Voltar ao Menu Principal", ft.Icons.ARROW_BACK, voltar_menu, ft.Colors.ORANGE_700)
 
         menu_column = ft.Column(
@@ -838,6 +845,7 @@ class MenuOrcamento():
                             botao_listar,
                             botao_lista_venda,
                             botao_alterar,
+                            botao_orcamento,
                             ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
                             botao_voltar
                         ],

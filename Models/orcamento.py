@@ -5,6 +5,8 @@ from DB.Tables.table_vendas import VendaVeiculo
 from DB.Tables.table_chamado import Chamado
 from DB.Tables.table_item import Itens
 from DB.Tables.table_diagnostico import Diagnostico
+from sqlalchemy import select
+from sqlalchemy.orm import aliased
 
 
 
@@ -396,3 +398,144 @@ def listar_orcamento_por_venda(page: ft.Page, session):
         margin=ft.margin.symmetric(horizontal=20),
         alignment=ft.alignment.top_left
     )
+
+def relatorio_orcamento(page: ft.Page):
+    from DB.Tables.table_veiculos import Veiculos
+
+    # Container que receberá o resultado
+    container_resultado = ft.Container(visible=False)
+
+    dropdown_marca = ft.Dropdown(label="Selecione a marca", width=400)
+    dropdown_modelo = ft.Dropdown(label="Selecione o modelo", width=400, disabled=True)
+
+    def carregar_marcas():
+        marcas = session.query(Veiculos.fabricante).distinct().all()
+        for marca in marcas:
+            dropdown_marca.options.append(ft.dropdown.Option(marca[0]))
+        page.update()
+
+    def atualizar_modelos(e):
+        dropdown_modelo.disabled = False
+        dropdown_modelo.options = []
+        dropdown_modelo.value = None
+
+        if dropdown_marca.value:
+            modelos = session.query(Veiculos.modelo).filter(
+                Veiculos.fabricante == dropdown_marca.value
+            ).distinct().all()
+
+            for modelo in modelos:
+                dropdown_modelo.options.append(ft.dropdown.Option(modelo[0]))
+
+        page.update()
+
+    dropdown_marca.on_change = atualizar_modelos
+    carregar_marcas()
+
+    def bucar_orcamento(e):
+        resultados = (
+            session.query(Orcamento, Veiculos, Diagnostico, Itens)
+            .select_from(Orcamento)
+            .join(VendaVeiculo, Orcamento.id_venda_veiculo == VendaVeiculo.id)
+            .join(Veiculos, VendaVeiculo.id_veiculo == Veiculos.id)
+            .join(Diagnostico, Orcamento.id_diagnostico == Diagnostico.id)
+            .join(Itens, Orcamento.id_item == Itens.id)
+            .filter(
+                Veiculos.fabricante == dropdown_marca.value,
+                Veiculos.modelo == dropdown_modelo.value
+            )
+            .order_by(Orcamento.custo_total.desc())
+            .all()
+        )
+
+        if not resultados:
+            dlg_erros.content = ft.Text("Nenhum orçamento encontrado", color="red", size=20)
+            dlg_erros.open = True
+            page.dialog = dlg_erros
+            page.update()
+            return
+
+        listar_orcamento = ft.ListView(
+            controls=[
+                ft.Container(
+                    content=ft.Text(
+                        f"Categoria: {diagnostico.categoria}\n"
+                        f"Item: {item.nome}\n"
+                        f"Quantidade do Item: {orcamento.quantidade_item}\n"
+                        f"Custo Total: {orcamento.custo_total}\n"
+                        f"ID da Venda: {orcamento.id_venda_veiculo}\n"
+                        f"Modelo do Veículo: {veiculos.modelo}\n"
+                        f"Ano do veiculo: {veiculos.ano}\n"
+                        f"Motor do veiculo: {veiculos.motorizacao}",
+                        size=16,
+                        color=ft.Colors.WHITE
+                    ),
+                    padding=10,
+                    border=ft.border.all(1, ft.Colors.GREY_800),
+                    margin=ft.margin.only(bottom=5)
+                )
+                for orcamento, veiculos, diagnostico, item in resultados
+            ],
+            width=900,
+            spacing=5,
+            padding=10,
+            expand=True
+        
+        )
+
+        container_resultado.content = ft.Container(
+            content=ft.Column([
+                ft.Text("Orçamentos do Veiculo Cadastrados", size=30, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Divider(height=20),
+                ft.Container(
+                    content=listar_orcamento,
+                    height=650,)
+            ],
+            expand=True),
+            bgcolor=ft.Colors.with_opacity(0.95, ft.Colors.BLACK),
+            border_radius=20,
+            padding=20,
+            width=900,
+
+            expand=True
+        )
+        container_resultado.visible = True
+        page.update()
+
+    # Botão que dispara a busca
+    botao_buscar = criar_botao("Buscar", ft.Icons.SEARCH, bucar_orcamento, ft.Colors.TEAL_700)
+
+    # Formulário de filtros (base do Stack)
+    container_filtro = ft.Container(
+        content=ft.Column(
+            [
+                ft.Text("Relatório de Orçamentos", size=30, weight=ft.FontWeight.BOLD, color="white"),
+                ft.Row([dropdown_marca], alignment=ft.MainAxisAlignment.CENTER),
+                ft.Row([dropdown_modelo], alignment=ft.MainAxisAlignment.CENTER),
+                ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                botao_buscar,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=500,
+        alignment=ft.alignment.center,
+        margin=ft.margin.symmetric(vertical=150),
+        padding=20
+    )
+
+    # Camada final com sobreposição
+    return ft.Stack([
+        container_filtro,
+        ft.Container(
+            content=container_resultado,
+            alignment=ft.alignment.center,
+            bgcolor=ft.Colors.with_opacity(1, ft.Colors.BLACK)
+              # Pode ajustar se quiser mover mais pra cima
+            )
+    ])
+
+
+        
