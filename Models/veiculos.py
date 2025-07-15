@@ -41,6 +41,7 @@ def criar_botao(texto, icone, funcao, cor=ft.Colors.BLUE_700):
             )
 def maiusculo(e):
         # Converte o texto para maiúsculas e atualiza
+        e.control.value = e.control.value.replace(" ", "")
         e.control.value = e.control.value.upper()
         e.control.update()
 
