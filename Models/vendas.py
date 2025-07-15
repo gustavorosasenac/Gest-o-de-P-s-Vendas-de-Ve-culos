@@ -200,7 +200,7 @@ def listar_vendas(page: ft.Page):
         page.open(dlg_erros)
         dlg_erros.open = True
         page.update()
-        return
+        return ft.Container()
     
     lista_vendas = ft.ListView(
     controls=[

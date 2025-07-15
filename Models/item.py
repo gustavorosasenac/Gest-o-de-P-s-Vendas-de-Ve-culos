@@ -113,7 +113,7 @@ def listar_itens(page: ft.Page):
         page.open(dlg_erros)
         dlg_erros.open = True
         page.update()
-        return
+        return ft.Container()
     # ft.ListView vai exibir em formato de lista
 
     lista_itens = ft.ListView(

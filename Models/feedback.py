@@ -109,7 +109,7 @@ def listar_feedback(page: ft.Page):
         dlg_erros.content = ft.Text("Nenhum feedback cadastrado", color="red", size=20)
         page.open(dlg_erros)
         dlg_erros.open = True
-        return
+        return ft.Container()
 
     lista_feedback = ft.ListView(
     controls=[

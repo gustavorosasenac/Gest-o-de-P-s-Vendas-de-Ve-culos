@@ -188,7 +188,7 @@ def listar_diagnostico(page: ft.Page):
         dlg_erros.content = ft.Text("Nenhum diagnostico encontrado", color="red", size=20)
         page.open(dlg_erros)
         dlg_erros.open = True
-        return
+        return ft.Container()
     
     lista_diagnostico = ft.ListView(
         controls=[

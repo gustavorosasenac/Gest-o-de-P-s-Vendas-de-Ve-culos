@@ -66,7 +66,7 @@ def cadastro_de_chamado(page: ft.Page):
                 dlg_erros.content = ft.Text("Venda não encontrada", color="red", size=20)
                 page.open(dlg_erros)
                 dlg_erros.open = True
-                return
+                return ft.Container()
             
             else:
                   novo_chamado = Chamado(

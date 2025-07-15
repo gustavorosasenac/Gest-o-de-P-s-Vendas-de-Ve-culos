@@ -161,7 +161,7 @@ def listar_orcamento(page: ft.Page):
         page.open(dlg_erros)
         dlg_erros.open = True
         page.update()
-        return
+        return ft.Container()
     
     lista_orcamento = ft.ListView(
     controls=[

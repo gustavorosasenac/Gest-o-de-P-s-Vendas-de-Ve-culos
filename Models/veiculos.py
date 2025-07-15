@@ -129,7 +129,7 @@ def listar_veiculos(page: ft.Page):
         page.open(dlg_erros)
         dlg_erros.open = True
         page.update()
-        return
+        return ft.Container()
     #ft.ListView vai exibir em formato de lista
     lista_veiculos = ft.ListView(
     controls=[
