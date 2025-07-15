@@ -115,7 +115,7 @@ def listar_chamados(page: ft.Page):
     lista_chamados = ft.ListView(
     controls=[
         ft.Container(
-            content=ft.Text(f" ID Veiculo: {c.id_venda_veiculo} | Descrição: {c.descricao}",
+            content=ft.Text(f"ID do Chamado: {c.id}\nID Veiculo: {c.id_venda_veiculo}\nDescrição: {c.descricao}",
                           size=16,
                           color=ft.Colors.WHITE),
             padding=10,
