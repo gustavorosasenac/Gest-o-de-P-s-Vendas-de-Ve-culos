@@ -440,10 +440,7 @@ def relatorio_orcamento(page: ft.Page):
             .join(Veiculos, VendaVeiculo.id_veiculo == Veiculos.id)
             .join(Diagnostico, Orcamento.id_diagnostico == Diagnostico.id)
             .join(Itens, Orcamento.id_item == Itens.id)
-            .filter(
-                Veiculos.fabricante == dropdown_marca.value,
-                Veiculos.modelo == dropdown_modelo.value
-            )
+            .filter(Veiculos.fabricante == dropdown_marca.value, Veiculos.modelo == dropdown_modelo.value)
             .order_by(Orcamento.custo_total.desc())
             .all()
         )
