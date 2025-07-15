@@ -1,10 +1,12 @@
-# Gest-o-de-P-s-Vendas-de-Ve-culos
+# Gestão de pós-venda de veiculos
 Inteligência de manutenção corretiva e preventiva
 
 
-Interface grafico sera usada "flet"
+Interface grafica: "flet"
 
 Bibliotecas necessarias: pip install flet, mysql, pymysql, sqlalchemy, cryptography, werkzeug, dotenv
+
+
 
 
 comando para compilar
