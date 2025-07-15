@@ -100,7 +100,7 @@ def cadastro_de_itens(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=150),
+        margin=ft.margin.symmetric(vertical=180),
         padding=20
     )
 
@@ -108,7 +108,7 @@ def cadastro_de_itens(page: ft.Page):
 def listar_itens(page: ft.Page):
     itens = session.query(Itens).all()
 
-    if not Itens:
+    if not itens:
         dlg_erros.content = ft.Text("Nenhum item cadastrado", color="red", size=20)
         page.open(dlg_erros)
         dlg_erros.open = True
@@ -119,7 +119,7 @@ def listar_itens(page: ft.Page):
     lista_itens = ft.ListView(
         controls=[
             ft.Container(
-                content=ft.Text(f"ID: {v.id} | Nome: {v.nome} | Preço: {v.preco} | ",
+                content=ft.Text(f"ID: {v.id}\nNome: {v.nome}\nPreço: R$:{v.preco} | ",
                                 size=16,
                                 color=ft.Colors.WHITE),
                 padding=10,
@@ -207,6 +207,6 @@ def alterar_itens(page: ft.Page):
         border_radius=20,
         width=500,
         alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=100),
+        margin=ft.margin.symmetric(vertical=150),
         padding=20
     )
