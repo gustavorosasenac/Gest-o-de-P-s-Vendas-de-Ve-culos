@@ -10,7 +10,6 @@ from DB.Tables.table_chamado import Chamado
 from DB.Tables.table_diagnostico import Diagnostico
 from DB.Tables.table_orcamento import Orcamento
 from DB.Tables.table_usuario import Usuario
-from Models.visual import Menu_principal
 
 
 #cria o BD
@@ -18,7 +17,7 @@ Base.metadata.create_all(engine)
 
 #Chama o menu principal
 def main(page: ft.Page):
-    Menu_principal(page)
+    Login(page)
     page.update()
     
 #Inicia a aplicação chamando o main
