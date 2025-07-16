@@ -119,7 +119,7 @@ def listar_itens(page: ft.Page):
     lista_itens = ft.ListView(
         controls=[
             ft.Container(
-                content=ft.Text(f"ID: {v.id}\nNome: {v.nome}\nPreço: R$:{v.preco} | ",
+                content=ft.Text(f"ID: {v.id}\nNome: {v.nome}\nPreço: R$:{v.preco}",
                                 size=16,
                                 color=ft.Colors.WHITE),
                 padding=10,
