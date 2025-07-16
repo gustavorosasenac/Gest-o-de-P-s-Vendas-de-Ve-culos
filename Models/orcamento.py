@@ -176,29 +176,39 @@ def listar_orcamento(page: ft.Page):
     ],
     width=900,
     spacing=5,
-    padding=10
+    padding=10,
+    expand=True
 )
     
-    return ft.Container(
-        content=ft.Column([
-            ft.Text("  Orçamentos Cadastrados", 
-                   size=40, 
-                   weight=ft.FontWeight.BOLD, 
-                   color="white",
-                   text_align=ft.TextAlign.LEFT),  # Alinhamento do título à esquerda
-            ft.Divider(height=20),
-            lista_orcamento
+    return ft.ResponsiveRow(
+        controls=[
+            ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Text(
+                            "Orçamentos Cadastrados", 
+                            size=40, 
+                            weight=ft.FontWeight.BOLD, 
+                            color="white"
+                        ),
+                        ft.Divider(height=20),
+                        ft.Container(
+                            content=lista_orcamento,
+                            expand=True,
+                            border_radius=10,
+                            padding=10
+                        )
+                    ],
+                    expand=True,
+                    scroll=ft.ScrollMode.AUTO
+                ),
+                bgcolor=ft.Colors.with_opacity(0.9, ft.Colors.BLACK),
+                border_radius=20,
+                padding=20,
+                expand=True
+            )
         ],
-        alignment=ft.MainAxisAlignment.START,  # Alinha no topo
-        horizontal_alignment=ft.CrossAxisAlignment.START  # Alinha tudo à esquerda
-        ),
-        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20,
-        width=1000,
-        padding=ft.padding.only(left=20, top=20, right=20, bottom=20),  # Padding igual em todos os lados
-        margin=ft.margin.only(left = 20),  # Margem reduzida à esquerda
-        alignment=ft.alignment.top_left  # Alinha o container no topo esquerdo
-    )
+        expand=True)
 
 def alterar_orcamento(page: ft.Page):
     id_orcamento = ft.TextField(label="ID do Orçamento", width=400)
