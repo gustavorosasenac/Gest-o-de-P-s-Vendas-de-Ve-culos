@@ -502,7 +502,7 @@ def relatorio_orcamento(page: ft.Page):
             content=ft.Column(
                 [
                     ft.Text(
-                        "Orçamentos do Veiculo Cadastrados",
+                        "Orçamentos do Veiculo Selecionado",
                         size=30,
                         weight=ft.FontWeight.BOLD,
                         color="white"
