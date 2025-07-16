@@ -403,8 +403,14 @@ def relatorio_orcamento(page: ft.Page):
     from DB.Tables.table_veiculos import Veiculos
 
     # Container que receberá o resultado
-    container_resultado = ft.Container(visible=False)
-
+    container_resultado = ft.Container(visible=False,
+        alignment=ft.alignment.center,
+        bgcolor=ft.Colors.with_opacity(0.9, ft.Colors.BLACK),
+        border_radius=20,
+        width=650,
+        padding=20
+)
+    
     dropdown_marca = ft.Dropdown(label="Selecione a marca", width=400)
     dropdown_modelo = ft.Dropdown(label="Selecione o modelo", width=400, disabled=True)
 
@@ -477,7 +483,6 @@ def relatorio_orcamento(page: ft.Page):
             spacing=5,
             padding=10,
             expand=True
-        
         )
 
         container_resultado.content = ft.Container(
@@ -486,7 +491,7 @@ def relatorio_orcamento(page: ft.Page):
                 ft.Divider(height=20),
                 ft.Container(
                     content=listar_orcamento,
-                    height=650,)
+                    )
             ],
             expand=True),
             bgcolor=ft.Colors.with_opacity(0.95, ft.Colors.BLACK),
@@ -497,41 +502,41 @@ def relatorio_orcamento(page: ft.Page):
             expand=True
         )
         container_resultado.visible = True
+        
         page.update()
+    page.update()
 
     # Botão que dispara a busca
     botao_buscar = criar_botao("Buscar", ft.Icons.SEARCH, bucar_orcamento, ft.Colors.TEAL_700)
-
-    # Formulário de filtros (base do Stack)
-    container_filtro = ft.Container(
+    
+    selecionar_veiculo = ft.Container(
         content=ft.Column(
-            [
-                ft.Text("Relatório de Orçamentos", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                ft.Row([dropdown_marca], alignment=ft.MainAxisAlignment.CENTER),
-                ft.Row([dropdown_modelo], alignment=ft.MainAxisAlignment.CENTER),
-                ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
-                botao_buscar,
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        ),
-        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-        border_radius=20,
-        width=500,
-        alignment=ft.alignment.center,
-        margin=ft.margin.symmetric(vertical=150),
-        padding=20
-    )
+                [
+                    ft.Text("Relatório de Orçamentos", size=30, weight=ft.FontWeight.BOLD, color="white"),
+                    ft.Row([dropdown_marca], alignment=ft.MainAxisAlignment.CENTER),
+                    ft.Row([dropdown_modelo], alignment=ft.MainAxisAlignment.CENTER),
+                    ft.Divider(height=40, color=ft.Colors.TRANSPARENT),
+                    botao_buscar,
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            ))
 
     # Camada final com sobreposição
     return ft.Stack([
-        container_filtro,
         ft.Container(
-            content=container_resultado,
-            alignment=ft.alignment.center,
-            bgcolor=ft.Colors.with_opacity(1, ft.Colors.BLACK)
+            bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+            border_radius=20,
+            width=500,
+            margin=ft.margin.symmetric(vertical=250),
+            padding=20,
+            content = selecionar_veiculo,
               # Pode ajustar se quiser mover mais pra cima
-            )
+            ),
+        ft.Container(
+            content = container_resultado,
+            
+        )
     ])
 
 
