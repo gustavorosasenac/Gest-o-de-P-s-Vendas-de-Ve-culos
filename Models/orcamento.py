@@ -405,6 +405,7 @@ def listar_orcamento_por_venda(page: ft.Page, session):
         border_radius=15,
         padding=20,
         width=900,
+        height=780,
         margin=ft.margin.symmetric(horizontal=20),
         alignment=ft.alignment.top_left
     )
