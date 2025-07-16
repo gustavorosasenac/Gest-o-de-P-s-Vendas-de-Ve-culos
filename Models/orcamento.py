@@ -495,24 +495,36 @@ def relatorio_orcamento(page: ft.Page):
             expand=True
         )
 
+        container_resultado.height = page.height  # Faz com que o container ocupe toda a altura da tela
+
         container_resultado.content = ft.Container(
-            content=ft.Column([
-                ft.Text("Orçamentos do Veiculo Cadastrados", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                ft.Divider(height=20),
-                ft.Container(
-                    content=listar_orcamento,
+            height=page.height * 1,  # Define altura dinâmica do conteúdo
+            content=ft.Column(
+                [
+                    ft.Text(
+                        "Orçamentos do Veiculo Cadastrados",
+                        size=30,
+                        weight=ft.FontWeight.BOLD,
+                        color="white"
+                    ),
+                    ft.Divider(height=20),
+                    ft.Container(
+                        content=listar_orcamento,
+                        expand=True
                     )
-            ],
-            expand=True),
+                ],
+                scroll=ft.ScrollMode.AUTO,
+                expand=True
+            ),
             bgcolor=ft.Colors.with_opacity(0.95, ft.Colors.BLACK),
             border_radius=20,
             padding=20,
             width=900,
-
-            expand=True
+            
         )
-        container_resultado.visible = True
         
+        container_resultado.visible = True
+        page.update()
         page.update()
     page.update()
 
@@ -534,20 +546,19 @@ def relatorio_orcamento(page: ft.Page):
 
     # Camada final com sobreposição
     return ft.Stack([
-        ft.Container(
-            bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
-            border_radius=20,
-            width=500,
-            margin=ft.margin.symmetric(vertical=250),
-            padding=20,
-            content = selecionar_veiculo,
-              # Pode ajustar se quiser mover mais pra cima
-            ),
-        ft.Container(
-            content = container_resultado,
-            
-        )
-    ])
+    ft.Container(
+        bgcolor=ft.Colors.with_opacity(0.90, ft.Colors.BLACK),
+        border_radius=20,
+        width=500,
+        margin=ft.margin.symmetric(vertical=250),
+        padding=20,
+        content=selecionar_veiculo,
+    ),
+    ft.Container(
+        content=container_resultado,
+        expand=True,  # Centraliza verticalmente no stack
+    )
+])
 
 
         
