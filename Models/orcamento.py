@@ -166,7 +166,7 @@ def listar_orcamento(page: ft.Page):
     lista_orcamento = ft.ListView(
     controls=[
         ft.Container(
-            content=ft.Text(f"ID do Diagnostico: {o.id_diagnostico}\nID do Item: {o.id_item} \nQuantidade do Item: {o.quantidade_item}\nCusto Total: {o.custo_total}\nID da Venda: {o.id_venda_veiculo}\n",
+            content=ft.Text(f"ID do Orçamento: {o.id}\nID do Diagnostico: {o.id_diagnostico}\nID do Item: {o.id_item} \nQuantidade do Item: {o.quantidade_item}\nCusto Total: {o.custo_total}\nID da Venda: {o.id_venda_veiculo}\n",
                           size=16,
                           color=ft.Colors.WHITE),
             padding=10,
